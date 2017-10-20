@@ -1,0 +1,12 @@
+{
+    \"Name\" : \"QtCreatorSysTray\",
+    \"Version\" : \"0.0.1\",
+    \"CompatVersion\" : \"0.0.1\",
+    \"Vendor\" : \"Davide Coppola\",
+    \"Copyright\" : \"(C) Davide Coppola\",
+    \"License\" : \"MIT\",
+    \"Category\" : \"Qt Creator\",
+    \"Description\" : \"A system tray for Qt Creator showing useful notifications\",
+    \"Url\" : \"http://www.davidecoppola.com\",
+    $$dependencyList
+}
