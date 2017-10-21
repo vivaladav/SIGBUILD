@@ -49,9 +49,14 @@ bool QtCreatorSysTrayPlugin::initialize(const QStringList & arguments, QString *
     Q_UNUSED(errorString)
 
     // get notified of builds
-    connect(ProjectExplorer::BuildManager::instance(), &ProjectExplorer::BuildManager::buildQueueFinished, [=]
+    connect(ProjectExplorer::BuildManager::instance(), &ProjectExplorer::BuildManager::buildQueueFinished, [=](bool res)
     {
-        mTrayIcon->showMessage("Qt Creator", "build finished!", QSystemTrayIcon::Information, 5 * 1000);
+        const int TIME = 2500;
+
+        if(res)
+            mTrayIcon->showMessage("Qt Creator", "build succesful! :)", QSystemTrayIcon::Information, TIME);
+        else
+            mTrayIcon->showMessage("Qt Creator", "build failed! :(", QSystemTrayIcon::Critical, TIME);
     });
 
     return true;
