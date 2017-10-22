@@ -1,16 +1,12 @@
 #include "qtcreatorsystrayplugin.h"
 
 #include <coreplugin/icore.h>
-#include <coreplugin/icontext.h>
-#include <coreplugin/coreconstants.h>
 #include <coreplugin/mainwindow.h>
 #include <projectexplorer/buildmanager.h>
 
 #include <QAction>
-#include <QDebug>
 #include <QCoreApplication>
 #include <QIcon>
-#include <QMainWindow>
 #include <QMenu>
 #include <QSystemTrayIcon>
 
@@ -20,15 +16,13 @@ namespace Internal {
 QtCreatorSysTrayPlugin::QtCreatorSysTrayPlugin()
 {
     // -- CREATE ICON --
-    QIcon icon(":/img/qt_logo.png");
+    QIcon icon(":/img/qtcreator-logo-64.png");
     mTrayIcon = new QSystemTrayIcon(icon, Core::ICore::mainWindow());
 
     // -- CREATE CONTEXT MENU --
     mTrayMenu = new QMenu();
 
-    mTrayMenu->addSeparator();
-
-    QAction * actionQuit = new QAction(tr("&Quit"));
+    QAction * actionQuit = new QAction("E&xit");
     connect(actionQuit, &QAction::triggered, qApp, &QCoreApplication::quit);
     mTrayMenu->addAction(actionQuit);
 
@@ -71,7 +65,6 @@ ExtensionSystem::IPlugin::ShutdownFlag QtCreatorSysTrayPlugin::aboutToShutdown()
 {
     return SynchronousShutdown;
 }
-
 
 } // namespace Internal
 } // namespace QtCreatorSysTray
