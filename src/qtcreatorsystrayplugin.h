@@ -23,6 +23,9 @@ public:
     void extensionsInitialized() override;
     ShutdownFlag aboutToShutdown() override;
 
+private slots:
+    void onMessageClicked();
+
 private:
     QMenu * mTrayMenu = nullptr;
     QSystemTrayIcon * mTrayIcon  = nullptr;
