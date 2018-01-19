@@ -8,28 +8,25 @@ class QMenu;
 class QSystemTrayIcon;
 
 namespace QtCreatorSysTray {
-namespace Internal {
 
 class QtCreatorSysTrayPlugin : public ExtensionSystem::IPlugin
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin" FILE "QtCreatorSysTray.json")
+	Q_OBJECT
+	Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin" FILE "QtCreatorSysTray.json")
 
 public:
-    QtCreatorSysTrayPlugin();
-    ~QtCreatorSysTrayPlugin();
+	QtCreatorSysTrayPlugin();
+	~QtCreatorSysTrayPlugin();
 
-    bool initialize(const QStringList &arguments, QString *errorString) override;
-    void extensionsInitialized() override;
-    ShutdownFlag aboutToShutdown() override;
-
-private slots:
-    void onMessageClicked();
+	bool initialize(const QStringList & arguments, QString * errorString) override;
+	void extensionsInitialized() override;
+	ShutdownFlag aboutToShutdown() override;
 
 private:
-    QMenu * mTrayMenu = nullptr;
-    QSystemTrayIcon * mTrayIcon  = nullptr;
+	QMenu * mTrayMenu = nullptr;
+	QSystemTrayIcon * mTrayIcon  = nullptr;
+
+	int mTimeNotification = 2500;
 };
 
-} // namespace Internal
 } // namespace QtCreatorSysTray
