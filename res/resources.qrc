@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>img/qtcreator-logo-64.png</file>
+        <file>audio/fail_short.wav</file>
+        <file>audio/success_short.wav</file>
     </qresource>
 </RCC>

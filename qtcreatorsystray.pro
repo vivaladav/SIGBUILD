@@ -1,3 +1,5 @@
+QT += multimedia
+
 DEFINES += QTCREATORSYSTRAY_LIBRARY
 
 # QtCreatorSysTray files

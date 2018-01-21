@@ -5,6 +5,7 @@
 #include <extensionsystem/iplugin.h>
 
 class QMenu;
+class QSoundEffect;
 class QSystemTrayIcon;
 
 namespace QtCreatorSysTray {
@@ -26,7 +27,10 @@ private:
 	QMenu * mTrayMenu = nullptr;
 	QSystemTrayIcon * mTrayIcon  = nullptr;
 
-	int mTimeNotification = 2500;
+	QSoundEffect * mSoundSuccess = nullptr;
+	QSoundEffect * mSoundFail = nullptr;
+
+	int mTimeNotification = 5000;
 };
 
 } // namespace QtCreatorSysTray
