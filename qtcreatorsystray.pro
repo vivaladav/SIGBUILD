@@ -4,10 +4,16 @@ DEFINES += QTCREATORSYSTRAY_LIBRARY
 
 # QtCreatorSysTray files
 
-SOURCES += src/qtcreatorsystrayplugin.cpp
+SOURCES += \
+    src/OptionsPageMain.cpp \
+    src/OptionsPageMainWidget.cpp \
+    src/qtcreatorsystrayplugin.cpp
 
-HEADERS += src/qtcreatorsystrayplugin.h \
-src/qtcreatorsystray_global.h
+HEADERS += \
+    src/OptionsPageMain.h \
+    src/OptionsPageMainWidget.h \
+    src/qtcreatorsystray_global.h \
+    src/qtcreatorsystrayplugin.h
 
 # Qt Creator linking
 
@@ -43,8 +49,6 @@ QTC_LIB_DEPENDS += \
 QTC_PLUGIN_DEPENDS += \
     coreplugin \
     projectexplorer
-
-
 
 QTC_PLUGIN_RECOMMENDS += \
     # optional plugin dependencies. nothing here at this time

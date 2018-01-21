@@ -8,7 +8,10 @@ class QMenu;
 class QSoundEffect;
 class QSystemTrayIcon;
 
-namespace QtCreatorSysTray {
+namespace QtCreatorSysTray
+{
+
+class OptionsPageMain;
 
 class QtCreatorSysTrayPlugin : public ExtensionSystem::IPlugin
 {
@@ -24,6 +27,8 @@ public:
 	ShutdownFlag aboutToShutdown() override;
 
 private:
+	OptionsPageMain * mOptionsPage = nullptr;
+
 	QMenu * mTrayMenu = nullptr;
 	QSystemTrayIcon * mTrayIcon  = nullptr;
 

@@ -1,5 +1,7 @@
 #include "qtcreatorsystrayplugin.h"
 
+#include "OptionsPageMain.h"
+
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>
 #include <projectexplorer/buildmanager.h>
@@ -31,6 +33,10 @@ bool QtCreatorSysTrayPlugin::initialize(const QStringList & arguments, QString *
 {
 	Q_UNUSED(arguments)
 	Q_UNUSED(errorString)
+
+	// -- OPTIONS PAGE --
+	mOptionsPage = new OptionsPageMain();
+	addAutoReleasedObject(mOptionsPage);
 
 	// -- CREATE ICON --
 	QIcon icon(":/img/qtcreator-logo-64.png");
