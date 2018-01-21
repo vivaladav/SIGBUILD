@@ -11,14 +11,13 @@ class OptionsPageMain : public Core::IOptionsPage
 {
 public:
 	OptionsPageMain(QObject * parent = nullptr);
-	~OptionsPageMain();
 
 	QWidget * widget() override;
 	void apply()  override;
 	void finish()  override;
 
 private:
-	OptionsPageMainWidget * mWidget;
+	OptionsPageMainWidget * mWidget = nullptr;
 };
 
 } // namespace QtCreatorSysTray
