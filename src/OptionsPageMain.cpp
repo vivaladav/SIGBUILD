@@ -9,7 +9,7 @@ OptionsPageMain::OptionsPageMain(QObject * parent)
 	: IOptionsPage(parent)
 {
 	setId("SIGBUILDsettings");
-	setDisplayName("SIGBUILD");
+	setDisplayName("General");
 	setCategory("SIGBUILD");
 	setDisplayCategory("SIGBUILD");
 	setCategoryIcon(Utils::Icon(":/img/qtcreator-logo-64.png"));
