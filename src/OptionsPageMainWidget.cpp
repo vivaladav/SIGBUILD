@@ -21,14 +21,31 @@ OptionsPageMainWidget::OptionsPageMainWidget()
 
 	QVBoxLayout * layoutBox = new QVBoxLayout(box);
 
+	// -- systray on/off --
 	QCheckBox * check = new QCheckBox(tr("Enable systray icon"), box);
 	layoutBox->addWidget(check);
 
+	// -- systray notifications on/off
 	check = new QCheckBox(tr("Enable systray notifications"), box);
 	layoutBox->addWidget(check);
 
-	check = new QCheckBox(tr("Show systray notifications when Qt Creator is open"), box);
+	// -- systray notifications when open --
+	check = new QCheckBox(tr("Show systray notifications when Qt Creator is not minimized"), box);
 	layoutBox->addWidget(check);
+
+	// -- systray notification min build time --
+	QHBoxLayout * layoutRow = new QHBoxLayout;
+	layoutBox->addLayout(layoutRow);
+
+	QSpinBox * spin = new QSpinBox(box);
+	spin->setMinimum(0);
+	spin->setMaximum(60);
+	spin->setSingleStep(5);
+	spin->setMaximumWidth(50);
+	layoutRow->addWidget(spin);
+
+	QLabel * label = new QLabel(tr("Minimum build time (in seconds) to display a systray notification"), box);
+	layoutRow->addWidget(label);
 
 	// == AUDIO BOX ==
 	box = new QGroupBox(tr("Audio"), this);
@@ -36,23 +53,40 @@ OptionsPageMainWidget::OptionsPageMainWidget()
 
 	layoutBox = new QVBoxLayout(box);
 
+	// -- audio on/off --
 	check = new QCheckBox(tr("Enable audio notifications"), box);
 	layoutBox->addWidget(check);
 
-	check = new QCheckBox(tr("Play audio notifications when Qt Creator is open"), box);
+	// -- audio when open --
+	check = new QCheckBox(tr("Play audio notifications when Qt Creator is not minimized"), box);
 	layoutBox->addWidget(check);
 
-	QHBoxLayout * layoutRow = new QHBoxLayout;
+	// -- audio volume --
+	layoutRow = new QHBoxLayout;
 	layoutBox->addLayout(layoutRow);
 
-	QSpinBox * spin = new QSpinBox(box);
+	spin = new QSpinBox(box);
 	spin->setMinimum(0);
 	spin->setMaximum(100);
 	spin->setSingleStep(10);
 	spin->setMaximumWidth(50);
 	layoutRow->addWidget(spin);
 
-	QLabel * label = new QLabel(tr("Notification volume"), box);
+	label = new QLabel(tr("Notification volume"), box);
+	layoutRow->addWidget(label);
+
+	// -- systray notification min build time --
+	layoutRow = new QHBoxLayout;
+	layoutBox->addLayout(layoutRow);
+
+	spin = new QSpinBox(box);
+	spin->setMinimum(0);
+	spin->setMaximum(60);
+	spin->setSingleStep(5);
+	spin->setMaximumWidth(50);
+	layoutRow->addWidget(spin);
+
+	label = new QLabel(tr("Minimum build time (in seconds) to play an audio notification"), box);
 	layoutRow->addWidget(label);
 
 	// == VERTICAL SPACER ==`
