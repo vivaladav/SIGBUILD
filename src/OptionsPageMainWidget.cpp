@@ -74,16 +74,15 @@ OptionsPageMainWidget::OptionsPageMainWidget(const Settings * settings)
 	layoutRow = new QHBoxLayout;
 	layoutBox->addLayout(layoutRow);
 
-	spin = new QSpinBox(box);
-	spin->setEnabled(false);
-	spin->setMinimum(0);
-	spin->setMaximum(100);
-	spin->setSingleStep(10);
-	spin->setMaximumWidth(50);
-	layoutRow->addWidget(spin);
+	mAudioVolume = new QSpinBox(box);
+	mAudioVolume->setMinimum(Settings::AUDIO_VOL_MIN);
+	mAudioVolume->setMaximum(Settings::AUDIO_VOL_MAX);
+	mAudioVolume->setValue(settings->GetAudioVolume());
+	mAudioVolume->setSingleStep(10);
+	mAudioVolume->setMaximumWidth(50);
+	layoutRow->addWidget(mAudioVolume);
 
 	label = new QLabel(tr("Notification volume"), box);
-	label->setEnabled(false);
 	layoutRow->addWidget(label);
 
 	// -- systray notification min build time --
@@ -121,6 +120,8 @@ Settings OptionsPageMainWidget::GenerateSettings() const
 	settings.SetAudioEnabled(mAudioEnabled->isChecked());
 
 	settings.SetAudioNotificationWhenActive(mAudioNotifyWhenActive->isChecked());
+
+	settings.SetAudioVolume(mAudioVolume->value());
 
 	return settings;
 }

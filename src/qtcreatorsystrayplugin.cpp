@@ -92,7 +92,10 @@ void QtCreatorSysTrayPlugin::OnBuildFinished(bool res)
 			mTrayIcon->showMessage("Qt Creator", "build succesful! \\o/", QSystemTrayIcon::Information, mTimeNotification);
 
 		if(mSoundSuccess && PLAY_AUDIO)
+		{
+			mSoundSuccess->setVolume(mSettings->GetAudioVolumeAsReal());
 			mSoundSuccess->play();
+		}
 	}
 	else
 	{
@@ -100,7 +103,10 @@ void QtCreatorSysTrayPlugin::OnBuildFinished(bool res)
 			mTrayIcon->showMessage("Qt Creator", "build failed! :-(", QSystemTrayIcon::Critical, mTimeNotification);
 
 		if(mSoundFail && PLAY_AUDIO)
+		{
+			mSoundFail->setVolume(mSettings->GetAudioVolumeAsReal());
 			mSoundFail->play();
+		}
 	}
 }
 
@@ -164,9 +170,11 @@ void QtCreatorSysTrayPlugin::DestroySystrayIcon()
 void QtCreatorSysTrayPlugin::CreateSounds()
 {
 	mSoundSuccess = new QSoundEffect();
+	mSoundSuccess->setVolume(mSettings->GetAudioVolumeAsReal());
 	mSoundSuccess->setSource(QUrl("qrc:/audio/success_short.wav"));
 
 	mSoundFail = new QSoundEffect();
+	mSoundFail->setVolume(mSettings->GetAudioVolumeAsReal());
 	mSoundFail->setSource(QUrl("qrc:/audio/fail_short.wav"));
 }
 

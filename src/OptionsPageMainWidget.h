@@ -3,6 +3,7 @@
 #include <QWidget>
 
 class QCheckBox;
+class QSpinBox;
 
 namespace QtCreatorSysTray
 {
@@ -27,6 +28,7 @@ private:
 	// -- AUDIO BOX --
 	QCheckBox * mAudioEnabled = nullptr;
 	QCheckBox * mAudioNotifyWhenActive = nullptr;
+	QSpinBox * mAudioVolume;
 };
 
 } // namespace QtCreatorSysTray
