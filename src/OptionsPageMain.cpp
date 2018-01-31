@@ -1,12 +1,16 @@
 #include "OptionsPageMain.h"
 
 #include "OptionsPageMainWidget.h"
+#include "Settings.h"
+
+#include <QDebug>
 
 namespace QtCreatorSysTray
 {
 
-OptionsPageMain::OptionsPageMain(QObject * parent)
+OptionsPageMain::OptionsPageMain(Settings * settings, QObject * parent)
 	: IOptionsPage(parent)
+	, mSettings(settings)
 {
 	setId("SIGBUILDsettings");
 	setDisplayName("General");
@@ -18,14 +22,25 @@ OptionsPageMain::OptionsPageMain(QObject * parent)
 QWidget * OptionsPageMain::widget()
 {
 	if(nullptr == mWidget)
-		mWidget = new OptionsPageMainWidget;
+		mWidget = new OptionsPageMainWidget(mSettings);
 
 	return mWidget;
 }
 
 void OptionsPageMain::apply()
 {
+	qDebug() << "OptionsPageMain::apply()";
 
+	const Settings newSettings = mWidget->GenerateSettings();
+
+	if(newSettings != *mSettings)
+	{
+		*mSettings = newSettings;
+
+		mSettings->Save();
+
+		emit SettingsChanged();
+	}
 }
 
 void OptionsPageMain::finish()

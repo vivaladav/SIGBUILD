@@ -12,10 +12,12 @@ namespace QtCreatorSysTray
 {
 
 class OptionsPageMain;
+class Settings;
 
 class QtCreatorSysTrayPlugin : public ExtensionSystem::IPlugin
 {
 	Q_OBJECT
+
 	Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin" FILE "QtCreatorSysTray.json")
 
 public:
@@ -26,7 +28,21 @@ public:
 	void extensionsInitialized() override;
 	ShutdownFlag aboutToShutdown() override;
 
+private slots:
+	void OnBuildFinished(bool res);
+
+	void OnSettingsChanged();
+
 private:
+	void CreateSystrayIcon();
+	void DestroySystrayIcon();
+
+	void CreateSounds();
+	void DestroySounds();
+
+private:
+	Settings * mSettings = nullptr;
+
 	OptionsPageMain * mOptionsPage = nullptr;
 
 	QMenu * mTrayMenu = nullptr;

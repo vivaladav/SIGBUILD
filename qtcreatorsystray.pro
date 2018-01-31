@@ -7,13 +7,15 @@ DEFINES += QTCREATORSYSTRAY_LIBRARY
 SOURCES += \
     src/OptionsPageMain.cpp \
     src/OptionsPageMainWidget.cpp \
-    src/qtcreatorsystrayplugin.cpp
+    src/qtcreatorsystrayplugin.cpp \
+    src/Settings.cpp
 
 HEADERS += \
     src/OptionsPageMain.h \
     src/OptionsPageMainWidget.h \
     src/qtcreatorsystray_global.h \
-    src/qtcreatorsystrayplugin.h
+    src/qtcreatorsystrayplugin.h \
+    src/Settings.h
 
 # Qt Creator linking
 
