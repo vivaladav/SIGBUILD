@@ -161,7 +161,7 @@ void QtCreatorSysTrayPlugin::OnSettingsChanged()
 void QtCreatorSysTrayPlugin::CreateSystrayIcon()
 {
 	// -- CREATE SYSTRAY ICON --
-	QIcon icon(":/img/qtcreator-logo-64.png");
+	QIcon icon(":/img/icon.png");
 	mTrayIcon = new QSystemTrayIcon(icon);
 
 	// -- CREATE CONTEXT MENU --

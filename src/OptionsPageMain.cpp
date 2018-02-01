@@ -14,7 +14,7 @@ OptionsPageMain::OptionsPageMain(Settings * settings, QObject * parent)
 	setDisplayName("General");
 	setCategory("SIGBUILD");
 	setDisplayCategory("SIGBUILD");
-	setCategoryIcon(Utils::Icon(":/img/qtcreator-logo-64.png"));
+	setCategoryIcon(Utils::Icon(":/img/icon.png"));
 }
 
 QWidget * OptionsPageMain::widget()
