@@ -95,10 +95,13 @@ void QtCreatorSysTrayPlugin::OnBuildFinished(bool res)
 	int buildTime = (QDateTime::currentMSecsSinceEpoch() - mTimeBuildStart) / 1000;
 	mTimeBuildStart = 0;
 
+	// notification time in milliseconds
+	const int NOTIFY_TIME = mSettings->GetSystrayNotificationTime() * 1000;
+
 	const bool SHOW_MSG		=	mSettings->IsSystrayEnabled() &&
 								mSettings->IsSystrayNotificationEnabled() &&
 								(mSettings->ShowSystrayNotificationWhenActive() || !window->isActiveWindow()) &&
-								buildTime >= mSettings->GetSystrayMinBuildtime();
+								buildTime >= mSettings->GetSystrayMinBuildTime();
 
 	const bool PLAY_AUDIO	=	mSettings->IsAudioEnabled() &&
 								(mSettings->PlayAudioNotificationWhenActive() || !window->isActiveWindow()) &&
@@ -107,7 +110,7 @@ void QtCreatorSysTrayPlugin::OnBuildFinished(bool res)
 	if(res)
 	{
 		if(mTrayIcon && SHOW_MSG)
-			mTrayIcon->showMessage("Qt Creator", "build succesful! \\o/", QSystemTrayIcon::Information, mTimeNotification);
+			mTrayIcon->showMessage("Qt Creator", "build succesful! \\o/", QSystemTrayIcon::Information, NOTIFY_TIME);
 
 		if(mSoundSuccess && PLAY_AUDIO)
 		{
@@ -118,7 +121,7 @@ void QtCreatorSysTrayPlugin::OnBuildFinished(bool res)
 	else
 	{
 		if(mTrayIcon && SHOW_MSG)
-			mTrayIcon->showMessage("Qt Creator", "build failed! :-(", QSystemTrayIcon::Critical, mTimeNotification);
+			mTrayIcon->showMessage("Qt Creator", "build failed! :-(", QSystemTrayIcon::Critical, NOTIFY_TIME);
 
 		if(mSoundFail && PLAY_AUDIO)
 		{

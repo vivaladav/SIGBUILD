@@ -25,6 +25,7 @@ private:
 	QCheckBox * mSystrayNotifyEnabled = nullptr;
 	QCheckBox * mSystrayNotifyWhenActive = nullptr;
 	QSpinBox * mSystrayMinBuildTime = nullptr;
+	QSpinBox * mSystrayNotifyTime = nullptr;
 
 	// -- AUDIO BOX --
 	QCheckBox * mAudioEnabled = nullptr;

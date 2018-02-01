@@ -21,8 +21,11 @@ public:
 	bool ShowSystrayNotificationWhenActive() const;
 	void SetSystrayNotificationWhenActive(bool val);
 
-	int GetSystrayMinBuildtime() const;
+	int GetSystrayMinBuildTime() const;
 	void SetSystrayMinBuildTime(int val);
+
+	int GetSystrayNotificationTime() const;
+	void SetSystrayNotificationTime(int val);
 
 	// -- AUDIO --
 	bool IsAudioEnabled() const;
@@ -46,6 +49,9 @@ public:
 	static const int SYSTRAY_BUILD_TIME_MIN = 0;
 	static const int SYSTRAY_BUILD_TIME_MAX = 60;
 
+	static const int SYSTRAY_NOTIFICATION_TIME_MIN = 1;
+	static const int SYSTRAY_NOTIFICATION_TIME_MAX = 60;
+
 	static const int AUDIO_VOL_MIN = 0;
 	static const int AUDIO_VOL_MAX = 100;
 
@@ -58,6 +64,7 @@ private:
 	bool mOptSystrayNotifyEnabled;
 	bool mOptSystrayNotifyWhenActive;
 	int mOptSystrayMinBuildTime;
+	int mOptSystrayNotifyTime;
 
 	// -- AUDIO --
 	bool mOptAudioEnabled;
@@ -76,7 +83,9 @@ inline void Settings::SetSystrayNotificationEnabled(bool val) { mOptSystrayNotif
 inline bool Settings::ShowSystrayNotificationWhenActive() const { return mOptSystrayNotifyWhenActive; }
 inline void Settings::SetSystrayNotificationWhenActive(bool val) { mOptSystrayNotifyWhenActive = val; }
 
-inline int Settings::GetSystrayMinBuildtime() const { return mOptSystrayMinBuildTime; }
+inline int Settings::GetSystrayMinBuildTime() const { return mOptSystrayMinBuildTime; }
+
+inline int Settings::GetSystrayNotificationTime() const { return mOptSystrayNotifyTime; }
 
 // -- AUDIO --
 inline bool Settings::IsAudioEnabled() const { return mOptAudioEnabled; }
@@ -100,6 +109,7 @@ inline bool Settings::operator==(const Settings & other) const
 			mOptSystrayNotifyEnabled == other.mOptSystrayNotifyEnabled &&
 			mOptSystrayNotifyWhenActive == other.mOptSystrayNotifyWhenActive &&
 			mOptSystrayMinBuildTime == other.mOptSystrayMinBuildTime &&
+			mOptSystrayNotifyTime == other.mOptSystrayNotifyTime &&
 			mOptAudioEnabled == other.mOptAudioEnabled &&
 			mOptAudioNotifyWhenActive == other.mOptAudioNotifyWhenActive &&
 			mOptAudioVolume == other.mOptAudioVolume &&

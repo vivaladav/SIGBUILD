@@ -1,12 +1,12 @@
 {
     \"Name\" : \"QtCreatorSysTray\",
-    \"Version\" : \"0.0.3\",
-    \"CompatVersion\" : \"0.0.3\",
+    \"Version\" : \"0.0.4\",
+    \"CompatVersion\" : "0.0.4\",
     \"Vendor\" : \"Davide Coppola\",
     \"Copyright\" : \"(C) Davide Coppola\",
-    \"License\" : \"MIT\",
+    \"License\" : \"Evaluation license. This plugin has not been publicly released yet and usage is allowed only to selected individuals and only until public release.\",
     \"Category\" : \"Qt Creator\",
-    \"Description\" : \"A system tray for Qt Creator showing useful notifications\",
-    \"Url\" : \"http://www.davidecoppola.com\",
+    \"Description\" : \"This plugin notifies you when a build ends.\",
+    \"Url\" : \"http://sigbuild.com\",
     $$dependencyList
 }

@@ -11,6 +11,7 @@ const QString OPT_SYSTRAY_ENABLED("SYSTRAY_ENABLED");
 const QString OPT_SYSTRAY_NOTIFY_ENABLED("SYSTRAY_NOTIFY_ENABLED");
 const QString OPT_SYSTRAY_NOTIFY_WHEN_ACTIVE("SYSTRAY_NOTIFY_WHEN_ACTIVE");
 const QString OPT_SYSTRAY_MIN_BUILD_TIME("SYSTRAY_MIN_BUILD_TIME");
+const QString OPT_SYSTRAY_NOTIFY_TIME("SYSTRAY_NOTIFY_TIME");
 const QString OPT_AUDIO_ENABLED("AUDIO_ENABLED");
 const QString OPT_AUDIO_NOTIFY_WHEN_ACTIVE("AUDIO_NOTIFY_WHEN_ACTIVE");
 const QString OPT_AUDIO_VOLUME("AUDIO_VOLUME");
@@ -21,6 +22,7 @@ const bool DEF_SYSTRAY_ENABLED						= true;
 const bool DEF_SYSTRAY_NOTIFY_ENABLED				= true;
 const bool DEF_SYSTRAY_NOTIFY_WHEN_ACTIVE			= true;
 const int DEF_SYSTRAY_MIN_BUILD_TIME				= 0;
+const int DEF_SYSTRAY_NOTIFY_TIME					= 5;
 const bool DEF_AUDIO_ENABLED						= true;
 const bool DEF_AUDIO_NOTIFY_WHEN_ACTIVE				= true;
 const int DEF_AUDIO_VOLUME							= Settings::AUDIO_VOL_MAX;
@@ -54,6 +56,8 @@ void Settings::Load()
 
 	mOptSystrayMinBuildTime = globalSettings->value(OPT_SYSTRAY_MIN_BUILD_TIME, DEF_SYSTRAY_MIN_BUILD_TIME).toInt();
 
+	mOptSystrayNotifyTime = globalSettings->value(OPT_SYSTRAY_NOTIFY_TIME, DEF_SYSTRAY_NOTIFY_TIME).toInt();
+
 	// -- AUDIO --
 	mOptAudioEnabled = globalSettings->value(OPT_AUDIO_ENABLED, DEF_AUDIO_ENABLED).toBool();
 
@@ -63,6 +67,8 @@ void Settings::Load()
 	mOptAudioVolume = globalSettings->value(OPT_AUDIO_VOLUME, DEF_AUDIO_VOLUME).toInt();
 
 	mOptAudioMinBuildTime = globalSettings->value(OPT_AUDIO_MIN_BUILD_TIME, DEF_AUDIO_MIN_BUILD_TIME).toInt();
+
+
 
 	globalSettings->endGroup();
 }
@@ -81,6 +87,8 @@ void Settings::Save()
 	globalSettings->setValue(OPT_SYSTRAY_NOTIFY_ENABLED, mOptSystrayNotifyWhenActive);
 
 	globalSettings->setValue(OPT_SYSTRAY_MIN_BUILD_TIME, mOptSystrayMinBuildTime);
+
+	globalSettings->setValue(OPT_SYSTRAY_NOTIFY_TIME, mOptSystrayNotifyTime);
 
 	// -- AUDIO --
 	globalSettings->setValue(OPT_AUDIO_ENABLED, mOptAudioEnabled);
@@ -104,6 +112,18 @@ void Settings::SetSystrayMinBuildTime(int val)
 
 	// set
 	mOptSystrayMinBuildTime = val;
+}
+
+void Settings::SetSystrayNotificationTime(int val)
+{
+	// clamp value
+	if(val < SYSTRAY_NOTIFICATION_TIME_MIN)
+		val = SYSTRAY_NOTIFICATION_TIME_MIN;
+	else if(val > SYSTRAY_NOTIFICATION_TIME_MAX)
+		val = SYSTRAY_NOTIFICATION_TIME_MAX;
+
+	// set
+	mOptSystrayNotifyTime = val;
 }
 
 void Settings::SetAudioVolume(int val)

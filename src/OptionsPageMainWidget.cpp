@@ -45,12 +45,27 @@ OptionsPageMainWidget::OptionsPageMainWidget(const Settings * settings)
 	mSystrayMinBuildTime = new QSpinBox(box);
 	mSystrayMinBuildTime->setMinimum(Settings::SYSTRAY_BUILD_TIME_MIN);
 	mSystrayMinBuildTime->setMaximum(Settings::SYSTRAY_BUILD_TIME_MAX);
-	mSystrayMinBuildTime->setValue(settings->GetSystrayMinBuildtime());
+	mSystrayMinBuildTime->setValue(settings->GetSystrayMinBuildTime());
 	mSystrayMinBuildTime->setSingleStep(1);
 	mSystrayMinBuildTime->setMaximumWidth(50);
 	layoutRow->addWidget(mSystrayMinBuildTime);
 
 	QLabel * label = new QLabel(tr("Minimum build time (in seconds) to display a systray notification"), box);
+	layoutRow->addWidget(label);
+
+	// -- systray notification length time --
+	layoutRow = new QHBoxLayout;
+	layoutBox->addLayout(layoutRow);
+
+	mSystrayNotifyTime = new QSpinBox(box);
+	mSystrayNotifyTime->setMinimum(Settings::SYSTRAY_NOTIFICATION_TIME_MIN);
+	mSystrayNotifyTime->setMaximum(Settings::SYSTRAY_NOTIFICATION_TIME_MAX);
+	mSystrayNotifyTime->setValue(settings->GetSystrayNotificationTime());
+	mSystrayNotifyTime->setSingleStep(1);
+	mSystrayNotifyTime->setMaximumWidth(50);
+	layoutRow->addWidget(mSystrayNotifyTime);
+
+	label = new QLabel(tr("Time (in seconds) the systray notification will be visible"), box);
 	layoutRow->addWidget(label);
 
 	// == AUDIO BOX ==
@@ -115,6 +130,8 @@ Settings OptionsPageMainWidget::GenerateSettings() const
 	settings.SetSystrayNotificationWhenActive(mSystrayNotifyWhenActive->isChecked());
 
 	settings.SetSystrayMinBuildTime(mSystrayMinBuildTime->value());
+
+	settings.SetSystrayNotificationTime(mSystrayNotifyTime->value());
 
 	// -- AUDIO --
 	settings.SetAudioEnabled(mAudioEnabled->isChecked());
