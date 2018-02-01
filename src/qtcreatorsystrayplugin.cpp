@@ -6,9 +6,11 @@
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>
 #include <projectexplorer/buildmanager.h>
+#include <projectexplorer/project.h>
 
 #include <QAction>
 #include <QCoreApplication>
+#include <QDateTime>
 #include <QIcon>
 #include <QMainWindow>
 #include <QMenu>
@@ -53,9 +55,24 @@ bool QtCreatorSysTrayPlugin::initialize(const QStringList & arguments, QString *
 	if(mSettings->IsAudioEnabled())
 		CreateSounds();
 
-	// get notified of builds
+	// -- SIGNALS HANDLING --
+	// build start
+	connect(ProjectExplorer::BuildManager::instance(), &ProjectExplorer::BuildManager::buildStateChanged,
+			this, [this](ProjectExplorer::Project * pro)
+	{
+		Q_UNUSED(pro)
+
+		// only log first state start time
+		if(0 == mTimeBuildStart)
+			mTimeBuildStart = QDateTime::currentMSecsSinceEpoch();
+	});
+
+
+	// build end
 	connect(ProjectExplorer::BuildManager::instance(), &ProjectExplorer::BuildManager::buildQueueFinished,
 			this, &QtCreatorSysTrayPlugin::OnBuildFinished);
+
+
 
 	return true;
 }
@@ -74,17 +91,18 @@ void QtCreatorSysTrayPlugin::OnBuildFinished(bool res)
 {
 	QMainWindow * window = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
 
-	qDebug() << "window:" << window;
-	if(window)
-		qDebug() << "minimized:" << window->isMinimized() <<"- visible:" << window->isVisible()
-				 << "- has focus:" << window->hasFocus() << "- active:" << window->isActiveWindow();
+	// build time in seconds
+	int buildTime = (QDateTime::currentMSecsSinceEpoch() - mTimeBuildStart) / 1000;
+	mTimeBuildStart = 0;
 
 	const bool SHOW_MSG		=	mSettings->IsSystrayEnabled() &&
 								mSettings->IsSystrayNotificationEnabled() &&
-								(mSettings->ShowSystrayNotificationWhenActive() || !window->isActiveWindow());
+								(mSettings->ShowSystrayNotificationWhenActive() || !window->isActiveWindow()) &&
+								buildTime >= mSettings->GetSystrayMinBuildtime();
 
 	const bool PLAY_AUDIO	=	mSettings->IsAudioEnabled() &&
-								(mSettings->PlayAudioNotificationWhenActive() || !window->isActiveWindow());
+								(mSettings->PlayAudioNotificationWhenActive() || !window->isActiveWindow()) &&
+								buildTime >= mSettings->GetAudioMinBuildtime();
 
 	if(res)
 	{
@@ -112,8 +130,6 @@ void QtCreatorSysTrayPlugin::OnBuildFinished(bool res)
 
 void QtCreatorSysTrayPlugin::OnSettingsChanged()
 {
-	qDebug() << "QtCreatorSysTrayPlugin::OnSettingsChanged()";
-
 	// -- SYSTRAY --
 	if(mSettings->IsSystrayEnabled())
 	{

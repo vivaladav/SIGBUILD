@@ -52,6 +52,8 @@ private:
 	QSoundEffect * mSoundFail = nullptr;
 
 	int mTimeNotification = 5000;
+
+	quint64 mTimeBuildStart = 0;
 };
 
 } // namespace QtCreatorSysTray

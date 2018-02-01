@@ -24,11 +24,13 @@ private:
 	QCheckBox * mSystrayEnabled = nullptr;
 	QCheckBox * mSystrayNotifyEnabled = nullptr;
 	QCheckBox * mSystrayNotifyWhenActive = nullptr;
+	QSpinBox * mSystrayMinBuildTime = nullptr;
 
 	// -- AUDIO BOX --
 	QCheckBox * mAudioEnabled = nullptr;
 	QCheckBox * mAudioNotifyWhenActive = nullptr;
-	QSpinBox * mAudioVolume;
+	QSpinBox * mAudioVolume = nullptr;
+	QSpinBox * mAudioMinBuildTime = nullptr;
 };
 
 } // namespace QtCreatorSysTray

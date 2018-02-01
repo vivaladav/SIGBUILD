@@ -3,8 +3,6 @@
 #include "OptionsPageMainWidget.h"
 #include "Settings.h"
 
-#include <QDebug>
-
 namespace QtCreatorSysTray
 {
 
@@ -29,8 +27,6 @@ QWidget * OptionsPageMain::widget()
 
 void OptionsPageMain::apply()
 {
-	qDebug() << "OptionsPageMain::apply()";
-
 	const Settings newSettings = mWidget->GenerateSettings();
 
 	if(newSettings != *mSettings)

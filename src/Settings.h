@@ -21,6 +21,9 @@ public:
 	bool ShowSystrayNotificationWhenActive() const;
 	void SetSystrayNotificationWhenActive(bool val);
 
+	int GetSystrayMinBuildtime() const;
+	void SetSystrayMinBuildTime(int val);
+
 	// -- AUDIO --
 	bool IsAudioEnabled() const;
 	void SetAudioEnabled(bool val);
@@ -30,26 +33,37 @@ public:
 
 	int GetAudioVolume() const;
 	double GetAudioVolumeAsReal() const;
-	void SetAudioVolume(int vol);
+	void SetAudioVolume(int val);
+
+	int GetAudioMinBuildtime() const;
+	void SetAudioMinBuildTime(int val);
 
 	// -- OPERATORS --
 	bool operator==(const Settings & other) const;
 	bool operator!=(const Settings & other) const;
 
 public:
+	static const int SYSTRAY_BUILD_TIME_MIN = 0;
+	static const int SYSTRAY_BUILD_TIME_MAX = 60;
+
 	static const int AUDIO_VOL_MIN = 0;
 	static const int AUDIO_VOL_MAX = 100;
+
+	static const int AUDIO_BUILD_TIME_MIN = 0;
+	static const int AUDIO_BUILD_TIME_MAX = 60;
 
 private:
 	// -- SYSTRAY --
 	bool mOptSystrayEnabled;
 	bool mOptSystrayNotifyEnabled;
 	bool mOptSystrayNotifyWhenActive;
+	int mOptSystrayMinBuildTime;
 
 	// -- AUDIO --
 	bool mOptAudioEnabled;
 	bool mOptAudioNotifyWhenActive;
 	int mOptAudioVolume;
+	int mOptAudioMinBuildTime;
 };
 
 // -- SYSTRAY --
@@ -61,6 +75,8 @@ inline void Settings::SetSystrayNotificationEnabled(bool val) { mOptSystrayNotif
 
 inline bool Settings::ShowSystrayNotificationWhenActive() const { return mOptSystrayNotifyWhenActive; }
 inline void Settings::SetSystrayNotificationWhenActive(bool val) { mOptSystrayNotifyWhenActive = val; }
+
+inline int Settings::GetSystrayMinBuildtime() const { return mOptSystrayMinBuildTime; }
 
 // -- AUDIO --
 inline bool Settings::IsAudioEnabled() const { return mOptAudioEnabled; }
@@ -75,15 +91,19 @@ inline double Settings::GetAudioVolumeAsReal() const
 	return static_cast<double>(mOptAudioVolume) / static_cast<double>(AUDIO_VOL_MAX);
 }
 
+inline int Settings::GetAudioMinBuildtime() const { return mOptAudioMinBuildTime; }
+
 // -- OPERATORS --
 inline bool Settings::operator==(const Settings & other) const
 {
 	return	mOptSystrayEnabled == other.mOptSystrayEnabled &&
 			mOptSystrayNotifyEnabled == other.mOptSystrayNotifyEnabled &&
 			mOptSystrayNotifyWhenActive == other.mOptSystrayNotifyWhenActive &&
+			mOptSystrayMinBuildTime == other.mOptSystrayMinBuildTime &&
 			mOptAudioEnabled == other.mOptAudioEnabled &&
 			mOptAudioNotifyWhenActive == other.mOptAudioNotifyWhenActive &&
-			mOptAudioVolume == other.mOptAudioVolume;
+			mOptAudioVolume == other.mOptAudioVolume &&
+			mOptAudioMinBuildTime == other.mOptAudioMinBuildTime;
 }
 
 inline bool Settings::operator!=(const Settings & other) const

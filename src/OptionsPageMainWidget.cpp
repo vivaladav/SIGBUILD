@@ -42,16 +42,15 @@ OptionsPageMainWidget::OptionsPageMainWidget(const Settings * settings)
 	QHBoxLayout * layoutRow = new QHBoxLayout;
 	layoutBox->addLayout(layoutRow);
 
-	QSpinBox * spin = new QSpinBox(box);
-	spin->setEnabled(false);
-	spin->setMinimum(0);
-	spin->setMaximum(60);
-	spin->setSingleStep(5);
-	spin->setMaximumWidth(50);
-	layoutRow->addWidget(spin);
+	mSystrayMinBuildTime = new QSpinBox(box);
+	mSystrayMinBuildTime->setMinimum(Settings::SYSTRAY_BUILD_TIME_MIN);
+	mSystrayMinBuildTime->setMaximum(Settings::SYSTRAY_BUILD_TIME_MAX);
+	mSystrayMinBuildTime->setValue(settings->GetSystrayMinBuildtime());
+	mSystrayMinBuildTime->setSingleStep(1);
+	mSystrayMinBuildTime->setMaximumWidth(50);
+	layoutRow->addWidget(mSystrayMinBuildTime);
 
 	QLabel * label = new QLabel(tr("Minimum build time (in seconds) to display a systray notification"), box);
-	label->setEnabled(false);
 	layoutRow->addWidget(label);
 
 	// == AUDIO BOX ==
@@ -89,16 +88,15 @@ OptionsPageMainWidget::OptionsPageMainWidget(const Settings * settings)
 	layoutRow = new QHBoxLayout;
 	layoutBox->addLayout(layoutRow);
 
-	spin = new QSpinBox(box);
-	spin->setEnabled(false);
-	spin->setMinimum(0);
-	spin->setMaximum(60);
-	spin->setSingleStep(5);
-	spin->setMaximumWidth(50);
-	layoutRow->addWidget(spin);
+	mAudioMinBuildTime = new QSpinBox(box);
+	mAudioMinBuildTime->setMinimum(Settings::AUDIO_BUILD_TIME_MIN);
+	mAudioMinBuildTime->setMaximum(Settings::AUDIO_BUILD_TIME_MAX);
+	mAudioMinBuildTime->setValue(settings->GetAudioMinBuildtime());
+	mAudioMinBuildTime->setSingleStep(1);
+	mAudioMinBuildTime->setMaximumWidth(50);
+	layoutRow->addWidget(mAudioMinBuildTime);
 
 	label = new QLabel(tr("Minimum build time (in seconds) to play an audio notification"), box);
-	label->setEnabled(false);
 	layoutRow->addWidget(label);
 
 	// == VERTICAL SPACER ==`
@@ -116,12 +114,16 @@ Settings OptionsPageMainWidget::GenerateSettings() const
 
 	settings.SetSystrayNotificationWhenActive(mSystrayNotifyWhenActive->isChecked());
 
+	settings.SetSystrayMinBuildTime(mSystrayMinBuildTime->value());
+
 	// -- AUDIO --
 	settings.SetAudioEnabled(mAudioEnabled->isChecked());
 
 	settings.SetAudioNotificationWhenActive(mAudioNotifyWhenActive->isChecked());
 
 	settings.SetAudioVolume(mAudioVolume->value());
+
+	settings.SetAudioMinBuildTime(mAudioMinBuildTime->value());
 
 	return settings;
 }
