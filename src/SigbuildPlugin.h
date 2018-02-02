@@ -1,6 +1,6 @@
 #pragma once
 
-#include "qtcreatorsystray_global.h"
+#include "SigbuildGlobal.h"
 
 #include <extensionsystem/iplugin.h>
 
@@ -8,21 +8,21 @@ class QMenu;
 class QSoundEffect;
 class QSystemTrayIcon;
 
-namespace QtCreatorSysTray
+namespace Sigbuild
 {
 
 class OptionsPageMain;
 class Settings;
 
-class QtCreatorSysTrayPlugin : public ExtensionSystem::IPlugin
+class SigbuildPlugin : public ExtensionSystem::IPlugin
 {
 	Q_OBJECT
 
-	Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin" FILE "QtCreatorSysTray.json")
+	Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin" FILE "SIGBUILD.json")
 
 public:
-	QtCreatorSysTrayPlugin();
-	~QtCreatorSysTrayPlugin();
+	SigbuildPlugin();
+	~SigbuildPlugin();
 
 	bool initialize(const QStringList & arguments, QString * errorString) override;
 	void extensionsInitialized() override;
@@ -54,4 +54,4 @@ private:
 	quint64 mTimeBuildStart = 0;
 };
 
-} // namespace QtCreatorSysTray
+} // namespace Sigbuild

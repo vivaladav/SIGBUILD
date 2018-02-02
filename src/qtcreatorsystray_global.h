@@ -1,9 +1,0 @@
-#pragma once
-
-#include <QtGlobal>
-
-#if defined(QTCREATORSYSTRAY_LIBRARY)
-#  define QTCREATORSYSTRAYSHARED_EXPORT Q_DECL_EXPORT
-#else
-#  define QTCREATORSYSTRAYSHARED_EXPORT Q_DECL_IMPORT
-#endif

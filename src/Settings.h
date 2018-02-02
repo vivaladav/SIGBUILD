@@ -1,6 +1,6 @@
 #pragma once
 
-namespace QtCreatorSysTray
+namespace Sigbuild
 {
 
 class Settings
@@ -121,4 +121,4 @@ inline bool Settings::operator!=(const Settings & other) const
 	return !(*this == other);
 }
 
-} // namespace QtCreatorSysTray
+} // namespace Sigbuild

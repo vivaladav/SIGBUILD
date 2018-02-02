@@ -2,7 +2,7 @@
 
 #include <coreplugin/icore.h>
 
-namespace QtCreatorSysTray
+namespace Sigbuild
 {
 
 // -- KEYS --
@@ -150,4 +150,4 @@ void Settings::SetAudioMinBuildTime(int val)
 	mOptAudioMinBuildTime = val;
 }
 
-} // namespace QtCreatorSysTray
+} // namespace Sigbuild

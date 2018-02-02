@@ -3,7 +3,7 @@
 #include "OptionsPageMainWidget.h"
 #include "Settings.h"
 
-namespace QtCreatorSysTray
+namespace Sigbuild
 {
 
 OptionsPageMain::OptionsPageMain(Settings * settings, QObject * parent)
@@ -45,4 +45,4 @@ void OptionsPageMain::finish()
 	mWidget = nullptr;
 }
 
-} // namespace QtCreatorSysTray
+} // namespace Sigbuild

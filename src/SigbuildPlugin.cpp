@@ -1,4 +1,4 @@
-#include "qtcreatorsystrayplugin.h"
+#include "SigbuildPlugin.h"
 
 #include "OptionsPageMain.h"
 #include "Settings.h"
@@ -18,14 +18,14 @@
 #include <QSound>
 #include <QSystemTrayIcon>
 
-namespace QtCreatorSysTray {
+namespace Sigbuild {
 
-QtCreatorSysTrayPlugin::QtCreatorSysTrayPlugin()
+SigbuildPlugin::SigbuildPlugin()
 	: mSettings(new Settings)
 {
 }
 
-QtCreatorSysTrayPlugin::~QtCreatorSysTrayPlugin()
+SigbuildPlugin::~SigbuildPlugin()
 {
 	DestroySystrayIcon();
 
@@ -34,7 +34,7 @@ QtCreatorSysTrayPlugin::~QtCreatorSysTrayPlugin()
 	delete mSettings;
 }
 
-bool QtCreatorSysTrayPlugin::initialize(const QStringList & arguments, QString * errorString)
+bool SigbuildPlugin::initialize(const QStringList & arguments, QString * errorString)
 {
 	Q_UNUSED(arguments)
 	Q_UNUSED(errorString)
@@ -45,7 +45,7 @@ bool QtCreatorSysTrayPlugin::initialize(const QStringList & arguments, QString *
 	mOptionsPage = new OptionsPageMain(mSettings);
 	addAutoReleasedObject(mOptionsPage);
 
-	connect(mOptionsPage, &OptionsPageMain::SettingsChanged, this, &QtCreatorSysTrayPlugin::OnSettingsChanged);
+	connect(mOptionsPage, &OptionsPageMain::SettingsChanged, this, &SigbuildPlugin::OnSettingsChanged);
 
 	// -- CREATE ICON --
 	if(mSettings->IsSystrayEnabled())
@@ -70,24 +70,24 @@ bool QtCreatorSysTrayPlugin::initialize(const QStringList & arguments, QString *
 
 	// build end
 	connect(ProjectExplorer::BuildManager::instance(), &ProjectExplorer::BuildManager::buildQueueFinished,
-			this, &QtCreatorSysTrayPlugin::OnBuildFinished);
+			this, &SigbuildPlugin::OnBuildFinished);
 
 
 
 	return true;
 }
 
-void QtCreatorSysTrayPlugin::extensionsInitialized()
+void SigbuildPlugin::extensionsInitialized()
 {
 
 }
 
-ExtensionSystem::IPlugin::ShutdownFlag QtCreatorSysTrayPlugin::aboutToShutdown()
+ExtensionSystem::IPlugin::ShutdownFlag SigbuildPlugin::aboutToShutdown()
 {
 	return SynchronousShutdown;
 }
 
-void QtCreatorSysTrayPlugin::OnBuildFinished(bool res)
+void SigbuildPlugin::OnBuildFinished(bool res)
 {
 	QMainWindow * window = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
 
@@ -131,7 +131,7 @@ void QtCreatorSysTrayPlugin::OnBuildFinished(bool res)
 	}
 }
 
-void QtCreatorSysTrayPlugin::OnSettingsChanged()
+void SigbuildPlugin::OnSettingsChanged()
 {
 	// -- SYSTRAY --
 	if(mSettings->IsSystrayEnabled())
@@ -158,7 +158,7 @@ void QtCreatorSysTrayPlugin::OnSettingsChanged()
 	}
 }
 
-void QtCreatorSysTrayPlugin::CreateSystrayIcon()
+void SigbuildPlugin::CreateSystrayIcon()
 {
 	// -- CREATE SYSTRAY ICON --
 	QIcon icon(":/img/icon.png");
@@ -177,7 +177,7 @@ void QtCreatorSysTrayPlugin::CreateSystrayIcon()
 	mTrayIcon->show();
 }
 
-void QtCreatorSysTrayPlugin::DestroySystrayIcon()
+void SigbuildPlugin::DestroySystrayIcon()
 {
 	delete mTrayMenu;
 	mTrayMenu = nullptr;
@@ -186,7 +186,7 @@ void QtCreatorSysTrayPlugin::DestroySystrayIcon()
 	mTrayIcon = nullptr;
 }
 
-void QtCreatorSysTrayPlugin::CreateSounds()
+void SigbuildPlugin::CreateSounds()
 {
 	mSoundSuccess = new QSoundEffect();
 	mSoundSuccess->setVolume(mSettings->GetAudioVolumeAsReal());
@@ -197,7 +197,7 @@ void QtCreatorSysTrayPlugin::CreateSounds()
 	mSoundFail->setSource(QUrl("qrc:/audio/fail_short.wav"));
 }
 
-void QtCreatorSysTrayPlugin::DestroySounds()
+void SigbuildPlugin::DestroySounds()
 {
 	delete mSoundSuccess;
 	mSoundSuccess = nullptr;
@@ -206,4 +206,4 @@ void QtCreatorSysTrayPlugin::DestroySounds()
 	mSoundFail = nullptr;
 }
 
-} // namespace QtCreatorSysTray
+} // namespace Sigbuild

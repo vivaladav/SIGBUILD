@@ -2,7 +2,7 @@
 
 #include <coreplugin/dialogs/ioptionspage.h>
 
-namespace QtCreatorSysTray
+namespace Sigbuild
 {
 
 class OptionsPageMainWidget;
@@ -28,4 +28,4 @@ private:
 	OptionsPageMainWidget * mWidget = nullptr;
 };
 
-} // namespace QtCreatorSysTray
+} // namespace Sigbuild

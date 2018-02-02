@@ -1,21 +1,21 @@
 QT += multimedia
 
-DEFINES += QTCREATORSYSTRAY_LIBRARY
+DEFINES += SIGBUILD_LIBRARY
 
-# QtCreatorSysTray files
+# SIGBUILD files
 
 SOURCES += \
     src/OptionsPageMain.cpp \
     src/OptionsPageMainWidget.cpp \
-    src/qtcreatorsystrayplugin.cpp \
-    src/Settings.cpp
+    src/Settings.cpp \
+    src/SigbuildPlugin.cpp
 
 HEADERS += \
     src/OptionsPageMain.h \
     src/OptionsPageMainWidget.h \
-    src/qtcreatorsystray_global.h \
-    src/qtcreatorsystrayplugin.h \
-    src/Settings.h
+    src/Settings.h \
+    src/SigbuildGlobal.h \
+    src/SigbuildPlugin.h
 
 # Qt Creator linking
 
@@ -43,7 +43,7 @@ USE_USER_DESTDIR = yes
 ###### <dirname>_dependencies.pri, where <dirname> is the name of the directory containing the
 ###### plugin's sources.
 
-QTC_PLUGIN_NAME = QtCreatorSysTray
+QTC_PLUGIN_NAME = SIGBUILD
 
 QTC_LIB_DEPENDS += \
     # nothing here at this time

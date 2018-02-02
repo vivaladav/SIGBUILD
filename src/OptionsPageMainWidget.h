@@ -5,7 +5,7 @@
 class QCheckBox;
 class QSpinBox;
 
-namespace QtCreatorSysTray
+namespace Sigbuild
 {
 
 class Settings;
@@ -34,4 +34,4 @@ private:
 	QSpinBox * mAudioMinBuildTime = nullptr;
 };
 
-} // namespace QtCreatorSysTray
+} // namespace Sigbuild

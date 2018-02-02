@@ -10,7 +10,7 @@
 #include <QSpinBox>
 #include <QVBoxLayout>
 
-namespace QtCreatorSysTray
+namespace Sigbuild
 {
 
 OptionsPageMainWidget::OptionsPageMainWidget(const Settings * settings)
@@ -145,4 +145,4 @@ Settings OptionsPageMainWidget::GenerateSettings() const
 	return settings;
 }
 
-} // namespace QtCreatorSysTray
+} // namespace Sigbuild
