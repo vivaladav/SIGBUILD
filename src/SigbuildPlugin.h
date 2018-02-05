@@ -4,9 +4,12 @@
 
 #include <extensionsystem/iplugin.h>
 
+class QIcon;
 class QMenu;
 class QSoundEffect;
 class QSystemTrayIcon;
+
+namespace ProjectExplorer { class Project; }
 
 namespace Sigbuild
 {
@@ -29,6 +32,7 @@ public:
 	ShutdownFlag aboutToShutdown() override;
 
 private slots:
+	void OnBuildStateChanged(ProjectExplorer::Project * pro);
 	void OnBuildFinished(bool res);
 
 	void OnSettingsChanged();
@@ -39,6 +43,21 @@ private:
 
 	void CreateSounds();
 	void DestroySounds();
+
+	enum class BuildState;
+	void SetBuildState(BuildState state);
+
+private:
+	enum class BuildState
+	{
+		BUILDING = 0,
+		FAILED,
+		OK,
+
+		NUM
+	};
+
+	static const int NUM_BUILD_STATES = static_cast<int>(BuildState::NUM);
 
 private:
 	Settings * mSettings = nullptr;
@@ -52,6 +71,10 @@ private:
 	QSoundEffect * mSoundFail = nullptr;
 
 	quint64 mTimeBuildStart = 0;
+
+	BuildState mBuildState;
+
+	QIcon * mIconStates[NUM_BUILD_STATES];
 };
 
 } // namespace Sigbuild

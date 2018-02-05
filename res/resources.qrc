@@ -3,5 +3,7 @@
         <file>audio/fail_short.wav</file>
         <file>audio/success_short.wav</file>
         <file>img/icon.png</file>
+        <file>img/icon_building.png</file>
+        <file>img/icon_fail.png</file>
     </qresource>
 </RCC>

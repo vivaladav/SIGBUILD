@@ -20,19 +20,30 @@
 
 namespace Sigbuild {
 
+// ==== CONSTRUCTOR / DESTRUCTOR ====
+
 SigbuildPlugin::SigbuildPlugin()
 	: mSettings(new Settings)
+	, mBuildState(BuildState::OK)
 {
+	mIconStates[static_cast<int>(BuildState::BUILDING)] = new QIcon(":/img/icon_building.png");
+	mIconStates[static_cast<int>(BuildState::FAILED)] = new QIcon(":/img/icon_fail.png");
+	mIconStates[static_cast<int>(BuildState::OK)] = new QIcon(":/img/icon.png");
 }
 
 SigbuildPlugin::~SigbuildPlugin()
 {
 	DestroySystrayIcon();
 
+	for(int i = 0; i < NUM_BUILD_STATES; ++i)
+		delete mIconStates[i];
+
 	DestroySounds();
 
 	delete mSettings;
 }
+
+// ==== PUBLIC FUNCTIONS ====
 
 bool SigbuildPlugin::initialize(const QStringList & arguments, QString * errorString)
 {
@@ -58,21 +69,11 @@ bool SigbuildPlugin::initialize(const QStringList & arguments, QString * errorSt
 	// -- SIGNALS HANDLING --
 	// build start
 	connect(ProjectExplorer::BuildManager::instance(), &ProjectExplorer::BuildManager::buildStateChanged,
-			this, [this](ProjectExplorer::Project * pro)
-	{
-		Q_UNUSED(pro)
-
-		// only log first state start time
-		if(0 == mTimeBuildStart)
-			mTimeBuildStart = QDateTime::currentMSecsSinceEpoch();
-	});
-
+			this, &SigbuildPlugin::OnBuildStateChanged);
 
 	// build end
 	connect(ProjectExplorer::BuildManager::instance(), &ProjectExplorer::BuildManager::buildQueueFinished,
 			this, &SigbuildPlugin::OnBuildFinished);
-
-
 
 	return true;
 }
@@ -85,6 +86,18 @@ void SigbuildPlugin::extensionsInitialized()
 ExtensionSystem::IPlugin::ShutdownFlag SigbuildPlugin::aboutToShutdown()
 {
 	return SynchronousShutdown;
+}
+
+// ==== PRIVATE SLOTS ====
+void SigbuildPlugin::OnBuildStateChanged(ProjectExplorer::Project * pro)
+{
+	Q_UNUSED(pro)
+
+	SetBuildState(BuildState::BUILDING);
+
+	// only log first state start time
+	if(0 == mTimeBuildStart)
+		mTimeBuildStart = QDateTime::currentMSecsSinceEpoch();
 }
 
 void SigbuildPlugin::OnBuildFinished(bool res)
@@ -109,6 +122,8 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 
 	if(res)
 	{
+		SetBuildState(BuildState::OK);
+
 		if(mTrayIcon && SHOW_MSG)
 			mTrayIcon->showMessage("Qt Creator", "build succesful! \\o/", QSystemTrayIcon::Information, NOTIFY_TIME);
 
@@ -120,6 +135,8 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 	}
 	else
 	{
+		SetBuildState(BuildState::FAILED);
+
 		if(mTrayIcon && SHOW_MSG)
 			mTrayIcon->showMessage("Qt Creator", "build failed! :-(", QSystemTrayIcon::Critical, NOTIFY_TIME);
 
@@ -158,11 +175,12 @@ void SigbuildPlugin::OnSettingsChanged()
 	}
 }
 
+// ==== PRIVATE FUNCTIONS ====
+
 void SigbuildPlugin::CreateSystrayIcon()
 {
 	// -- CREATE SYSTRAY ICON --
-	QIcon icon(":/img/icon.png");
-	mTrayIcon = new QSystemTrayIcon(icon);
+	mTrayIcon = new QSystemTrayIcon(*mIconStates[static_cast<int>(mBuildState)]);
 
 	// -- CREATE CONTEXT MENU --
 	mTrayMenu = new QMenu();
@@ -204,6 +222,14 @@ void SigbuildPlugin::DestroySounds()
 
 	delete mSoundFail;
 	mSoundFail = nullptr;
+}
+
+void SigbuildPlugin::SetBuildState(BuildState state)
+{
+	if(mTrayIcon && state != mBuildState)
+		mTrayIcon->setIcon(*mIconStates[static_cast<int>(state)]);
+
+	mBuildState = state;
 }
 
 } // namespace Sigbuild
