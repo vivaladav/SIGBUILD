@@ -125,7 +125,7 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 		SetBuildState(BuildState::OK);
 
 		if(mTrayIcon && SHOW_MSG)
-			mTrayIcon->showMessage("Qt Creator", "build succesful! \\o/", QSystemTrayIcon::Information, NOTIFY_TIME);
+			mTrayIcon->showMessage("SIGBUILD", "build succesful! \\o/", QSystemTrayIcon::Information, NOTIFY_TIME);
 
 		if(mSoundSuccess && PLAY_AUDIO)
 		{
@@ -138,7 +138,7 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 		SetBuildState(BuildState::FAILED);
 
 		if(mTrayIcon && SHOW_MSG)
-			mTrayIcon->showMessage("Qt Creator", "build failed! :-(", QSystemTrayIcon::Critical, NOTIFY_TIME);
+			mTrayIcon->showMessage("SIGBUILD", "build failed! :-(", QSystemTrayIcon::Critical, NOTIFY_TIME);
 
 		if(mSoundFail && PLAY_AUDIO)
 		{
@@ -181,6 +181,7 @@ void SigbuildPlugin::CreateSystrayIcon()
 {
 	// -- CREATE SYSTRAY ICON --
 	mTrayIcon = new QSystemTrayIcon(*mIconStates[static_cast<int>(mBuildState)]);
+	mTrayIcon->setToolTip("SIGBUILD");
 
 	// -- CREATE CONTEXT MENU --
 	mTrayMenu = new QMenu();
