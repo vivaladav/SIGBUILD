@@ -103,8 +103,13 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 {
 	QMainWindow * window = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
 
-	// build time in seconds
-	int buildTime = (QDateTime::currentMSecsSinceEpoch() - mTimeBuildStart) / 1000;
+	// build time
+	const int BUILD_TIME_SECS = roundf((QDateTime::currentMSecsSinceEpoch() - mTimeBuildStart) / 1000.0f);
+	QTime buildTime(0, 0, 0, 0);
+	buildTime = buildTime.addSecs(BUILD_TIME_SECS);
+	const QString BUILD_TIME_STR = buildTime.toString("hh:mm:ss");
+
+	// reset build timer
 	mTimeBuildStart = 0;
 
 	// notification time in milliseconds
@@ -113,18 +118,21 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 	const bool SHOW_MSG		=	mSettings->IsSystrayEnabled() &&
 								mSettings->IsSystrayNotificationEnabled() &&
 								(mSettings->ShowSystrayNotificationWhenActive() || !window->isActiveWindow()) &&
-								buildTime >= mSettings->GetSystrayMinBuildTime();
+								BUILD_TIME_SECS >= mSettings->GetSystrayMinBuildTime();
 
 	const bool PLAY_AUDIO	=	mSettings->IsAudioEnabled() &&
 								(mSettings->PlayAudioNotificationWhenActive() || !window->isActiveWindow()) &&
-								buildTime >= mSettings->GetAudioMinBuildtime();
+								BUILD_TIME_SECS >= mSettings->GetAudioMinBuildtime();
 
 	if(res)
 	{
 		SetBuildState(BuildState::OK);
 
 		if(mTrayIcon && SHOW_MSG)
-			mTrayIcon->showMessage("SIGBUILD", "build succesful! \\o/", QSystemTrayIcon::Information, NOTIFY_TIME);
+		{
+			const QString MSG = QString("build succesful! \\o/\n\nBUILD TIME: %1").arg(BUILD_TIME_STR);
+			mTrayIcon->showMessage("SIGBUILD", MSG, QSystemTrayIcon::Information, NOTIFY_TIME);
+		}
 
 		if(mSoundSuccess && PLAY_AUDIO)
 		{
@@ -137,7 +145,10 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 		SetBuildState(BuildState::FAILED);
 
 		if(mTrayIcon && SHOW_MSG)
-			mTrayIcon->showMessage("SIGBUILD", "build failed! :-(", QSystemTrayIcon::Critical, NOTIFY_TIME);
+		{
+			const QString MSG = QString("build failed! :-(\n\nBUILD TIME: %1").arg(BUILD_TIME_STR);
+			mTrayIcon->showMessage("SIGBUILD", MSG, QSystemTrayIcon::Critical, NOTIFY_TIME);
+		}
 
 		if(mSoundFail && PLAY_AUDIO)
 		{
