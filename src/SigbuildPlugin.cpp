@@ -53,8 +53,7 @@ bool SigbuildPlugin::initialize(const QStringList & arguments, QString * errorSt
 	// -- OPTIONS PAGE --
 	mSettings->Load();
 
-	mOptionsPage = new OptionsPageMain(mSettings);
-	addAutoReleasedObject(mOptionsPage);
+	mOptionsPage = new OptionsPageMain(mSettings, this);
 
 	connect(mOptionsPage, &OptionsPageMain::SettingsChanged, this, &SigbuildPlugin::OnSettingsChanged);
 
