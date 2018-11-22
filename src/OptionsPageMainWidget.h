@@ -3,6 +3,7 @@
 #include <QWidget>
 
 class QCheckBox;
+class QLabel;
 class QSpinBox;
 
 namespace Sigbuild
@@ -19,19 +20,27 @@ public:
 
 	Settings GenerateSettings() const;
 
+private slots:
+	void OnSystrayStateChanged(int state);
+	void OnAudioStateChanged(int state);
+
 private:
 	// -- SYSTRAY BOX --
 	QCheckBox * mSystrayEnabled = nullptr;
 	QCheckBox * mSystrayNotifyEnabled = nullptr;
 	QCheckBox * mSystrayNotifyWhenActive = nullptr;
 	QSpinBox * mSystrayMinBuildTime = nullptr;
+	QLabel * mSystrayMinBuildTimeLabel = nullptr;
 	QSpinBox * mSystrayNotifyTime = nullptr;
+	QLabel * mSystrayNotifyTimeLabel = nullptr;
 
 	// -- AUDIO BOX --
 	QCheckBox * mAudioEnabled = nullptr;
 	QCheckBox * mAudioNotifyWhenActive = nullptr;
 	QSpinBox * mAudioVolume = nullptr;
+	QLabel * mAudioVolumeLabel = nullptr;
 	QSpinBox * mAudioMinBuildTime = nullptr;
+	QLabel * mAudioMinBuildTimeLabel = nullptr;
 };
 
 } // namespace Sigbuild
