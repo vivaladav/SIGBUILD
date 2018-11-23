@@ -115,7 +115,8 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 	// notification time in milliseconds
 	const int NOTIFY_TIME = mSettings->GetSystrayNotificationTime() * 1000;
 
-	const bool SHOW_MSG		=	mSettings->IsSystrayEnabled() &&
+	const bool SHOW_MSG		=	mTrayIcon &&
+								mSettings->IsSystrayEnabled() &&
 								mSettings->IsSystrayNotificationEnabled() &&
 								(mSettings->ShowSystrayNotificationWhenActive() || !window->isActiveWindow()) &&
 								BUILD_TIME_SECS >= mSettings->GetSystrayMinBuildTime();
@@ -128,7 +129,7 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 	{
 		SetBuildState(BuildState::OK);
 
-		if(mTrayIcon && SHOW_MSG)
+		if(SHOW_MSG)
 		{
 			const QString MSG = QString("build succesful! \\o/\n\nBUILD TIME: %1").arg(BUILD_TIME_STR);
 			mTrayIcon->showMessage("SIGBUILD", MSG, QSystemTrayIcon::Information, NOTIFY_TIME);
@@ -144,7 +145,7 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 	{
 		SetBuildState(BuildState::FAILED);
 
-		if(mTrayIcon && SHOW_MSG)
+		if(SHOW_MSG)
 		{
 			const QString MSG = QString("build failed! :-(\n\nBUILD TIME: %1").arg(BUILD_TIME_STR);
 			mTrayIcon->showMessage("SIGBUILD", MSG, QSystemTrayIcon::Critical, NOTIFY_TIME);
