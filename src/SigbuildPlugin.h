@@ -4,6 +4,7 @@
 
 #include <extensionsystem/iplugin.h>
 
+class QAction;
 class QIcon;
 class QMenu;
 class QSoundEffect;
@@ -37,6 +38,8 @@ private slots:
 
 	void OnSettingsChanged();
 
+	void OnActionShowLastBuild();
+
 private:
 	void CreateSystrayIcon();
 	void DestroySystrayIcon();
@@ -60,11 +63,14 @@ private:
 	static const int NUM_BUILD_STATES = static_cast<int>(BuildState::NUM);
 
 private:
+	QIcon * mIconStates[NUM_BUILD_STATES];
+
 	Settings * mSettings = nullptr;
 
 	OptionsPageMain * mOptionsPage = nullptr;
 
 	QMenu * mTrayMenu = nullptr;
+	QAction * mActionShowLastBuild = nullptr;
 	QSystemTrayIcon * mTrayIcon  = nullptr;
 
 	QSoundEffect * mSoundSuccess = nullptr;
@@ -72,9 +78,9 @@ private:
 
 	quint64 mTimeBuildStart = 0;
 
-	BuildState mBuildState;
+	BuildState mBuildState = BuildState::OK;
 
-	QIcon * mIconStates[NUM_BUILD_STATES];
+	QString mMsgNotification;
 };
 
 } // namespace Sigbuild

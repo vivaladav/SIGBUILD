@@ -17,6 +17,7 @@
 #include <QSoundEffect>
 #include <QSound>
 #include <QSystemTrayIcon>
+#include <QTimer>
 
 namespace Sigbuild {
 
@@ -24,7 +25,6 @@ namespace Sigbuild {
 
 SigbuildPlugin::SigbuildPlugin()
 	: mSettings(new Settings)
-	, mBuildState(BuildState::OK)
 {
 	mIconStates[static_cast<int>(BuildState::BUILDING)] = new QIcon(":/img/icon_building.png");
 	mIconStates[static_cast<int>(BuildState::FAILED)] = new QIcon(":/img/icon_fail.png");
@@ -96,7 +96,13 @@ void SigbuildPlugin::OnBuildStateChanged(ProjectExplorer::Project * pro)
 
 	// only log first state start time
 	if(0 == mTimeBuildStart)
+	{
 		mTimeBuildStart = QDateTime::currentMSecsSinceEpoch();
+
+		// disable "last build" action while building
+		if(mTrayIcon)
+			mActionShowLastBuild->setEnabled(false);
+	}
 }
 
 void SigbuildPlugin::OnBuildFinished(bool res)
@@ -113,7 +119,7 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 	mTimeBuildStart = 0;
 
 	// notification time in milliseconds
-	const int NOTIFY_TIME = mSettings->GetSystrayNotificationTime() * 1000;
+	const int NOTIFY_TIME_MS =	mSettings->GetSystrayNotificationTime() * 1000;
 
 	const bool SHOW_MSG		=	mTrayIcon &&
 								mSettings->IsSystrayEnabled() &&
@@ -131,8 +137,8 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 
 		if(SHOW_MSG)
 		{
-			const QString MSG = QString("build succesful! \\o/\n\nBUILD TIME: %1").arg(BUILD_TIME_STR);
-			mTrayIcon->showMessage("SIGBUILD", MSG, QSystemTrayIcon::Information, NOTIFY_TIME);
+			mMsgNotification = QString("build succesful! \\o/\n\nBUILD TIME: %1").arg(BUILD_TIME_STR);
+			mTrayIcon->showMessage("SIGBUILD", mMsgNotification, QSystemTrayIcon::Information, NOTIFY_TIME_MS);
 		}
 
 		if(mSoundSuccess && PLAY_AUDIO)
@@ -147,8 +153,8 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 
 		if(SHOW_MSG)
 		{
-			const QString MSG = QString("build failed! :-(\n\nBUILD TIME: %1").arg(BUILD_TIME_STR);
-			mTrayIcon->showMessage("SIGBUILD", MSG, QSystemTrayIcon::Critical, NOTIFY_TIME);
+			mMsgNotification = QString("build failed! :-(\n\nBUILD TIME: %1").arg(BUILD_TIME_STR);
+			mTrayIcon->showMessage("SIGBUILD", mMsgNotification, QSystemTrayIcon::Critical, NOTIFY_TIME_MS);
 		}
 
 		if(mSoundFail && PLAY_AUDIO)
@@ -156,6 +162,15 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 			mSoundFail->setVolume(mSettings->GetAudioVolumeAsReal());
 			mSoundFail->play();
 		}
+	}
+
+	// re-enable "last build" action after showing notification
+	if(mTrayIcon)
+	{
+		QTimer::singleShot(NOTIFY_TIME_MS, [this]
+		{
+			mActionShowLastBuild->setEnabled(true);
+		});
 	}
 }
 
@@ -186,6 +201,16 @@ void SigbuildPlugin::OnSettingsChanged()
 	}
 }
 
+void SigbuildPlugin::OnActionShowLastBuild()
+{
+	const QSystemTrayIcon::MessageIcon ICON =	BuildState::OK == mBuildState ?
+												QSystemTrayIcon::Information :
+												QSystemTrayIcon::Critical;
+	const int NOTIFY_TIME_MS = mSettings->GetSystrayNotificationTime() * 1000;
+
+	mTrayIcon->showMessage("SIGBUILD", mMsgNotification, ICON, NOTIFY_TIME_MS);
+}
+
 // ==== PRIVATE FUNCTIONS ====
 
 void SigbuildPlugin::CreateSystrayIcon()
@@ -197,9 +222,16 @@ void SigbuildPlugin::CreateSystrayIcon()
 	// -- CREATE CONTEXT MENU --
 	mTrayMenu = new QMenu();
 
-	QAction * actionQuit = new QAction("E&xit", mTrayMenu);
-	connect(actionQuit, &QAction::triggered, qApp, &QCoreApplication::quit);
-	mTrayMenu->addAction(actionQuit);
+	mActionShowLastBuild = new QAction("Last build", mTrayMenu);
+	mActionShowLastBuild->setEnabled(false);
+	connect(mActionShowLastBuild, &QAction::triggered, this, &SigbuildPlugin::OnActionShowLastBuild);
+	mTrayMenu->addAction(mActionShowLastBuild);
+
+	mTrayMenu->addSeparator();
+
+	QAction * action = new QAction("Exit", mTrayMenu);
+	connect(action, &QAction::triggered, qApp, &QCoreApplication::quit);
+	mTrayMenu->addAction(action);
 
 	mTrayIcon->setContextMenu(mTrayMenu);
 
