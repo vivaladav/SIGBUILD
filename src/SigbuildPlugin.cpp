@@ -164,13 +164,18 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 		}
 	}
 
-	// re-enable "last build" action after showing notification
+	// re-enable "last build" action after showing notification or immediately if not showing them
 	if(mTrayIcon)
 	{
-		QTimer::singleShot(NOTIFY_TIME_MS, [this]
+		if(mSettings->IsSystrayNotificationEnabled())
 		{
+			QTimer::singleShot(NOTIFY_TIME_MS, [this]
+			{
+				mActionShowLastBuild->setEnabled(true);
+			});
+		}
+		else
 			mActionShowLastBuild->setEnabled(true);
-		});
 	}
 }
 
