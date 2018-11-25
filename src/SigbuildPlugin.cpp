@@ -222,6 +222,7 @@ void SigbuildPlugin::CreateSystrayIcon()
 	// -- CREATE CONTEXT MENU --
 	mTrayMenu = new QMenu();
 
+	// SHOW LAST BUILD
 	mActionShowLastBuild = new QAction("Last build", mTrayMenu);
 	mActionShowLastBuild->setEnabled(false);
 	connect(mActionShowLastBuild, &QAction::triggered, this, &SigbuildPlugin::OnActionShowLastBuild);
@@ -229,8 +230,9 @@ void SigbuildPlugin::CreateSystrayIcon()
 
 	mTrayMenu->addSeparator();
 
+	// EXIT
 	QAction * action = new QAction("Exit", mTrayMenu);
-	connect(action, &QAction::triggered, qApp, &QCoreApplication::quit);
+	connect(action, &QAction::triggered, Core::ICore::mainWindow(), &QMainWindow::close);
 	mTrayMenu->addAction(action);
 
 	mTrayIcon->setContextMenu(mTrayMenu);
