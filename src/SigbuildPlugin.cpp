@@ -223,11 +223,19 @@ void SigbuildPlugin::OnActionShowLastBuild()
 void SigbuildPlugin::OnActionToggleNotifySystray(bool checked)
 {
 	mSettings->SetSystrayNotificationEnabled(checked);
+
+	mSettings->Save();
+
+	OnSettingsChanged();
 }
 
 void SigbuildPlugin::OnActionToggleNotifyAudio(bool checked)
 {
 	mSettings->SetAudioEnabled(checked);
+
+	mSettings->Save();
+
+	OnSettingsChanged();
 }
 
 // ==== PRIVATE FUNCTIONS ====
