@@ -221,6 +221,7 @@ void SigbuildPlugin::CreateSystrayIcon()
 
 	// -- CREATE CONTEXT MENU --
 	mTrayMenu = new QMenu();
+	mTrayIcon->setContextMenu(mTrayMenu);
 
 	// SHOW LAST BUILD
 	mActionShowLastBuild = new QAction("Last build", mTrayMenu);
@@ -228,14 +229,32 @@ void SigbuildPlugin::CreateSystrayIcon()
 	connect(mActionShowLastBuild, &QAction::triggered, this, &SigbuildPlugin::OnActionShowLastBuild);
 	mTrayMenu->addAction(mActionShowLastBuild);
 
+	// -----
+	mTrayMenu->addSeparator();
+
+	// TOGGLE SYS NOTIFICATION
+	const QString STR_ACT_TOGGLE1 =	mSettings->IsSystrayNotificationEnabled()
+									? QString("Disable systray notification")
+									: QString("Enable systray notification");
+
+	mActionToggleNotifySystray = new QAction(STR_ACT_TOGGLE1, mTrayMenu);
+	mTrayMenu->addAction(mActionToggleNotifySystray);
+
+	// TOGGLE AUDIO NOTIFICATION
+	const QString STR_ACT_TOGGLE2 =	mSettings->IsAudioEnabled()
+									? QString("Disable audio notification")
+									: QString("Enable audio notification");
+
+	mActionToggleNotifySystray = new QAction(STR_ACT_TOGGLE2, mTrayMenu);
+	mTrayMenu->addAction(mActionToggleNotifySystray);
+
+	// -----
 	mTrayMenu->addSeparator();
 
 	// EXIT
 	QAction * action = new QAction("Exit", mTrayMenu);
 	connect(action, &QAction::triggered, Core::ICore::mainWindow(), &QMainWindow::close);
 	mTrayMenu->addAction(action);
-
-	mTrayIcon->setContextMenu(mTrayMenu);
 
 	// SHOW ICON
 	mTrayIcon->show();

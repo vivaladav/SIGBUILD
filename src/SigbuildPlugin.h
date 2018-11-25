@@ -71,6 +71,8 @@ private:
 
 	QMenu * mTrayMenu = nullptr;
 	QAction * mActionShowLastBuild = nullptr;
+	QAction * mActionToggleNotifySystray = nullptr;
+	QAction * mActionToggleNotifyAudio = nullptr;
 	QSystemTrayIcon * mTrayIcon  = nullptr;
 
 	QSoundEffect * mSoundSuccess = nullptr;
