@@ -39,6 +39,8 @@ private slots:
 	void OnSettingsChanged();
 
 	void OnActionShowLastBuild();
+	void OnActionToggleNotifySystray(bool checked);
+	void OnActionToggleNotifyAudio(bool checked);
 
 private:
 	void CreateSystrayIcon();
