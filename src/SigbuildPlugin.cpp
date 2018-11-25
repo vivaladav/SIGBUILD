@@ -181,6 +181,8 @@ void SigbuildPlugin::OnSettingsChanged()
 	{
 		if(!mTrayIcon)
 			CreateSystrayIcon();
+
+		mActionToggleNotifySystray->setChecked(mSettings->IsSystrayNotificationEnabled());
 	}
 	else
 	{
@@ -189,6 +191,8 @@ void SigbuildPlugin::OnSettingsChanged()
 	}
 
 	// -- AUDIO --
+	mActionToggleNotifyAudio->setChecked(mSettings->IsAudioEnabled());
+
 	if(mSettings->IsAudioEnabled())
 	{
 		if(!mSoundFail && !mSoundSuccess)
