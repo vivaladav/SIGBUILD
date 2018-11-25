@@ -48,27 +48,18 @@ void Settings::Load()
 
 	// -- SYSTRAY --
 	mOptSystrayEnabled = globalSettings->value(	OPT_SYSTRAY_ENABLED, DEF_SYSTRAY_ENABLED).toBool();
-
 	mOptSystrayNotifyEnabled = globalSettings->value(OPT_SYSTRAY_NOTIFY_ENABLED, DEF_SYSTRAY_NOTIFY_ENABLED).toBool();
-
 	mOptSystrayNotifyWhenActive	= globalSettings->value(OPT_SYSTRAY_NOTIFY_WHEN_ACTIVE,
 														DEF_SYSTRAY_NOTIFY_WHEN_ACTIVE).toBool();
-
 	mOptSystrayMinBuildTime = globalSettings->value(OPT_SYSTRAY_MIN_BUILD_TIME, DEF_SYSTRAY_MIN_BUILD_TIME).toInt();
-
 	mOptSystrayNotifyTime = globalSettings->value(OPT_SYSTRAY_NOTIFY_TIME, DEF_SYSTRAY_NOTIFY_TIME).toInt();
 
 	// -- AUDIO --
 	mOptAudioEnabled = globalSettings->value(OPT_AUDIO_ENABLED, DEF_AUDIO_ENABLED).toBool();
-
 	mOptAudioNotifyWhenActive = globalSettings->value(	OPT_AUDIO_NOTIFY_WHEN_ACTIVE,
 														DEF_AUDIO_NOTIFY_WHEN_ACTIVE).toBool();
-
 	mOptAudioVolume = globalSettings->value(OPT_AUDIO_VOLUME, DEF_AUDIO_VOLUME).toInt();
-
 	mOptAudioMinBuildTime = globalSettings->value(OPT_AUDIO_MIN_BUILD_TIME, DEF_AUDIO_MIN_BUILD_TIME).toInt();
-
-
 
 	globalSettings->endGroup();
 }
@@ -81,22 +72,15 @@ void Settings::Save()
 
 	// -- SYSTRAY --
 	globalSettings->setValue(OPT_SYSTRAY_ENABLED, mOptSystrayEnabled);
-
 	globalSettings->setValue(OPT_SYSTRAY_NOTIFY_ENABLED, mOptSystrayNotifyEnabled);
-
-	globalSettings->setValue(OPT_SYSTRAY_NOTIFY_ENABLED, mOptSystrayNotifyWhenActive);
-
+	globalSettings->setValue(OPT_SYSTRAY_NOTIFY_WHEN_ACTIVE, mOptSystrayNotifyWhenActive);
 	globalSettings->setValue(OPT_SYSTRAY_MIN_BUILD_TIME, mOptSystrayMinBuildTime);
-
 	globalSettings->setValue(OPT_SYSTRAY_NOTIFY_TIME, mOptSystrayNotifyTime);
 
 	// -- AUDIO --
 	globalSettings->setValue(OPT_AUDIO_ENABLED, mOptAudioEnabled);
-
 	globalSettings->setValue(OPT_AUDIO_NOTIFY_WHEN_ACTIVE, mOptAudioNotifyWhenActive);
-
 	globalSettings->setValue(OPT_AUDIO_VOLUME, mOptAudioVolume);
-
 	globalSettings->setValue(OPT_AUDIO_MIN_BUILD_TIME, mOptAudioMinBuildTime);
 
 	globalSettings->endGroup();
