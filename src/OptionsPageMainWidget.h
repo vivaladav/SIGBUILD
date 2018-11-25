@@ -21,8 +21,8 @@ public:
 	Settings GenerateSettings() const;
 
 private slots:
-	void OnSystrayStateChanged(int state);
-	void OnAudioStateChanged(int state);
+	void OnSystrayStateChanged();
+	void OnAudioStateChanged();
 
 private:
 	// -- SYSTRAY BOX --
