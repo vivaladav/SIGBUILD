@@ -92,14 +92,14 @@ ExtensionSystem::IPlugin::ShutdownFlag SigbuildPlugin::aboutToShutdown()
 // ==== PRIVATE SLOTS ====
 void SigbuildPlugin::OnBuildStateChanged(ProjectExplorer::Project * pro)
 {
-	Q_UNUSED(pro)
-
 	SetBuildState(BuildState::BUILDING);
 
 	// only log first state start time
 	if(0 == mTimeBuildStart)
 	{
 		mTimeBuildStart = QDateTime::currentMSecsSinceEpoch();
+
+		mCurrentProject = pro->displayName();
 
 		// disable "last build" action while building
 		if(mTrayIcon)
@@ -139,7 +139,7 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 
 		if(SHOW_MSG)
 		{
-			mMsgNotification = QString("build succesful! \\o/\n\nBUILD TIME: %1").arg(BUILD_TIME_STR);
+			mMsgNotification = QString("build succesful! \\o/\n\nPROJECT: %1\n\nBUILD TIME: %2").arg(mCurrentProject).arg(BUILD_TIME_STR);
 			mTrayIcon->showMessage("SIGBUILD", mMsgNotification, QSystemTrayIcon::Information, NOTIFY_TIME_MS);
 		}
 
@@ -155,7 +155,7 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 
 		if(SHOW_MSG)
 		{
-			mMsgNotification = QString("build failed! :-(\n\nBUILD TIME: %1").arg(BUILD_TIME_STR);
+			mMsgNotification = QString("build failed! :-(\n\nPROJECT: %1\n\nBUILD TIME: %2").arg(mCurrentProject).arg(BUILD_TIME_STR);
 			mTrayIcon->showMessage("SIGBUILD", mMsgNotification, QSystemTrayIcon::Critical, NOTIFY_TIME_MS);
 		}
 

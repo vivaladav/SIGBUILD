@@ -85,6 +85,7 @@ private:
 	BuildState mBuildState = BuildState::OK;
 
 	QString mMsgNotification;
+	QString mCurrentProject;
 };
 
 } // namespace Sigbuild
