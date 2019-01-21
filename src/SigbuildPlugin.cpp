@@ -19,6 +19,8 @@
 #include <QSystemTrayIcon>
 #include <QTimer>
 
+#include <cmath>
+
 namespace Sigbuild {
 
 // ==== CONSTRUCTOR / DESTRUCTOR ====
