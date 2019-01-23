@@ -9,6 +9,7 @@ class QIcon;
 class QMenu;
 class QSoundEffect;
 class QSystemTrayIcon;
+class QTimer;
 
 namespace ProjectExplorer { class Project; }
 
@@ -42,6 +43,8 @@ private slots:
 	void OnActionToggleNotifySystray(bool checked);
 	void OnActionToggleNotifyAudio(bool checked);
 
+	void OnBuildUpdate();
+
 private:
 	void CreateSystrayIcon();
 	void DestroySystrayIcon();
@@ -73,6 +76,7 @@ private:
 
 	QMenu * mTrayMenu = nullptr;
 	QAction * mActionShowLastBuild = nullptr;
+    QAction * mActionCurrentBuild = nullptr;
 	QAction * mActionToggleNotifySystray = nullptr;
 	QAction * mActionToggleNotifyAudio = nullptr;
 	QSystemTrayIcon * mTrayIcon  = nullptr;
@@ -86,6 +90,8 @@ private:
 
 	QString mMsgNotification;
 	QString mCurrentProject;
+
+	QTimer * mTimerBuildUpdater = nullptr;
 };
 
 } // namespace Sigbuild

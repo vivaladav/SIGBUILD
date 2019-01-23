@@ -103,7 +103,14 @@ void SigbuildPlugin::OnBuildStateChanged(ProjectExplorer::Project * pro)
 
 		// disable "last build" action while building
 		if(mTrayIcon)
+		{
 			mActionShowLastBuild->setEnabled(false);
+
+			mTimerBuildUpdater = new QTimer(this);
+			mTimerBuildUpdater->setInterval(1000);
+			connect(mTimerBuildUpdater, &QTimer::timeout, this, &SigbuildPlugin::OnBuildUpdate);
+			mTimerBuildUpdater->start();
+		}
 	}
 }
 
@@ -240,6 +247,11 @@ void SigbuildPlugin::OnActionToggleNotifyAudio(bool checked)
 	OnSettingsChanged();
 }
 
+void SigbuildPlugin::OnBuildUpdate()
+{
+	qDebug() << "SigbuildPlugin::OnBuildUpdate";
+}
+
 // ==== PRIVATE FUNCTIONS ====
 
 void SigbuildPlugin::CreateSystrayIcon()
@@ -252,8 +264,13 @@ void SigbuildPlugin::CreateSystrayIcon()
 	mTrayMenu = new QMenu();
 	mTrayIcon->setContextMenu(mTrayMenu);
 
+	// CURRENT BUILD
+	mActionCurrentBuild = new QAction("current build");
+	mActionCurrentBuild->setEnabled(false);
+	mTrayMenu->addAction(mActionCurrentBuild);
+
 	// SHOW LAST BUILD
-	mActionShowLastBuild = new QAction("Last build", mTrayMenu);
+	mActionShowLastBuild = new QAction("Last build");
 	mActionShowLastBuild->setEnabled(false);
 	mTrayMenu->addAction(mActionShowLastBuild);
 
@@ -263,7 +280,7 @@ void SigbuildPlugin::CreateSystrayIcon()
 	mTrayMenu->addSeparator();
 
 	// TOGGLE SYSTAY NOTIFICATION
-	mActionToggleNotifySystray = new QAction("Systray notification", mTrayMenu);
+	mActionToggleNotifySystray = new QAction("Systray notification");
 	mActionToggleNotifySystray->setCheckable(true);
 	mActionToggleNotifySystray->setChecked(mSettings->IsSystrayNotificationEnabled());
 	mTrayMenu->addAction(mActionToggleNotifySystray);
@@ -271,7 +288,7 @@ void SigbuildPlugin::CreateSystrayIcon()
 	connect(mActionToggleNotifySystray, &QAction::toggled, this, &SigbuildPlugin::OnActionToggleNotifySystray);
 
 	// TOGGLE AUDIO NOTIFICATION
-	mActionToggleNotifyAudio = new QAction("Audio notification", mTrayMenu);
+	mActionToggleNotifyAudio = new QAction("Audio notification");
 	mActionToggleNotifyAudio->setCheckable(true);
 	mActionToggleNotifyAudio->setChecked(mSettings->IsAudioEnabled());
 	mTrayMenu->addAction(mActionToggleNotifyAudio);
@@ -282,7 +299,7 @@ void SigbuildPlugin::CreateSystrayIcon()
 	mTrayMenu->addSeparator();
 
 	// EXIT
-	QAction * action = new QAction("Exit", mTrayMenu);
+	QAction * action = new QAction("Exit");
 	mTrayMenu->addAction(action);
 
 	connect(action, &QAction::triggered, Core::ICore::mainWindow(), &QMainWindow::close);
