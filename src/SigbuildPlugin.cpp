@@ -141,7 +141,7 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 
 		if(SHOW_MSG)
 		{
-			mMsgNotification = QString("build succesful! \\o/\n\nPROJECT: %1\n\nBUILD TIME: %2").arg(mCurrentProject).arg(BUILD_TIME_STR);
+			mMsgNotification = QString("build succesful! \\o/\n\nBUILD TIME: %2").arg(BUILD_TIME_STR);
 			mTrayIcon->showMessage("SIGBUILD", mMsgNotification, QSystemTrayIcon::Information, NOTIFY_TIME_MS);
 		}
 
@@ -157,7 +157,7 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 
 		if(SHOW_MSG)
 		{
-			mMsgNotification = QString("build failed! :-(\n\nPROJECT: %1\n\nBUILD TIME: %2").arg(mCurrentProject).arg(BUILD_TIME_STR);
+			mMsgNotification = QString("build failed! :-(\n\nBUILD TIME: %2").arg(BUILD_TIME_STR);
 			mTrayIcon->showMessage("SIGBUILD", mMsgNotification, QSystemTrayIcon::Critical, NOTIFY_TIME_MS);
 		}
 
