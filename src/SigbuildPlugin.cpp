@@ -106,9 +106,6 @@ void SigbuildPlugin::OnBuildStateChanged(ProjectExplorer::Project * pro)
 		{
 			mActionShowLastBuild->setEnabled(false);
 
-			mTimerBuildUpdater = new QTimer(this);
-			mTimerBuildUpdater->setInterval(1000);
-			connect(mTimerBuildUpdater, &QTimer::timeout, this, &SigbuildPlugin::OnBuildUpdate);
 			mTimerBuildUpdater->start();
 		}
 	}
@@ -119,12 +116,10 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 	QMainWindow * window = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
 
 	// build time
-	const int BUILD_TIME_SECS = roundf((QDateTime::currentMSecsSinceEpoch() - mTimeBuildStart) / 1000.0f);
-	QTime buildTime(0, 0, 0, 0);
-	buildTime = buildTime.addSecs(BUILD_TIME_SECS);
-	const QString BUILD_TIME_STR = buildTime.toString("hh:mm:ss");
+	const int BUILD_TIME_SECS = GetBuildTimeSecs();
+	const QString BUILD_TIME_STR = GetBuildTimeStr(BUILD_TIME_SECS);
 
-	// reset build timer
+	// reset build time
 	mTimeBuildStart = 0;
 
 	// notification time in milliseconds
@@ -176,6 +171,10 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 	// re-enable "last build" action after showing notification or immediately if not showing them
 	if(mTrayIcon)
 	{
+		// restore default tooltip
+		mTimerBuildUpdater->stop();
+		mTrayIcon->setToolTip("SIGBUILD");
+
 		if(mSettings->IsSystrayNotificationEnabled())
 		{
 			QTimer::singleShot(NOTIFY_TIME_MS, [this]
@@ -249,7 +248,11 @@ void SigbuildPlugin::OnActionToggleNotifyAudio(bool checked)
 
 void SigbuildPlugin::OnBuildUpdate()
 {
-	qDebug() << "SigbuildPlugin::OnBuildUpdate";
+	if(!mTrayIcon)
+		return ;
+
+	const int BUILD_TIME_SECS = GetBuildTimeSecs();
+	mTrayIcon->setToolTip(GetBuildTimeStr(BUILD_TIME_SECS));
 }
 
 // ==== PRIVATE FUNCTIONS ====
@@ -263,11 +266,6 @@ void SigbuildPlugin::CreateSystrayIcon()
 	// -- CREATE CONTEXT MENU --
 	mTrayMenu = new QMenu();
 	mTrayIcon->setContextMenu(mTrayMenu);
-
-	// CURRENT BUILD
-	mActionCurrentBuild = new QAction("current build");
-	mActionCurrentBuild->setEnabled(false);
-	mTrayMenu->addAction(mActionCurrentBuild);
 
 	// SHOW LAST BUILD
 	mActionShowLastBuild = new QAction("Last build");
@@ -306,10 +304,19 @@ void SigbuildPlugin::CreateSystrayIcon()
 
 	// SHOW ICON
 	mTrayIcon->show();
+
+	// -- create build update timer --
+	mTimerBuildUpdater = new QTimer;
+	mTimerBuildUpdater->setInterval(1000);
+	connect(mTimerBuildUpdater, &QTimer::timeout, this, &SigbuildPlugin::OnBuildUpdate);
 }
 
 void SigbuildPlugin::DestroySystrayIcon()
 {
+	mTimerBuildUpdater->stop();
+	delete mTimerBuildUpdater;
+	mTimerBuildUpdater = nullptr;
+
 	delete mTrayMenu;
 	mTrayMenu = nullptr;
 
@@ -343,6 +350,18 @@ void SigbuildPlugin::SetBuildState(BuildState state)
 		mTrayIcon->setIcon(*mIconStates[static_cast<int>(state)]);
 
 	mBuildState = state;
+}
+
+int SigbuildPlugin::GetBuildTimeSecs() const
+{
+	return roundf((QDateTime::currentMSecsSinceEpoch() - mTimeBuildStart) / 1000.0f);
+}
+
+QString SigbuildPlugin::GetBuildTimeStr(const int buildTimeSecs) const
+{
+	QTime buildTime(0, 0, 0, 0);
+	buildTime = buildTime.addSecs(buildTimeSecs);
+	return buildTime.toString("hh:mm:ss");
 }
 
 } // namespace Sigbuild

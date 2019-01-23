@@ -55,6 +55,9 @@ private:
 	enum class BuildState;
 	void SetBuildState(BuildState state);
 
+	int GetBuildTimeSecs() const;
+	QString GetBuildTimeStr(const int buildTimeSecs) const;
+
 private:
 	enum class BuildState
 	{
@@ -76,7 +79,6 @@ private:
 
 	QMenu * mTrayMenu = nullptr;
 	QAction * mActionShowLastBuild = nullptr;
-    QAction * mActionCurrentBuild = nullptr;
 	QAction * mActionToggleNotifySystray = nullptr;
 	QAction * mActionToggleNotifyAudio = nullptr;
 	QSystemTrayIcon * mTrayIcon  = nullptr;
