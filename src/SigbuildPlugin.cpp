@@ -231,6 +231,9 @@ void SigbuildPlugin::OnActionShowLastBuild()
 	d->open();
 	// this to not let the user resize the dialog
 	d->setFixedSize(d->size());
+
+	// schedule self-destructionwhen closing
+	connect(d, &QDialog::finished, d, &QDialog::deleteLater);
 }
 
 void SigbuildPlugin::OnActionToggleNotifySystray(bool checked)
