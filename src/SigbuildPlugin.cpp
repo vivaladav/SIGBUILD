@@ -1,5 +1,6 @@
 #include "SigbuildPlugin.h"
 
+#include "DialogLastBuild.h"
 #include "OptionsPageMain.h"
 #include "Settings.h"
 
@@ -98,6 +99,7 @@ void SigbuildPlugin::OnBuildStateChanged(ProjectExplorer::Project * pro)
 	if(0 == mTimeBuildStart)
 	{
 		mTimeBuildStart = QDateTime::currentMSecsSinceEpoch();
+		mTimeLastBuildStart = mTimeBuildStart;
 
 		mCurrentProject = pro->displayName();
 
@@ -115,8 +117,11 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 {
 	QMainWindow * window = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
 
+	mLastBuildProject = mCurrentProject;
+
 	// build time
-	const int BUILD_TIME_SECS = GetBuildTimeSecs();
+	mTimeLastBuildEnd = QDateTime::currentMSecsSinceEpoch();
+	const int BUILD_TIME_SECS = GetBuildTimeSecs(mTimeLastBuildEnd);
 	const QString BUILD_TIME_STR = GetBuildTimeStr(BUILD_TIME_SECS);
 
 	// reset build time
@@ -138,6 +143,7 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 	if(res)
 	{
 		SetBuildState(BuildState::OK);
+		mLastBuildState = BuildState::OK;
 
 		if(SHOW_MSG)
 		{
@@ -154,6 +160,7 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 	else
 	{
 		SetBuildState(BuildState::FAILED);
+		mLastBuildState = BuildState::FAILED;
 
 		if(SHOW_MSG)
 		{
@@ -220,12 +227,12 @@ void SigbuildPlugin::OnSettingsChanged()
 
 void SigbuildPlugin::OnActionShowLastBuild()
 {
-	const QSystemTrayIcon::MessageIcon ICON =	BuildState::OK == mBuildState ?
-												QSystemTrayIcon::Information :
-												QSystemTrayIcon::Critical;
-	const int NOTIFY_TIME_MS = mSettings->GetSystrayNotificationTime() * 1000;
-
-	mTrayIcon->showMessage("SIGBUILD", mMsgNotification, ICON, NOTIFY_TIME_MS);
+	DialogLastBuild * dialog = new DialogLastBuild(	mLastBuildProject,
+													QDateTime::fromMSecsSinceEpoch(mTimeLastBuildStart).toString("dd-MM-yyyy HH:mm:ss"),
+													QDateTime::fromMSecsSinceEpoch(mTimeLastBuildEnd).toString("dd-MM-yyyy HH:mm:ss"),
+													GetBuildTimeStr(GetBuildTimeSecs(mTimeLastBuildStart, mTimeLastBuildEnd)),
+													((mLastBuildState == BuildState::OK) ? QString("ok") : QString("failed")));
+	dialog->show();
 }
 
 void SigbuildPlugin::OnActionToggleNotifySystray(bool checked)
@@ -251,7 +258,7 @@ void SigbuildPlugin::OnBuildUpdate()
 	if(!mTrayIcon)
 		return ;
 
-	const int BUILD_TIME_SECS = GetBuildTimeSecs();
+	const int BUILD_TIME_SECS = GetBuildTimeSecs(QDateTime::currentMSecsSinceEpoch());
 	mTrayIcon->setToolTip(GetBuildTimeStr(BUILD_TIME_SECS));
 }
 
@@ -352,9 +359,14 @@ void SigbuildPlugin::SetBuildState(BuildState state)
 	mBuildState = state;
 }
 
-int SigbuildPlugin::GetBuildTimeSecs() const
+int SigbuildPlugin::GetBuildTimeSecs(qint64 nowMs) const
 {
-	return roundf((QDateTime::currentMSecsSinceEpoch() - mTimeBuildStart) / 1000.0f);
+	return GetBuildTimeSecs(mTimeBuildStart, nowMs);
+}
+
+int SigbuildPlugin::GetBuildTimeSecs(qint64 startMs, qint64 endMs) const
+{
+	return roundf((endMs - startMs) / 1000.0f);
 }
 
 QString SigbuildPlugin::GetBuildTimeStr(const int buildTimeSecs) const

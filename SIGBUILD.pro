@@ -8,14 +8,16 @@ SOURCES += \
     src/OptionsPageMain.cpp \
     src/OptionsPageMainWidget.cpp \
     src/Settings.cpp \
-    src/SigbuildPlugin.cpp
+    src/SigbuildPlugin.cpp \
+    src/DialogLastBuild.cpp
 
 HEADERS += \
     src/OptionsPageMain.h \
     src/OptionsPageMainWidget.h \
     src/Settings.h \
     src/SigbuildGlobal.h \
-    src/SigbuildPlugin.h
+    src/SigbuildPlugin.h \
+    src/DialogLastBuild.h
 
 # Qt Creator linking
 

@@ -55,7 +55,8 @@ private:
 	enum class BuildState;
 	void SetBuildState(BuildState state);
 
-	int GetBuildTimeSecs() const;
+	int GetBuildTimeSecs(qint64 nowMs) const;
+	int GetBuildTimeSecs(qint64 startMs, qint64 endMs) const;
 	QString GetBuildTimeStr(const int buildTimeSecs) const;
 
 private:
@@ -87,11 +88,15 @@ private:
 	QSoundEffect * mSoundFail = nullptr;
 
 	quint64 mTimeBuildStart = 0;
+	quint64 mTimeLastBuildStart = 0;
+	quint64 mTimeLastBuildEnd = 0;
 
 	BuildState mBuildState = BuildState::OK;
+	BuildState mLastBuildState = BuildState::OK;
 
 	QString mMsgNotification;
 	QString mCurrentProject;
+	QString mLastBuildProject;
 
 	QTimer * mTimerBuildUpdater = nullptr;
 };
