@@ -182,15 +182,8 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 		mTimerBuildUpdater->stop();
 		mTrayIcon->setToolTip("SIGBUILD");
 
-		if(mSettings->IsSystrayNotificationEnabled())
-		{
-			QTimer::singleShot(NOTIFY_TIME_MS, [this]
-			{
-				mActionShowLastBuild->setEnabled(true);
-			});
-		}
-		else
-			mActionShowLastBuild->setEnabled(true);
+		// re-enable last build menu entry
+		mActionShowLastBuild->setEnabled(true);
 	}
 }
 
@@ -231,8 +224,9 @@ void SigbuildPlugin::OnActionShowLastBuild()
 													QDateTime::fromMSecsSinceEpoch(mTimeLastBuildStart).toString("dd-MM-yyyy HH:mm:ss"),
 													QDateTime::fromMSecsSinceEpoch(mTimeLastBuildEnd).toString("dd-MM-yyyy HH:mm:ss"),
 													GetBuildTimeStr(GetBuildTimeSecs(mTimeLastBuildStart, mTimeLastBuildEnd)),
-													((mLastBuildState == BuildState::OK) ? QString("ok") : QString("failed")));
+													mIconStates[static_cast<int>(mBuildState)]->pixmap(16, 16));
 	dialog->show();
+	dialog->raise();
 }
 
 void SigbuildPlugin::OnActionToggleNotifySystray(bool checked)
