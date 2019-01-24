@@ -11,7 +11,7 @@ class DialogLastBuild : public QDialog
 {
 public:
 	DialogLastBuild(const QString & project, const QString & start, const QString & end,
-					const QString & buildTime, const QPixmap & statucIcon, QWidget * parent = nullptr);
+					const QString & buildTime, const QPixmap & statusIcon, QWidget * parent = nullptr);
 
 private:
 	QLabel * CreateHeaderLabel(const QString & str);

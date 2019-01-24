@@ -99,17 +99,12 @@ void SigbuildPlugin::OnBuildStateChanged(ProjectExplorer::Project * pro)
 	if(0 == mTimeBuildStart)
 	{
 		mTimeBuildStart = QDateTime::currentMSecsSinceEpoch();
-		mTimeLastBuildStart = mTimeBuildStart;
 
 		mCurrentProject = pro->displayName();
 
-		// disable "last build" action while building
+		// show build status with updates
 		if(mTrayIcon)
-		{
-			mActionShowLastBuild->setEnabled(false);
-
 			mTimerBuildUpdater->start();
-		}
 	}
 }
 
@@ -120,6 +115,7 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 	mLastBuildProject = mCurrentProject;
 
 	// build time
+	mTimeLastBuildStart = mTimeBuildStart;
 	mTimeLastBuildEnd = QDateTime::currentMSecsSinceEpoch();
 	const int BUILD_TIME_SECS = GetBuildTimeSecs(mTimeLastBuildEnd);
 	const QString BUILD_TIME_STR = GetBuildTimeStr(BUILD_TIME_SECS);
@@ -182,8 +178,9 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 		mTimerBuildUpdater->stop();
 		mTrayIcon->setToolTip("SIGBUILD");
 
-		// re-enable last build menu entry
-		mActionShowLastBuild->setEnabled(true);
+		// enable last build menu entry after the first finished build
+		if(!mActionShowLastBuild->isEnabled())
+			mActionShowLastBuild->setEnabled(true);
 	}
 }
 
@@ -220,13 +217,20 @@ void SigbuildPlugin::OnSettingsChanged()
 
 void SigbuildPlugin::OnActionShowLastBuild()
 {
-	DialogLastBuild * dialog = new DialogLastBuild(	mLastBuildProject,
-													QDateTime::fromMSecsSinceEpoch(mTimeLastBuildStart).toString("dd-MM-yyyy HH:mm:ss"),
-													QDateTime::fromMSecsSinceEpoch(mTimeLastBuildEnd).toString("dd-MM-yyyy HH:mm:ss"),
-													GetBuildTimeStr(GetBuildTimeSecs(mTimeLastBuildStart, mTimeLastBuildEnd)),
-													mIconStates[static_cast<int>(mBuildState)]->pixmap(16, 16));
-	dialog->show();
-	dialog->raise();
+	QMainWindow * window = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
+
+	const int ICON_SIZE = 16;
+
+	DialogLastBuild * d = new DialogLastBuild(	mLastBuildProject,
+												QDateTime::fromMSecsSinceEpoch(mTimeLastBuildStart).toString("dd-MM-yyyy HH:mm:ss"),
+												QDateTime::fromMSecsSinceEpoch(mTimeLastBuildEnd).toString("dd-MM-yyyy HH:mm:ss"),
+												GetBuildTimeStr(GetBuildTimeSecs(mTimeLastBuildStart, mTimeLastBuildEnd)),
+												mIconStates[static_cast<int>(mLastBuildState)]->pixmap(ICON_SIZE, ICON_SIZE),
+												window	);
+
+	d->open();
+	// this to not let the user resize the dialog
+	d->setFixedSize(d->size());
 }
 
 void SigbuildPlugin::OnActionToggleNotifySystray(bool checked)
