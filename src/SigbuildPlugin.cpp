@@ -1,5 +1,6 @@
 #include "SigbuildPlugin.h"
 
+#include "BuildData.h"
 #include "DialogLastBuild.h"
 #include "OptionsPageMain.h"
 #include "Settings.h"
@@ -43,6 +44,9 @@ SigbuildPlugin::~SigbuildPlugin()
 
 	DestroySounds();
 
+	for(BuildData * data : mBuildsData)
+		delete data;
+
 	delete mSettings;
 }
 
@@ -76,6 +80,9 @@ bool SigbuildPlugin::initialize(const QStringList & arguments, QString * errorSt
 	// build end
 	connect(ProjectExplorer::BuildManager::instance(), &ProjectExplorer::BuildManager::buildQueueFinished,
 			this, &SigbuildPlugin::OnBuildFinished);
+
+	// log start of session
+	mTimeSessionStart = QDateTime::currentMSecsSinceEpoch();
 
 	return true;
 }
@@ -182,6 +189,8 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 		if(!mActionShowLastBuild->isEnabled())
 			mActionShowLastBuild->setEnabled(true);
 	}
+
+	mBuildsData.push_back(new BuildData(mLastBuildProject, mTimeLastBuildStart, mTimeLastBuildEnd, mLastBuildState));
 }
 
 void SigbuildPlugin::OnSettingsChanged()

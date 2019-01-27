@@ -1,8 +1,14 @@
 #pragma once
 
+#include "SigbuildDefines.h"
 #include "SigbuildGlobal.h"
 
 #include <extensionsystem/iplugin.h>
+
+#include <QtGlobal>
+#include <QVector>
+
+class BuildData;
 
 class QAction;
 class QIcon;
@@ -52,7 +58,6 @@ private:
 	void CreateSounds();
 	void DestroySounds();
 
-	enum class BuildState;
 	void SetBuildState(BuildState state);
 
 	int GetBuildTimeSecs(qint64 nowMs) const;
@@ -60,18 +65,8 @@ private:
 	QString GetBuildTimeStr(const int buildTimeSecs) const;
 
 private:
-	enum class BuildState
-	{
-		BUILDING = 0,
-		FAILED,
-		OK,
+	QVector<BuildData *> mBuildsData;
 
-		NUM
-	};
-
-	static const int NUM_BUILD_STATES = static_cast<int>(BuildState::NUM);
-
-private:
 	QIcon * mIconStates[NUM_BUILD_STATES];
 
 	Settings * mSettings = nullptr;
@@ -87,6 +82,7 @@ private:
 	QSoundEffect * mSoundSuccess = nullptr;
 	QSoundEffect * mSoundFail = nullptr;
 
+	quint64 mTimeSessionStart = 0;
 	quint64 mTimeBuildStart = 0;
 	quint64 mTimeLastBuildStart = 0;
 	quint64 mTimeLastBuildEnd = 0;
