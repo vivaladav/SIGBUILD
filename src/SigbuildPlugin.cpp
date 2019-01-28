@@ -23,7 +23,8 @@
 
 #include <cmath>
 
-namespace Sigbuild {
+namespace Sigbuild
+{
 
 // ==== CONSTRUCTOR / DESTRUCTOR ====
 
@@ -44,8 +45,10 @@ SigbuildPlugin::~SigbuildPlugin()
 
 	DestroySounds();
 
-	for(BuildData * data : mBuildsData)
-		delete data;
+	const int NUM_DATA = mBuildsData.size();
+
+	for(int i = 0;  i < NUM_DATA; ++i)
+		delete mBuildsData[i];
 
 	delete mSettings;
 }
@@ -187,7 +190,10 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 
 		// enable last build menu entry after the first finished build
 		if(!mActionShowLastBuild->isEnabled())
+		{
 			mActionShowLastBuild->setEnabled(true);
+			mActionShowSessionBuilds->setEnabled(true);
+		}
 	}
 
 	mBuildsData.push_back(new BuildData(mLastBuildProject, mTimeLastBuildStart, mTimeLastBuildEnd, mLastBuildState));
@@ -245,6 +251,21 @@ void SigbuildPlugin::OnActionShowLastBuild()
 	connect(d, &QDialog::finished, d, &QDialog::deleteLater);
 }
 
+void SigbuildPlugin::OnActionShowSessionBuilds()
+{
+	const int NUM_DATA = mBuildsData.size();
+
+	for(int i = 0;  i < NUM_DATA; ++i)
+	{
+		const BuildData * data = mBuildsData[i];
+
+		qDebug()	<< data->GetProject()
+					<< QDateTime::fromMSecsSinceEpoch(data->GetTimeStart()).toString("dd-MM-yyyy HH:mm:ss")
+					<< QDateTime::fromMSecsSinceEpoch(data->GetTimeEnd()).toString("dd-MM-yyyy HH:mm:ss")
+					<< (data->GetState() == BuildState::OK ? QString("OK") : QString("FAILED"));
+	}
+}
+
 void SigbuildPlugin::OnActionToggleNotifySystray(bool checked)
 {
 	mSettings->SetSystrayNotificationEnabled(checked);
@@ -290,6 +311,13 @@ void SigbuildPlugin::CreateSystrayIcon()
 	mTrayMenu->addAction(mActionShowLastBuild);
 
 	connect(mActionShowLastBuild, &QAction::triggered, this, &SigbuildPlugin::OnActionShowLastBuild);
+
+	// SHOW SESSION BUILDS
+	mActionShowSessionBuilds = new QAction("Session builds");
+	mActionShowSessionBuilds->setEnabled(false);
+	mTrayMenu->addAction(mActionShowSessionBuilds);
+
+	connect(mActionShowSessionBuilds, &QAction::triggered, this, &SigbuildPlugin::OnActionShowSessionBuilds);
 
 	// -----
 	mTrayMenu->addSeparator();

@@ -5,19 +5,23 @@ DEFINES += SIGBUILD_LIBRARY
 # SIGBUILD files
 
 SOURCES += \
+    src/BuildData.cpp \
+    src/DialogLastBuild.cpp \
     src/OptionsPageMain.cpp \
     src/OptionsPageMainWidget.cpp \
     src/Settings.cpp \
     src/SigbuildPlugin.cpp \
-    src/DialogLastBuild.cpp
+
 
 HEADERS += \
+    src/BuildData.h \
+    src/DialogLastBuild.h \
     src/OptionsPageMain.h \
     src/OptionsPageMainWidget.h \
     src/Settings.h \
+    src/SigbuildDefines.h \
     src/SigbuildGlobal.h \
     src/SigbuildPlugin.h \
-    src/DialogLastBuild.h
 
 # Qt Creator linking
 

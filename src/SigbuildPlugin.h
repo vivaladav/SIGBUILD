@@ -8,8 +8,6 @@
 #include <QtGlobal>
 #include <QVector>
 
-class BuildData;
-
 class QAction;
 class QIcon;
 class QMenu;
@@ -22,6 +20,7 @@ namespace ProjectExplorer { class Project; }
 namespace Sigbuild
 {
 
+class BuildData;
 class OptionsPageMain;
 class Settings;
 
@@ -46,6 +45,7 @@ private slots:
 	void OnSettingsChanged();
 
 	void OnActionShowLastBuild();
+	void OnActionShowSessionBuilds();
 	void OnActionToggleNotifySystray(bool checked);
 	void OnActionToggleNotifyAudio(bool checked);
 
@@ -75,6 +75,7 @@ private:
 
 	QMenu * mTrayMenu = nullptr;
 	QAction * mActionShowLastBuild = nullptr;
+	QAction * mActionShowSessionBuilds = nullptr;
 	QAction * mActionToggleNotifySystray = nullptr;
 	QAction * mActionToggleNotifyAudio = nullptr;
 	QSystemTrayIcon * mTrayIcon  = nullptr;
