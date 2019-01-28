@@ -5,12 +5,13 @@
 
 #include <extensionsystem/iplugin.h>
 
-#include <QtGlobal>
+#include <QPixmap>
 #include <QVector>
 
 class QAction;
 class QIcon;
 class QMenu;
+class QPixmap;
 class QSoundEffect;
 class QSystemTrayIcon;
 class QTimer;
@@ -68,6 +69,7 @@ private:
 	QVector<BuildData *> mBuildsData;
 
 	QIcon * mIconStates[NUM_BUILD_STATES];
+	QVector<QPixmap> mIconDialogStates;
 
 	Settings * mSettings = nullptr;
 

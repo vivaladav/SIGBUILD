@@ -17,7 +17,6 @@ DialogLastBuild::DialogLastBuild(const QString & project, const QString & start,
 	// -- properties --
 	setWindowTitle(tr("Last build"));
 	setSizeGripEnabled(false);
-	setModal(true);
 
 	// -- layout --
 	QGridLayout * layout = new QGridLayout;

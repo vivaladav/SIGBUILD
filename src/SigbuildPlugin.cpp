@@ -2,6 +2,7 @@
 
 #include "BuildData.h"
 #include "DialogLastBuild.h"
+#include "DialogSessionBuilds.h"
 #include "OptionsPageMain.h"
 #include "Settings.h"
 
@@ -31,9 +32,21 @@ namespace Sigbuild
 SigbuildPlugin::SigbuildPlugin()
 	: mSettings(new Settings)
 {
-	mIconStates[static_cast<int>(BuildState::BUILDING)] = new QIcon(":/img/icon_building.png");
-	mIconStates[static_cast<int>(BuildState::FAILED)] = new QIcon(":/img/icon_fail.png");
-	mIconStates[static_cast<int>(BuildState::OK)] = new QIcon(":/img/icon.png");
+	const int ICON_SIZE = 16;
+
+	mIconDialogStates.reserve(NUM_BUILD_STATES);
+
+	int ind = static_cast<int>(BuildState::BUILDING);
+	mIconStates[ind] = new QIcon(":/img/icon_building.png");
+	mIconDialogStates.push_back(mIconStates[ind]->pixmap(ICON_SIZE, ICON_SIZE));
+
+	ind = static_cast<int>(BuildState::FAILED);
+	mIconStates[ind] = new QIcon(":/img/icon_fail.png");
+	mIconDialogStates.push_back(mIconStates[ind]->pixmap(ICON_SIZE, ICON_SIZE));
+
+	ind = static_cast<int>(BuildState::OK);
+	mIconStates[ind] = new QIcon(":/img/icon.png");
+	mIconDialogStates.push_back(mIconStates[ind]->pixmap(ICON_SIZE, ICON_SIZE));
 }
 
 SigbuildPlugin::~SigbuildPlugin()
@@ -234,16 +247,15 @@ void SigbuildPlugin::OnActionShowLastBuild()
 {
 	QMainWindow * window = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
 
-	const int ICON_SIZE = 16;
-
 	DialogLastBuild * d = new DialogLastBuild(	mLastBuildProject,
 												QDateTime::fromMSecsSinceEpoch(mTimeLastBuildStart).toString("dd-MM-yyyy HH:mm:ss"),
 												QDateTime::fromMSecsSinceEpoch(mTimeLastBuildEnd).toString("dd-MM-yyyy HH:mm:ss"),
 												GetBuildTimeStr(GetBuildTimeSecs(mTimeLastBuildStart, mTimeLastBuildEnd)),
-												mIconStates[static_cast<int>(mLastBuildState)]->pixmap(ICON_SIZE, ICON_SIZE),
+												mIconDialogStates[static_cast<int>(mLastBuildState)],
 												window	);
 
-	d->open();
+	d->show();
+	d->raise();
 	// this to not let the user resize the dialog
 	d->setFixedSize(d->size());
 
@@ -253,17 +265,15 @@ void SigbuildPlugin::OnActionShowLastBuild()
 
 void SigbuildPlugin::OnActionShowSessionBuilds()
 {
-	const int NUM_DATA = mBuildsData.size();
+	QMainWindow * window = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
 
-	for(int i = 0;  i < NUM_DATA; ++i)
-	{
-		const BuildData * data = mBuildsData[i];
+	DialogSessionBuilds * d = new DialogSessionBuilds(mBuildsData, mIconDialogStates, window);
 
-		qDebug()	<< data->GetProject()
-					<< QDateTime::fromMSecsSinceEpoch(data->GetTimeStart()).toString("dd-MM-yyyy HH:mm:ss")
-					<< QDateTime::fromMSecsSinceEpoch(data->GetTimeEnd()).toString("dd-MM-yyyy HH:mm:ss")
-					<< (data->GetState() == BuildState::OK ? QString("OK") : QString("FAILED"));
-	}
+	d->show();
+	d->raise();
+
+	// schedule self-destructionwhen closing
+	connect(d, &QDialog::finished, d, &QDialog::deleteLater);
 }
 
 void SigbuildPlugin::OnActionToggleNotifySystray(bool checked)

@@ -7,6 +7,7 @@ DEFINES += SIGBUILD_LIBRARY
 SOURCES += \
     src/BuildData.cpp \
     src/DialogLastBuild.cpp \
+    src/DialogSessionBuilds.cpp \
     src/OptionsPageMain.cpp \
     src/OptionsPageMainWidget.cpp \
     src/Settings.cpp \
@@ -16,6 +17,7 @@ SOURCES += \
 HEADERS += \
     src/BuildData.h \
     src/DialogLastBuild.h \
+    src/DialogSessionBuilds.h \
     src/OptionsPageMain.h \
     src/OptionsPageMainWidget.h \
     src/Settings.h \
