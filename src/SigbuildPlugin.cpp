@@ -268,9 +268,16 @@ void SigbuildPlugin::OnActionShowSessionBuilds()
 	QMainWindow * window = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
 
 	DialogSessionBuilds * d = new DialogSessionBuilds(mBuildsData, mIconDialogStates, window);
+	qDebug() << "DialogSessionBuilds CREATED";
 
-	d->show();
+	d->show();	
+	qDebug() << "DialogSessionBuilds SHOWN";
+
 	d->raise();
+	qDebug() << "DialogSessionBuilds RAISED";
+
+//	d->UpdateSizes();
+//	qDebug() << "DialogSessionBuilds UPDATED";
 
 	// schedule self-destructionwhen closing
 	connect(d, &QDialog::finished, d, &QDialog::deleteLater);
