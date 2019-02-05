@@ -38,7 +38,7 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 
 	// -- header --
 	QWidget * header = new QWidget;
-	header->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	//header->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	layout->addWidget(header);
 
@@ -84,27 +84,29 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 //	layoutHeader->setColumnStretch(COL_RESULT, 5);
 
 	// SCROLL AREA
-	QScrollArea * area = new QScrollArea(this);
+	//QScrollArea * area = new QScrollArea(this);
 	//area->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	area->setWidgetResizable(true);
-	area->setFrameShape(QFrame::NoFrame);
+	//area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	//area->setWidgetResizable(true);
+	//area->setFrameShape(QFrame::NoFrame);
 
-	layout->addWidget(area);
+	//layout->addWidget(area);
 
-	qDebug() << "QScrollArea sizeAdjustPolicy:" << area->sizeAdjustPolicy();
-	qDebug() << "QScrollArea sizePolicy:" << area->sizePolicy();
+//	qDebug() << "QScrollArea sizeAdjustPolicy:" << area->sizeAdjustPolicy();
+//	qDebug() << "QScrollArea sizePolicy:" << area->sizePolicy();
 
 
 //	pal.setColor(QPalette::Background, Qt::blue);
 //	area->setPalette(pal);
 
-	QWidget * scrollContent = new QWidget(area);
-    scrollContent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	area->setWidget(scrollContent);
+	QWidget * scrollContent = new QWidget;
+	scrollContent->setContentsMargins(0, 0, 0, 0);
+	layout->addWidget(scrollContent);
+	//scrollContent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	//area->setWidget(scrollContent);
 	//QVBoxLayout * layoutArea = new QVBoxLayout;
 	mLayoutArea = new QGridLayout;
-	//layoutArea->setSpacing(0);
+	mLayoutArea->setSpacing(0);
 	mLayoutArea->setContentsMargins(0, 2, 0, 2);
 	scrollContent->setLayout(mLayoutArea);
 
@@ -133,6 +135,7 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 			label = new QLabel(entry->GetProject());
 
 		mLayoutArea->addWidget(label, i, COL_PROJECT);
+		label->setContentsMargins(0, 0, 0, 0);
 
 //		connect(label, &Label::SizeChanged, headerLabels[COL_PROJECT], [=](const QSize & newSize)
 //		{
@@ -153,6 +156,7 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 //		});
 
 		label = new QLabel(QDateTime::fromMSecsSinceEpoch(entry->GetTimeStart()).toString("dd-MM-yyyy HH:mm:ss"));
+		label->setContentsMargins(0, 0, 0, 0);
 		mLayoutArea->addWidget(label, i, COL_START);
 
 //		connect(label, &Label::SizeChanged, headerLabels[COL_START], [=](const QSize & newSize)
@@ -162,6 +166,7 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 //		});
 
 		label = new QLabel(QDateTime::fromMSecsSinceEpoch(entry->GetTimeEnd()).toString("dd-MM-yyyy HH:mm:ss"));
+		label->setContentsMargins(0, 0, 0, 0);
 		mLayoutArea->addWidget(label, i, COL_END);
 
 //		connect(label, &Label::SizeChanged, headerLabels[COL_END], [=](const QSize & newSize)
@@ -174,6 +179,7 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 		QTime buildTime(0, 0, 0, 0);
 		buildTime = buildTime.addMSecs(diff);
 		label = new QLabel(buildTime.toString("hh:mm:ss"));
+		label->setContentsMargins(0, 0, 0, 0);
 
 		mLayoutArea->addWidget(label, i, COL_TIME);
 
@@ -183,7 +189,8 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 //				headerLabels[COL_TIME]->resize(newSize);
 //		});
 
-		label = new Label();
+		label = new QLabel;
+		label->setContentsMargins(0, 0, 0, 0);
 		label->setPixmap(icons[static_cast<int>(entry->GetState())]);
 		mLayoutArea->addWidget(label, i, COL_RESULT);
 
@@ -219,25 +226,33 @@ void DialogSessionBuilds::showEvent(QShowEvent *)
 void DialogSessionBuilds::UpdateSizes()
 {
 
-	for(int c = 0; c < mLayoutHeader->columnCount() - 1; ++c)
+	for(int c = 0; c < mLayoutHeader->columnCount(); ++c)
 //	for(int c = 0; c < 1; ++c)
 	{
-		int maxW = mLayoutHeader->itemAtPosition(0, c)->widget()->width();
+		//int maxW = mLayoutHeader->itemAtPosition(0, c)->widget()->width();
+		int maxW = 0;
+		int maxW2 = 0;
 		qDebug() << c << "] maxW H" << maxW;
 
-		for(int i = 0; i <mLayoutArea->rowCount(); ++i)
+		for(int r = 0; r <mLayoutArea->rowCount(); ++r)
 		{
-			const int W = mLayoutArea->itemAtPosition(i, c)->widget()->width();
+			const int W = mLayoutArea->itemAtPosition(r, c)->widget()->width();
 
 			if(W > maxW)
 				maxW = W;
+
+			const int W2 = mLayoutArea->columnMinimumWidth(c);
+
+			if(W2 > maxW2)
+				maxW2 = W2;
 		}
 
 		qDebug() << c << "] maxW D" << maxW;
+		qDebug() << c << "] maxW D2" << maxW2;
 		qDebug() << "";
 
-		mLayoutHeader->setColumnMinimumWidth(c, maxW);
-		mLayoutArea->setColumnMinimumWidth(c, maxW);
+//		mLayoutHeader->setColumnMinimumWidth(c, maxW);
+//		mLayoutArea->setColumnMinimumWidth(c, maxW);
 	}
 }
 
