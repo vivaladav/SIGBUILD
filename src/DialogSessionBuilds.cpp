@@ -49,65 +49,56 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 	QFont font;
 	font.setBold(true);
 
-	mLayoutHeader = new QGridLayout;
+	mLayoutHeader = new QHBoxLayout;
 	mLayoutHeader->setContentsMargins(0, 3, 0, 3);
 	header->setLayout(mLayoutHeader);
 
 	QLabel * headerLabels[NUM_TAB_COLUMNS];
 
 	headerLabels[COL_PROJECT] = new QLabel(tr("PROJECT"));
-	headerLabels[COL_PROJECT]->resize(400, 30);
 	headerLabels[COL_PROJECT]->setFont(font);
-	mLayoutHeader->addWidget(headerLabels[COL_PROJECT], 0, COL_PROJECT);
+	mLayoutHeader->addWidget(headerLabels[COL_PROJECT]);
 
 	headerLabels[COL_START] = new QLabel(tr("BUILD START"));
 	headerLabels[COL_START]->setFont(font);
-	mLayoutHeader->addWidget(headerLabels[COL_START], 0, COL_START);
-
+	mLayoutHeader->addWidget(headerLabels[COL_START]);
 
 	headerLabels[COL_END] = new QLabel(tr("BUILD FINISH"));
 	headerLabels[COL_END]->setFont(font);
-	mLayoutHeader->addWidget(headerLabels[COL_END], 0, COL_END);
+	mLayoutHeader->addWidget(headerLabels[COL_END]);
 
 	headerLabels[COL_TIME] = new QLabel(tr("BUILD TIME"));
 	headerLabels[COL_TIME]->setFont(font);
-	mLayoutHeader->addWidget(headerLabels[COL_TIME], 0, COL_TIME);
+	mLayoutHeader->addWidget(headerLabels[COL_TIME]);
 
 	headerLabels[COL_RESULT] = new QLabel(tr("RESULT"));
 	headerLabels[COL_RESULT]->setFont(font);
-	mLayoutHeader->addWidget(headerLabels[COL_RESULT], 0, COL_RESULT);
-
-//	layoutHeader->setColumnStretch(COL_PROJECT, 40);
-//	layoutHeader->setColumnStretch(COL_START, 20);
-//	layoutHeader->setColumnStretch(COL_END, 20);
-//	layoutHeader->setColumnStretch(COL_TIME, 15);
-//	layoutHeader->setColumnStretch(COL_RESULT, 5);
+	mLayoutHeader->addWidget(headerLabels[COL_RESULT]);
 
 	// SCROLL AREA
-	//QScrollArea * area = new QScrollArea(this);
+	QScrollArea * area = new QScrollArea(this);
 	//area->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	//area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	//area->setWidgetResizable(true);
-	//area->setFrameShape(QFrame::NoFrame);
+	area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	area->setWidgetResizable(true);
+	area->setFrameShape(QFrame::NoFrame);
 
-	//layout->addWidget(area);
+	layout->addWidget(area);
 
-//	qDebug() << "QScrollArea sizeAdjustPolicy:" << area->sizeAdjustPolicy();
-//	qDebug() << "QScrollArea sizePolicy:" << area->sizePolicy();
-
+	qDebug() << "QScrollArea sizeAdjustPolicy:" << area->sizeAdjustPolicy();
+	qDebug() << "QScrollArea sizePolicy:" << area->sizePolicy();
 
 //	pal.setColor(QPalette::Background, Qt::blue);
 //	area->setPalette(pal);
 
 	QWidget * scrollContent = new QWidget;
 	scrollContent->setContentsMargins(0, 0, 0, 0);
-	layout->addWidget(scrollContent);
+	//layout->addWidget(scrollContent);
 	//scrollContent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	//area->setWidget(scrollContent);
+	area->setWidget(scrollContent);
 	//QVBoxLayout * layoutArea = new QVBoxLayout;
-	mLayoutArea = new QGridLayout;
+	mLayoutArea = new QVBoxLayout;
 	mLayoutArea->setSpacing(0);
-	mLayoutArea->setContentsMargins(0, 2, 0, 2);
+	mLayoutArea->setContentsMargins(0, 0, 0, 0);
 	scrollContent->setLayout(mLayoutArea);
 
 //	layoutArea->setColumnStretch(COL_PROJECT, 30);
@@ -125,6 +116,9 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 	{
 		const BuildData * entry = data[i];
 
+		QHBoxLayout * layoutRow = new QHBoxLayout;
+		mLayoutArea->addLayout(layoutRow);
+
 		QLabel * label;
 
 		if(i == 3)
@@ -134,7 +128,7 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 		else
 			label = new QLabel(entry->GetProject());
 
-		mLayoutArea->addWidget(label, i, COL_PROJECT);
+		layoutRow->addWidget(label);
 		label->setContentsMargins(0, 0, 0, 0);
 
 //		connect(label, &Label::SizeChanged, headerLabels[COL_PROJECT], [=](const QSize & newSize)
@@ -157,7 +151,7 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 
 		label = new QLabel(QDateTime::fromMSecsSinceEpoch(entry->GetTimeStart()).toString("dd-MM-yyyy HH:mm:ss"));
 		label->setContentsMargins(0, 0, 0, 0);
-		mLayoutArea->addWidget(label, i, COL_START);
+		layoutRow->addWidget(label);
 
 //		connect(label, &Label::SizeChanged, headerLabels[COL_START], [=](const QSize & newSize)
 //		{
@@ -167,7 +161,7 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 
 		label = new QLabel(QDateTime::fromMSecsSinceEpoch(entry->GetTimeEnd()).toString("dd-MM-yyyy HH:mm:ss"));
 		label->setContentsMargins(0, 0, 0, 0);
-		mLayoutArea->addWidget(label, i, COL_END);
+		layoutRow->addWidget(label);
 
 //		connect(label, &Label::SizeChanged, headerLabels[COL_END], [=](const QSize & newSize)
 //		{
@@ -181,7 +175,7 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 		label = new QLabel(buildTime.toString("hh:mm:ss"));
 		label->setContentsMargins(0, 0, 0, 0);
 
-		mLayoutArea->addWidget(label, i, COL_TIME);
+		layoutRow->addWidget(label);
 
 //		connect(label, &Label::SizeChanged, headerLabels[COL_TIME], [=](const QSize & newSize)
 //		{
@@ -192,7 +186,7 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 		label = new QLabel;
 		label->setContentsMargins(0, 0, 0, 0);
 		label->setPixmap(icons[static_cast<int>(entry->GetState())]);
-		mLayoutArea->addWidget(label, i, COL_RESULT);
+		layoutRow->addWidget(label);
 
 //		connect(label, &Label::SizeChanged, headerLabels[COL_RESULT], [=](const QSize & newSize)
 //		{
@@ -225,11 +219,39 @@ void DialogSessionBuilds::showEvent(QShowEvent *)
 
 void DialogSessionBuilds::UpdateSizes()
 {
-
-	for(int c = 0; c < mLayoutHeader->columnCount(); ++c)
-//	for(int c = 0; c < 1; ++c)
+	for(int c = 0; c <NUM_TAB_COLUMNS; ++c)
 	{
-		//int maxW = mLayoutHeader->itemAtPosition(0, c)->widget()->width();
+		int maxW = mLayoutHeader->itemAt(c)->widget()->minimumSizeHint().width();
+		qDebug() << "H" << c << "=" << maxW;
+
+		const int ROWS = mLayoutArea->count();
+
+		for(int r = 0; r < ROWS; ++r)
+		{
+			const int W = mLayoutArea->itemAt(r)->layout()->itemAt(c)->widget()->minimumSizeHint().width();
+
+			qDebug() << "D" << r << "=" << W;
+
+			if(W > maxW)
+				maxW = W;
+		}
+
+		qDebug() << c << "]" << maxW;
+		qDebug() << "";
+
+		mLayoutHeader->itemAt(c)->widget()->setMinimumWidth(maxW);
+
+		for(int r = 0; r < ROWS; ++r)
+			mLayoutArea->itemAt(r)->layout()->itemAt(c)->widget()->setMinimumWidth(maxW);
+	}
+
+	update();
+
+	qDebug() << "---------------------";
+/*
+	for(int c = 0; c < mLayoutHeader->count(); ++c)
+	{
+		int maxW = mLayoutHeader->itemAtPosition(0, c)->widget()->width();
 		int maxW = 0;
 		int maxW2 = 0;
 		qDebug() << c << "] maxW H" << maxW;
@@ -254,6 +276,7 @@ void DialogSessionBuilds::UpdateSizes()
 //		mLayoutHeader->setColumnMinimumWidth(c, maxW);
 //		mLayoutArea->setColumnMinimumWidth(c, maxW);
 	}
+	*/
 }
 
 } // namespace Sigbuild

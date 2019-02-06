@@ -4,7 +4,8 @@
 #include <QPixmap>
 #include <QVector>
 
-class QGridLayout;
+class QHBoxLayout;
+class QVBoxLayout;
 
 namespace Sigbuild
 {
@@ -34,8 +35,8 @@ private:
 	};
 
 private:
-	QGridLayout * mLayoutHeader;
-	QGridLayout * mLayoutArea;
+	QHBoxLayout * mLayoutHeader;
+	QVBoxLayout * mLayoutArea;
 };
 
 } // namespace Sigbuild
