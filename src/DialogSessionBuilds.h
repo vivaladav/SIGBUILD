@@ -5,6 +5,7 @@
 #include <QVector>
 
 class QHBoxLayout;
+class QScrollArea;
 class QVBoxLayout;
 
 namespace Sigbuild
@@ -21,6 +22,7 @@ public:
 
 protected:
 	void showEvent(QShowEvent * event) override;
+	void resizeEvent(QResizeEvent * event) override;
 
 private:
 	enum TableColumns : int
@@ -37,6 +39,7 @@ private:
 private:
 	QHBoxLayout * mLayoutHeader;
 	QVBoxLayout * mLayoutArea;
+	QScrollArea * mScrollArea;
 };
 
 } // namespace Sigbuild

@@ -6,12 +6,13 @@
 
 #include <QDateTime>
 #include <QFont>
-#include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
 #include <QHeaderView>
+#include <QResizeEvent>
 #include <QScrollArea>
+#include <QScrollBar>
 #include <QTableWidget>
 #include <QVBoxLayout>
 
@@ -30,7 +31,6 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 	// -- properties --
 	setWindowTitle(tr("Session builds"));
 	setSizeGripEnabled(false);
-	setMinimumWidth(900);
 
 	// -- main layout --
 	QVBoxLayout * layout = new QVBoxLayout;
@@ -38,13 +38,8 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 
 	// -- header --
 	QWidget * header = new QWidget;
-	//header->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	layout->addWidget(header);
-
-//	pal.setColor(QPalette::Background, Qt::red);
-//	header->setPalette(pal);
-//	header->setAutoFillBackground(true);
 
 	QFont font;
 	font.setBold(true);
@@ -53,8 +48,7 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 
 	const int MARGIN_W = 20;
 
-	//const int STRETCH[NUM_TAB_COLUMNS] = { 30, 25, 25, 15, 5 };
-	const int STRETCH[NUM_TAB_COLUMNS] = { 0, 0, 0, 0, 0 };
+	const int STRETCH[NUM_TAB_COLUMNS] = { 30, 25, 25, 15, 5 };
 
 	mLayoutHeader = new QHBoxLayout;
 	mLayoutHeader->setContentsMargins(0, 0, 0, 0);
@@ -89,56 +83,41 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 	mLayoutHeader->addWidget(headerLabels[COL_RESULT], STRETCH[COL_RESULT]);
 
 	// SCROLL AREA
-	QScrollArea * area = new QScrollArea(this);
-	//area->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	area->setWidgetResizable(true);
-	area->setFrameShape(QFrame::NoFrame);
+	mScrollArea = new QScrollArea(this);
+	mScrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+	mScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	mScrollArea->setWidgetResizable(true);
+	mScrollArea->setFrameShape(QFrame::NoFrame);
 
-	layout->addWidget(area);
+	layout->addWidget(mScrollArea);
 
-	qDebug() << "QScrollArea sizeAdjustPolicy:" << area->sizeAdjustPolicy();
-	qDebug() << "QScrollArea sizePolicy:" << area->sizePolicy();
+	qDebug() << "QScrollArea sizeAdjustPolicy:" << mScrollArea->sizeAdjustPolicy();
+	qDebug() << "QScrollArea sizePolicy:" << mScrollArea->sizePolicy();
 
 	QWidget * scrollContent = new QWidget;
 	scrollContent->setContentsMargins(0, 0, 0, 0);
-	//layout->addWidget(scrollContent);
-	//scrollContent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	area->setWidget(scrollContent);
-	//QVBoxLayout * layoutArea = new QVBoxLayout;
+	mScrollArea->setWidget(scrollContent);
 	mLayoutArea = new QVBoxLayout;
 	mLayoutArea->setSpacing(WIDGET_SPACING);
 	mLayoutArea->setContentsMargins(0, 0, 0, 0);
 	scrollContent->setLayout(mLayoutArea);
-
-//	layoutArea->setColumnStretch(COL_PROJECT, 35);
-//	layoutArea->setColumnStretch(COL_START, 20);
-//	layoutArea->setColumnStretch(COL_END, 20);
-//	layoutArea->setColumnStretch(COL_TIME, 15);
-//	layoutArea->setColumnStretch(COL_RESULT, 10);
 
 	qDebug() << "scrollContent sizePolicy:" << scrollContent->sizePolicy();
 
 	qDebug() << "---- CREATE DATA ----";
 
 	// -- builds data --
-	for(int i = 0; i < data.size(); ++i)
+	//for(int i = 0; i < data.size(); ++i)
+	for(int i = 0; i < 5; ++i)
 	{
-		const BuildData * entry = data[i];
+		const BuildData * entry = data[0];
 
 		QHBoxLayout * layoutRow = new QHBoxLayout;
 		mLayoutArea->addLayout(layoutRow);
 
 		QLabel * label;
 
-		// PROJECT
-		if(i == 4)
-			label = new QLabel(entry->GetProject() + QString(" an even longer long name for a project..."));
-		else if(i % 2)
-			label = new QLabel(entry->GetProject() + QString(" a very long name for a project..."));
-		else
-			label = new QLabel(entry->GetProject());
-
+		label = new QLabel(entry->GetProject());
 		label->setContentsMargins(0, 0, MARGIN_W, 0);
 		layoutRow->addWidget(label, STRETCH[COL_PROJECT]);
 
@@ -189,11 +168,31 @@ void DialogSessionBuilds::showEvent(QShowEvent *)
 	UpdateSizes();
 }
 
+void DialogSessionBuilds::resizeEvent(QResizeEvent * event)
+{
+	static bool prevVis = false;
+
+	QScrollBar * bar = mScrollArea->verticalScrollBar();
+	const bool visible = bar && bar->isVisible();
+	qDebug() << "DialogSessionBuilds::resizeEvent - old size:" << event->oldSize() << "- new size:" << event->size();
+	qDebug() << "DialogSessionBuilds::resizeEvent - scrollbar visible:" << (visible ? QString("YES") : QString("NO"));
+
+	if(prevVis != visible)
+	{
+		prevVis = visible;
+		UpdateSizes();
+	}
+}
+
 void DialogSessionBuilds::UpdateSizes()
 {
 	qDebug() << "--------------------- 1ST PASS ---------------------";
 
 	const int ROWS = mLayoutArea->count();
+
+	int totMaxW = 0;
+	int totMaxWmsh = 0;
+	int totMaxWmw = 0;
 
 	for(int c = 0; c <NUM_TAB_COLUMNS; ++c)
 	{
@@ -214,7 +213,9 @@ void DialogSessionBuilds::UpdateSizes()
 				maxWmsh = DWmsh;
 		}
 
-		qDebug() << c << "]" << maxWmsh;
+		totMaxWmsh += maxWmsh;
+
+		qDebug() << c << "] max msh w=" << maxWmsh;
 
 		mLayoutHeader->itemAt(c)->widget()->setMinimumWidth(maxWmsh);
 
@@ -222,9 +223,13 @@ void DialogSessionBuilds::UpdateSizes()
 			mLayoutArea->itemAt(r)->layout()->itemAt(c)->widget()->setMinimumWidth(maxWmsh);
 	}
 
+	qDebug() << "TOT msh w=" << totMaxWmsh;
+
+	/*
 	update();
 	mLayoutHeader->update();
 	mLayoutArea->update();
+	*/
 
 	qDebug() << "--------------------- 2ND PASS ---------------------";
 
@@ -235,11 +240,19 @@ void DialogSessionBuilds::UpdateSizes()
 		int maxWmw = mLayoutHeader->itemAt(c)->widget()->minimumWidth();
 		qDebug() << "H" << c << "w=" << maxW << "msh w=" << maxWmsh << "mw w=" << maxWmw;
 
+		totMaxW = maxW;
+		totMaxWmsh = maxWmsh;
+		totMaxWmw = maxWmw;
+
 		for(int r = 0; r < ROWS; ++r)
 		{
 			const int DW = mLayoutArea->itemAt(r)->layout()->itemAt(c)->widget()->width();
 			const int DWmsh = mLayoutArea->itemAt(r)->layout()->itemAt(c)->widget()->minimumSizeHint().width();
 			const int DWmw = mLayoutArea->itemAt(r)->layout()->itemAt(c)->widget()->minimumWidth();
+
+			totMaxW += DW;
+			totMaxWmsh += DWmsh;
+			totMaxWmw += DWmw;
 
 			qDebug() << "D" << r << "w=" << DW << "msh w=" << DWmsh << "mw w=" << DWmw;
 
@@ -247,10 +260,10 @@ void DialogSessionBuilds::UpdateSizes()
 				maxWmsh = DWmsh;
 		}
 
-		qDebug() << c << "]" << maxWmsh;
+		qDebug() << c << "] max msh w=" << maxWmsh << "- TOT w=" << totMaxW << "- TOT msh w=" << totMaxWmsh << "- TOT mw w=" << totMaxWmw;
 	}
 
-	qDebug() << "----------------------------------------------------";
+	qDebug() << "----------------------------------------------------";	
 }
 
 } // namespace Sigbuild
