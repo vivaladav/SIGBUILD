@@ -25,6 +25,10 @@ namespace Sigbuild
 
 DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, const QVector<QPixmap> & icons, QWidget * parent)
 	: QDialog(parent, Qt::Dialog | Qt::WindowTitleHint| Qt::WindowCloseButtonHint)
+	, mLayoutHeader(nullptr)
+	, mLayoutArea(nullptr)
+	, mScrollArea(nullptr)
+	, mFakeBar(nullptr)
 {
 //	QPalette pal(palette());
 
@@ -86,6 +90,7 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 	mScrollArea = new QScrollArea(this);
 	mScrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
 	mScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+//	mScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 	mScrollArea->setWidgetResizable(true);
 	mScrollArea->setFrameShape(QFrame::NoFrame);
 
@@ -148,6 +153,18 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 
 	qDebug() << "";
 
+	QScrollBar * bar = mScrollArea->verticalScrollBar();
+
+	if(bar)
+	{
+		if(bar->isVisible())
+			mFakeBar = new QSpacerItem(bar->width(), bar->height(), QSizePolicy::Fixed, QSizePolicy::Fixed);
+		else
+			mFakeBar = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+		mLayoutHeader->addSpacerItem(mFakeBar);
+	}
+
 	// -- OK BUTTON --
 	QPushButton * button = new QPushButton(tr("OK"));
 	qDebug() << "button W:" << button->width();
@@ -174,13 +191,19 @@ void DialogSessionBuilds::resizeEvent(QResizeEvent * event)
 
 	QScrollBar * bar = mScrollArea->verticalScrollBar();
 	const bool visible = bar && bar->isVisible();
-	qDebug() << "DialogSessionBuilds::resizeEvent - old size:" << event->oldSize() << "- new size:" << event->size();
-	qDebug() << "DialogSessionBuilds::resizeEvent - scrollbar visible:" << (visible ? QString("YES") : QString("NO"));
+	qDebug() << "DialogSessionBuilds::resizeEvent - old size:" << event->oldSize() << "- new size:" << event->size()
+			 << "- scrollbar visible:" << (visible ? QString("YES") : QString("NO"));
 
 	if(prevVis != visible)
 	{
+		if(visible)
+			mFakeBar->changeSize(bar->width(), 10, QSizePolicy::Fixed, QSizePolicy::Fixed);
+		else
+			mFakeBar->changeSize(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
+
 		prevVis = visible;
-		UpdateSizes();
+		update();
+		//UpdateSizes();
 	}
 }
 

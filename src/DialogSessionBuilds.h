@@ -6,6 +6,7 @@
 
 class QHBoxLayout;
 class QScrollArea;
+class QSpacerItem;
 class QVBoxLayout;
 
 namespace Sigbuild
@@ -40,6 +41,7 @@ private:
 	QHBoxLayout * mLayoutHeader;
 	QVBoxLayout * mLayoutArea;
 	QScrollArea * mScrollArea;
+	QSpacerItem * mFakeBar;
 };
 
 } // namespace Sigbuild
