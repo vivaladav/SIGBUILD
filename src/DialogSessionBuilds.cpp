@@ -168,6 +168,8 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 
 	if(bar)
 	{
+		bar->installEventFilter(this);
+
 		mScrollbarVisible = bar->isVisible();
 
 		mSpacerHeader->setFixedWidth(bar->width());
@@ -200,12 +202,13 @@ void DialogSessionBuilds::showEvent(QShowEvent *)
 }
 
 void DialogSessionBuilds::resizeEvent(QResizeEvent * event)
-{	
+{
 	QScrollBar * bar = mScrollArea->verticalScrollBar();
 	const bool visible = bar && bar->isVisible();
 	qDebug() << "DialogSessionBuilds::resizeEvent - old size:" << event->oldSize() << "- new size:" << event->size()
 			 << "- scrollbar visible:" << (visible ? QString("YES") : QString("NO"));
 
+	/*
 	if(mScrollbarVisible != visible)
 	{
 		mSpacerHeader->setFixedWidth(bar->width());
@@ -219,6 +222,7 @@ void DialogSessionBuilds::resizeEvent(QResizeEvent * event)
 		mScrollbarVisible = visible;
 		update();
 	}
+	*/
 }
 
 void DialogSessionBuilds::UpdateSizes()
@@ -236,7 +240,7 @@ void DialogSessionBuilds::UpdateSizes()
 		int maxW = mLayoutHeader->itemAt(c)->widget()->width();
 		int maxWmsh = mLayoutHeader->itemAt(c)->widget()->minimumSizeHint().width();
 		int maxWmw = mLayoutHeader->itemAt(c)->widget()->minimumWidth();
-		qDebug() << "H" << c << "w=" << maxW << "msh w=" << maxWmsh << "mw w=" << maxWmw;
+		//qDebug() << "H" << c << "w=" << maxW << "msh w=" << maxWmsh << "mw w=" << maxWmw;
 
 		for(int r = 0; r < ROWS; ++r)
 		{
@@ -244,7 +248,7 @@ void DialogSessionBuilds::UpdateSizes()
 			const int DWmsh = mLayoutArea->itemAt(r)->layout()->itemAt(c)->widget()->minimumSizeHint().width();
 			const int DWmw = mLayoutArea->itemAt(r)->layout()->itemAt(c)->widget()->minimumWidth();
 
-			qDebug() << "D" << r << "w=" << DW << "msh w=" << DWmsh << "mw w=" << DWmw;
+			//qDebug() << "D" << r << "w=" << DW << "msh w=" << DWmsh << "mw w=" << DWmw;
 
 			if(DWmsh > maxWmsh)
 				maxWmsh = DWmsh;
@@ -252,7 +256,7 @@ void DialogSessionBuilds::UpdateSizes()
 
 		totMaxWmsh += maxWmsh;
 
-		qDebug() << c << "] max msh w=" << maxWmsh;
+		//qDebug() << c << "] max msh w=" << maxWmsh;
 
 		mLayoutHeader->itemAt(c)->widget()->setMinimumWidth(maxWmsh);
 
@@ -271,7 +275,7 @@ void DialogSessionBuilds::UpdateSizes()
 		int maxW = mLayoutHeader->itemAt(c)->widget()->width();
 		int maxWmsh = mLayoutHeader->itemAt(c)->widget()->minimumSizeHint().width();
 		int maxWmw = mLayoutHeader->itemAt(c)->widget()->minimumWidth();
-		qDebug() << "H" << c << "w=" << maxW << "msh w=" << maxWmsh << "mw w=" << maxWmw;
+		//qDebug() << "H" << c << "w=" << maxW << "msh w=" << maxWmsh << "mw w=" << maxWmw;
 
 		totMaxW = maxW;
 		totMaxWmsh = maxWmsh;
@@ -287,16 +291,55 @@ void DialogSessionBuilds::UpdateSizes()
 			totMaxWmsh += DWmsh;
 			totMaxWmw += DWmw;
 
-			qDebug() << "D" << r << "w=" << DW << "msh w=" << DWmsh << "mw w=" << DWmw;
+			//qDebug() << "D" << r << "w=" << DW << "msh w=" << DWmsh << "mw w=" << DWmw;
 
 			if(DWmsh > maxWmsh)
 				maxWmsh = DWmsh;
 		}
 
-		qDebug() << c << "] max msh w=" << maxWmsh << "- TOT w=" << totMaxW << "- TOT msh w=" << totMaxWmsh << "- TOT mw w=" << totMaxWmw;
+		//qDebug() << c << "] max msh w=" << maxWmsh << "- TOT w=" << totMaxW << "- TOT msh w=" << totMaxWmsh << "- TOT mw w=" << totMaxWmw;
 	}
 
 	qDebug() << "----------------------------------------------------";	
+}
+
+bool DialogSessionBuilds::eventFilter(QObject * obj, QEvent * event)
+{
+	QScrollBar * bar = mScrollArea->verticalScrollBar();
+
+	if(bar != obj)
+	{
+		qDebug() << "ERROR filtering wrong object...";
+		return false;
+	}
+
+	bool visible = false;
+
+	if(event->type() == QEvent::Show)
+	{
+		visible = true;
+		qDebug() << "DialogSessionBuilds::eventFilter - SHOW" << obj;
+	}
+	else if(event->type() == QEvent::Hide)
+		qDebug() << "DialogSessionBuilds::eventFilter - HIDE" << obj;
+	else
+		return false;
+
+	if(mScrollbarVisible != visible)
+	{
+		mSpacerHeader->setFixedWidth(bar->width());
+		mSpacerHeader->setFixedHeight(1);
+
+		mSpacerHeader->setVisible(visible);
+
+		qDebug() << "BAR - size policy:" << bar->sizePolicy() << "- size:" << bar->size() << "- margin:" << bar->contentsMargins();
+		qDebug() << "FAKE BAR - size policy:" << mSpacerHeader->sizePolicy() << "- size:" << mSpacerHeader->size() << "- margin:" << mSpacerHeader->contentsMargins();
+
+		mScrollbarVisible = visible;
+		update();
+	}
+
+	return false;
 }
 
 } // namespace Sigbuild

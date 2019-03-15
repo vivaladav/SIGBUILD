@@ -29,6 +29,8 @@ public:
 
 	void UpdateSizes();
 
+	bool eventFilter(QObject * obj, QEvent * event) override;
+
 protected:
 	void showEvent(QShowEvent * event) override;
 	void resizeEvent(QResizeEvent * event) override;
