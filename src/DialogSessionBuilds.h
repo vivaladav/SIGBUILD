@@ -12,6 +12,14 @@ class QVBoxLayout;
 namespace Sigbuild
 {
 
+class Spacer : public QWidget
+{
+	Q_OBJECT
+
+protected:
+	void paintEvent(QPaintEvent *) override {}
+};
+
 class BuildData;
 
 class DialogSessionBuilds : public QDialog
@@ -41,7 +49,8 @@ private:
 	QHBoxLayout * mLayoutHeader;
 	QVBoxLayout * mLayoutArea;
 	QScrollArea * mScrollArea;
-	QSpacerItem * mFakeBar;
+	Spacer * mSpacerHeader;
+	bool mScrollbarVisible;
 };
 
 } // namespace Sigbuild

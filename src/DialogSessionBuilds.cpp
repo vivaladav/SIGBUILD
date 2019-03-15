@@ -28,7 +28,8 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 	, mLayoutHeader(nullptr)
 	, mLayoutArea(nullptr)
 	, mScrollArea(nullptr)
-	, mFakeBar(nullptr)
+	, mSpacerHeader(nullptr)
+	, mScrollbarVisible(false)
 {
 //	QPalette pal(palette());
 
@@ -55,7 +56,7 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 	const int STRETCH[NUM_TAB_COLUMNS] = { 30, 25, 25, 15, 5 };
 
 	mLayoutHeader = new QHBoxLayout;
-	mLayoutHeader->setContentsMargins(0, 0, 0, 0);
+	mLayoutHeader->setContentsMargins(0, 0, 0, 5);
 	mLayoutHeader->setSpacing(WIDGET_SPACING);
 	header->setLayout(mLayoutHeader);
 
@@ -90,7 +91,6 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 	mScrollArea = new QScrollArea(this);
 	mScrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
 	mScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//	mScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 	mScrollArea->setWidgetResizable(true);
 	mScrollArea->setFrameShape(QFrame::NoFrame);
 
@@ -113,16 +113,24 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 
 	// -- builds data --
 	//for(int i = 0; i < data.size(); ++i)
-	for(int i = 0; i < 5; ++i)
+	for(int i = 0; i < 30; ++i)
 	{
 		const BuildData * entry = data[0];
 
 		QHBoxLayout * layoutRow = new QHBoxLayout;
+		layoutRow->setSpacing(WIDGET_SPACING);
+		layoutRow->setContentsMargins(0, 0, 0, 3);
 		mLayoutArea->addLayout(layoutRow);
 
 		QLabel * label;
 
-		label = new QLabel(entry->GetProject());
+		if(i == 3)
+			label = new QLabel(entry->GetProject() + "LONG title for a project...");
+		else if(i == 6)
+			label = new QLabel(entry->GetProject() + "LONGER title for a project...");
+		else
+			label = new QLabel(entry->GetProject());
+
 		label->setContentsMargins(0, 0, MARGIN_W, 0);
 		layoutRow->addWidget(label, STRETCH[COL_PROJECT]);
 
@@ -155,14 +163,20 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 
 	QScrollBar * bar = mScrollArea->verticalScrollBar();
 
+	mSpacerHeader = new Spacer;
+	mLayoutHeader->addWidget(mSpacerHeader);
+
 	if(bar)
 	{
-		if(bar->isVisible())
-			mFakeBar = new QSpacerItem(bar->width(), bar->height(), QSizePolicy::Fixed, QSizePolicy::Fixed);
-		else
-			mFakeBar = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
+		mScrollbarVisible = bar->isVisible();
 
-		mLayoutHeader->addSpacerItem(mFakeBar);
+		mSpacerHeader->setFixedWidth(bar->width());
+		mSpacerHeader->setFixedHeight(1);
+
+		mSpacerHeader->setVisible(mScrollbarVisible);
+
+		qDebug() << "BAR - size policy:" << bar->sizePolicy() << "- size:" << bar->size() << "- margin:" << bar->contentsMargins();
+		qDebug() << "FAKE BAR - size policy:" << mSpacerHeader->sizePolicy() << "- size:" << mSpacerHeader->size() << "- margin:" << mSpacerHeader->contentsMargins();
 	}
 
 	// -- OK BUTTON --
@@ -186,24 +200,24 @@ void DialogSessionBuilds::showEvent(QShowEvent *)
 }
 
 void DialogSessionBuilds::resizeEvent(QResizeEvent * event)
-{
-	static bool prevVis = false;
-
+{	
 	QScrollBar * bar = mScrollArea->verticalScrollBar();
 	const bool visible = bar && bar->isVisible();
 	qDebug() << "DialogSessionBuilds::resizeEvent - old size:" << event->oldSize() << "- new size:" << event->size()
 			 << "- scrollbar visible:" << (visible ? QString("YES") : QString("NO"));
 
-	if(prevVis != visible)
+	if(mScrollbarVisible != visible)
 	{
-		if(visible)
-			mFakeBar->changeSize(bar->width(), 10, QSizePolicy::Fixed, QSizePolicy::Fixed);
-		else
-			mFakeBar->changeSize(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
+		mSpacerHeader->setFixedWidth(bar->width());
+		mSpacerHeader->setFixedHeight(1);
 
-		prevVis = visible;
+		mSpacerHeader->setVisible(bar->isVisible());
+
+		qDebug() << "BAR - size policy:" << bar->sizePolicy() << "- size:" << bar->size() << "- margin:" << bar->contentsMargins();
+		qDebug() << "FAKE BAR - size policy:" << mSpacerHeader->sizePolicy() << "- size:" << mSpacerHeader->size() << "- margin:" << mSpacerHeader->contentsMargins();
+
+		mScrollbarVisible = visible;
 		update();
-		//UpdateSizes();
 	}
 }
 
@@ -248,11 +262,7 @@ void DialogSessionBuilds::UpdateSizes()
 
 	qDebug() << "TOT msh w=" << totMaxWmsh;
 
-	/*
 	update();
-	mLayoutHeader->update();
-	mLayoutArea->update();
-	*/
 
 	qDebug() << "--------------------- 2ND PASS ---------------------";
 
