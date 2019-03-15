@@ -201,30 +201,6 @@ void DialogSessionBuilds::showEvent(QShowEvent *)
 	UpdateSizes();
 }
 
-void DialogSessionBuilds::resizeEvent(QResizeEvent * event)
-{
-	QScrollBar * bar = mScrollArea->verticalScrollBar();
-	const bool visible = bar && bar->isVisible();
-	qDebug() << "DialogSessionBuilds::resizeEvent - old size:" << event->oldSize() << "- new size:" << event->size()
-			 << "- scrollbar visible:" << (visible ? QString("YES") : QString("NO"));
-
-	/*
-	if(mScrollbarVisible != visible)
-	{
-		mSpacerHeader->setFixedWidth(bar->width());
-		mSpacerHeader->setFixedHeight(1);
-
-		mSpacerHeader->setVisible(bar->isVisible());
-
-		qDebug() << "BAR - size policy:" << bar->sizePolicy() << "- size:" << bar->size() << "- margin:" << bar->contentsMargins();
-		qDebug() << "FAKE BAR - size policy:" << mSpacerHeader->sizePolicy() << "- size:" << mSpacerHeader->size() << "- margin:" << mSpacerHeader->contentsMargins();
-
-		mScrollbarVisible = visible;
-		update();
-	}
-	*/
-}
-
 void DialogSessionBuilds::UpdateSizes()
 {
 	qDebug() << "--------------------- 1ST PASS ---------------------";
@@ -264,7 +240,7 @@ void DialogSessionBuilds::UpdateSizes()
 			mLayoutArea->itemAt(r)->layout()->itemAt(c)->widget()->setMinimumWidth(maxWmsh);
 	}
 
-	qDebug() << "TOT msh w=" << totMaxWmsh;
+	//qDebug() << "TOT msh w=" << totMaxWmsh;
 
 	update();
 

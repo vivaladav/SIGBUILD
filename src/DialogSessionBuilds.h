@@ -33,7 +33,6 @@ public:
 
 protected:
 	void showEvent(QShowEvent * event) override;
-	void resizeEvent(QResizeEvent * event) override;
 
 private:
 	enum TableColumns : int
