@@ -112,24 +112,16 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 	qDebug() << "---- CREATE DATA ----";
 
 	// -- builds data --
-	//for(int i = 0; i < data.size(); ++i)
-	for(int i = 0; i < 30; ++i)
+	for(int i = 0; i < data.size(); ++i)
 	{
-		const BuildData * entry = data[0];
+		const BuildData * entry = data[i];
 
 		QHBoxLayout * layoutRow = new QHBoxLayout;
 		layoutRow->setSpacing(WIDGET_SPACING);
 		layoutRow->setContentsMargins(0, 0, 0, 3);
 		mLayoutArea->addLayout(layoutRow);
 
-		QLabel * label;
-
-		if(i == 3)
-			label = new QLabel(entry->GetProject() + "LONG title for a project...");
-		else if(i == 6)
-			label = new QLabel(entry->GetProject() + "LONGER title for a project...");
-		else
-			label = new QLabel(entry->GetProject());
+		QLabel * label = new QLabel(entry->GetProject());
 
 		label->setContentsMargins(0, 0, MARGIN_W, 0);
 		layoutRow->addWidget(label, STRETCH[COL_PROJECT]);
