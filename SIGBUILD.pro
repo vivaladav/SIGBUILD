@@ -11,8 +11,7 @@ SOURCES += \
     src/OptionsPageMain.cpp \
     src/OptionsPageMainWidget.cpp \
     src/Settings.cpp \
-    src/SigbuildPlugin.cpp \
-    src/Label.cpp
+    src/SigbuildPlugin.cpp
 
 
 HEADERS += \
@@ -24,8 +23,7 @@ HEADERS += \
     src/Settings.h \
     src/SigbuildDefines.h \
     src/SigbuildGlobal.h \
-    src/SigbuildPlugin.h \
-    src/Label.h
+    src/SigbuildPlugin.h
 
 # Qt Creator linking
 

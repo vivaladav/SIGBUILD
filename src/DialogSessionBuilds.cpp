@@ -1,7 +1,6 @@
 #include "DialogSessionBuilds.h"
 
 #include "BuildData.h"
-#include "Label.h"
 #include "SigbuildDefines.h"
 
 #include <QDateTime>
