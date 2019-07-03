@@ -31,8 +31,6 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 	, mSpacerHeader(nullptr)
 	, mScrollbarVisible(false)
 {
-//	QPalette pal(palette());
-
 	// -- properties --
 	setWindowTitle(tr("Session builds"));
 	setSizeGripEnabled(false);
@@ -96,9 +94,6 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 
 	layout->addWidget(mScrollArea);
 
-	qDebug() << "QScrollArea sizeAdjustPolicy:" << mScrollArea->sizeAdjustPolicy();
-	qDebug() << "QScrollArea sizePolicy:" << mScrollArea->sizePolicy();
-
 	QWidget * scrollContent = new QWidget;
 	scrollContent->setContentsMargins(0, 0, 0, 0);
 	mScrollArea->setWidget(scrollContent);
@@ -106,10 +101,6 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 	mLayoutArea->setSpacing(WIDGET_SPACING);
 	mLayoutArea->setContentsMargins(0, 0, 0, 0);
 	scrollContent->setLayout(mLayoutArea);
-
-	qDebug() << "scrollContent sizePolicy:" << scrollContent->sizePolicy();
-
-	qDebug() << "---- CREATE DATA ----";
 
 	// -- builds data --
 	for(int i = 0; i < data.size(); ++i)
@@ -151,8 +142,6 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 		layoutRow->addWidget(label, STRETCH[COL_RESULT]);
 	}
 
-	qDebug() << "";
-
 	QScrollBar * bar = mScrollArea->verticalScrollBar();
 
 	mSpacerHeader = new Spacer;
@@ -168,22 +157,14 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
 		mSpacerHeader->setFixedHeight(1);
 
 		mSpacerHeader->setVisible(mScrollbarVisible);
-
-		qDebug() << "BAR - size policy:" << bar->sizePolicy() << "- size:" << bar->size() << "- margin:" << bar->contentsMargins();
-		qDebug() << "FAKE BAR - size policy:" << mSpacerHeader->sizePolicy() << "- size:" << mSpacerHeader->size() << "- margin:" << mSpacerHeader->contentsMargins();
 	}
 
 	// -- OK BUTTON --
 	QPushButton * button = new QPushButton(tr("OK"));
-	qDebug() << "button W:" << button->width();
 
 	button->setDefault(true);
 
-	qDebug() << "button W:" << button->width();
-
 	layout->addWidget(button, 0, Qt::AlignCenter);
-
-	qDebug() << "button W:" << button->width();
 
 	connect(button, &QPushButton::clicked, this, &QDialog::accept);
 }
@@ -195,36 +176,19 @@ void DialogSessionBuilds::showEvent(QShowEvent *)
 
 void DialogSessionBuilds::UpdateSizes()
 {
-	qDebug() << "--------------------- 1ST PASS ---------------------";
-
 	const int ROWS = mLayoutArea->count();
-
-	int totMaxW = 0;
-	int totMaxWmsh = 0;
-	int totMaxWmw = 0;
 
 	for(int c = 0; c <NUM_TAB_COLUMNS; ++c)
 	{
-		int maxW = mLayoutHeader->itemAt(c)->widget()->width();
 		int maxWmsh = mLayoutHeader->itemAt(c)->widget()->minimumSizeHint().width();
-		int maxWmw = mLayoutHeader->itemAt(c)->widget()->minimumWidth();
-		//qDebug() << "H" << c << "w=" << maxW << "msh w=" << maxWmsh << "mw w=" << maxWmw;
 
 		for(int r = 0; r < ROWS; ++r)
 		{
-			const int DW = mLayoutArea->itemAt(r)->layout()->itemAt(c)->widget()->width();
 			const int DWmsh = mLayoutArea->itemAt(r)->layout()->itemAt(c)->widget()->minimumSizeHint().width();
-			const int DWmw = mLayoutArea->itemAt(r)->layout()->itemAt(c)->widget()->minimumWidth();
-
-			//qDebug() << "D" << r << "w=" << DW << "msh w=" << DWmsh << "mw w=" << DWmw;
 
 			if(DWmsh > maxWmsh)
 				maxWmsh = DWmsh;
 		}
-
-		totMaxWmsh += maxWmsh;
-
-		//qDebug() << c << "] max msh w=" << maxWmsh;
 
 		mLayoutHeader->itemAt(c)->widget()->setMinimumWidth(maxWmsh);
 
@@ -232,43 +196,7 @@ void DialogSessionBuilds::UpdateSizes()
 			mLayoutArea->itemAt(r)->layout()->itemAt(c)->widget()->setMinimumWidth(maxWmsh);
 	}
 
-	//qDebug() << "TOT msh w=" << totMaxWmsh;
-
 	update();
-
-	qDebug() << "--------------------- 2ND PASS ---------------------";
-
-	for(int c = 0; c <NUM_TAB_COLUMNS; ++c)
-	{
-		int maxW = mLayoutHeader->itemAt(c)->widget()->width();
-		int maxWmsh = mLayoutHeader->itemAt(c)->widget()->minimumSizeHint().width();
-		int maxWmw = mLayoutHeader->itemAt(c)->widget()->minimumWidth();
-		//qDebug() << "H" << c << "w=" << maxW << "msh w=" << maxWmsh << "mw w=" << maxWmw;
-
-		totMaxW = maxW;
-		totMaxWmsh = maxWmsh;
-		totMaxWmw = maxWmw;
-
-		for(int r = 0; r < ROWS; ++r)
-		{
-			const int DW = mLayoutArea->itemAt(r)->layout()->itemAt(c)->widget()->width();
-			const int DWmsh = mLayoutArea->itemAt(r)->layout()->itemAt(c)->widget()->minimumSizeHint().width();
-			const int DWmw = mLayoutArea->itemAt(r)->layout()->itemAt(c)->widget()->minimumWidth();
-
-			totMaxW += DW;
-			totMaxWmsh += DWmsh;
-			totMaxWmw += DWmw;
-
-			//qDebug() << "D" << r << "w=" << DW << "msh w=" << DWmsh << "mw w=" << DWmw;
-
-			if(DWmsh > maxWmsh)
-				maxWmsh = DWmsh;
-		}
-
-		//qDebug() << c << "] max msh w=" << maxWmsh << "- TOT w=" << totMaxW << "- TOT msh w=" << totMaxWmsh << "- TOT mw w=" << totMaxWmw;
-	}
-
-	qDebug() << "----------------------------------------------------";	
 }
 
 bool DialogSessionBuilds::eventFilter(QObject * obj, QEvent * event)
@@ -284,13 +212,8 @@ bool DialogSessionBuilds::eventFilter(QObject * obj, QEvent * event)
 	bool visible = false;
 
 	if(event->type() == QEvent::Show)
-	{
 		visible = true;
-		qDebug() << "DialogSessionBuilds::eventFilter - SHOW" << obj;
-	}
-	else if(event->type() == QEvent::Hide)
-		qDebug() << "DialogSessionBuilds::eventFilter - HIDE" << obj;
-	else
+	else if(event->type() != QEvent::Hide)
 		return false;
 
 	if(mScrollbarVisible != visible)
@@ -299,9 +222,6 @@ bool DialogSessionBuilds::eventFilter(QObject * obj, QEvent * event)
 		mSpacerHeader->setFixedHeight(1);
 
 		mSpacerHeader->setVisible(visible);
-
-		qDebug() << "BAR - size policy:" << bar->sizePolicy() << "- size:" << bar->size() << "- margin:" << bar->contentsMargins();
-		qDebug() << "FAKE BAR - size policy:" << mSpacerHeader->sizePolicy() << "- size:" << mSpacerHeader->size() << "- margin:" << mSpacerHeader->contentsMargins();
 
 		mScrollbarVisible = visible;
 		update();
