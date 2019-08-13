@@ -10,6 +10,8 @@
 #include <coreplugin/mainwindow.h>
 #include <projectexplorer/buildmanager.h>
 #include <projectexplorer/project.h>
+#include <projectexplorer/projectnodes.h>
+#include <projectexplorer/projecttree.h>
 
 #include <QAction>
 #include <QCoreApplication>
@@ -123,7 +125,20 @@ void SigbuildPlugin::OnBuildStateChanged(ProjectExplorer::Project * pro)
 	{
 		mTimeBuildStart = QDateTime::currentMSecsSinceEpoch();
 
-		mCurrentProject = pro->displayName();
+		ProjectExplorer::Node * node = ProjectExplorer::ProjectTree::findCurrentNode();
+
+		if(node)
+		{
+			// if there's a project node we are in a sub-project
+			ProjectExplorer::ProjectNode * prjNode = node->parentProjectNode();
+
+			if(prjNode)
+				mCurrentProject = QString("%1 (%2)").arg(node->displayName()).arg(prjNode->displayName());
+			else
+				mCurrentProject = pro->displayName();
+		}
+		else
+			mCurrentProject = QString("???");
 
 		// show build status with updates
 		if(mTrayIcon)
@@ -267,20 +282,12 @@ void SigbuildPlugin::OnActionShowSessionBuilds()
 {
 	QMainWindow * window = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
 
-	DialogSessionBuilds * d = new DialogSessionBuilds(mBuildsData, mIconDialogStates, window);
-	qDebug() << "DialogSessionBuilds CREATED";
-
-	d->show();	
-	qDebug() << "DialogSessionBuilds SHOWN";
-
-	d->raise();
-	qDebug() << "DialogSessionBuilds RAISED";
-
-//	d->UpdateSizes();
-//	qDebug() << "DialogSessionBuilds UPDATED";
+	DialogSessionBuilds * dialog = new DialogSessionBuilds(mBuildsData, mIconDialogStates, window);
+	dialog->show();
+	dialog->raise();
 
 	// schedule self-destructionwhen closing
-	connect(d, &QDialog::finished, d, &QDialog::deleteLater);
+	connect(dialog, &QDialog::finished, dialog, &QDialog::deleteLater);
 }
 
 void SigbuildPlugin::OnActionToggleNotifySystray(bool checked)
