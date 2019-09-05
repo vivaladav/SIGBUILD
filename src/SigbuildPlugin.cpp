@@ -125,7 +125,7 @@ void SigbuildPlugin::OnBuildStateChanged(ProjectExplorer::Project * pro)
 	{
 		mTimeBuildStart = QDateTime::currentMSecsSinceEpoch();
 
-		ProjectExplorer::Node * node = ProjectExplorer::ProjectTree::findCurrentNode();
+		ProjectExplorer::Node * node = ProjectExplorer::ProjectTree::currentNode();
 
 		if(node)
 		{
