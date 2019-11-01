@@ -1,7 +1,6 @@
 #pragma once
 
 #include "SigbuildDefines.h"
-#include "SigbuildGlobal.h"
 
 #include <extensionsystem/iplugin.h>
 

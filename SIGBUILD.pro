@@ -22,7 +22,6 @@ HEADERS += \
     src/OptionsPageMainWidget.h \
     src/Settings.h \
     src/SigbuildDefines.h \
-    src/SigbuildGlobal.h \
     src/SigbuildPlugin.h
 
 # Qt Creator linking
