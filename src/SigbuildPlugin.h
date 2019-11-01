@@ -84,7 +84,6 @@ private:
 	QSoundEffect * mSoundSuccess = nullptr;
 	QSoundEffect * mSoundFail = nullptr;
 
-	quint64 mTimeSessionStart = 0;
 	quint64 mTimeBuildStart = 0;
 	quint64 mTimeLastBuildStart = 0;
 	quint64 mTimeLastBuildEnd = 0;

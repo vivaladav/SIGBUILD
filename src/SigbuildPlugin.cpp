@@ -99,9 +99,6 @@ bool SigbuildPlugin::initialize(const QStringList & arguments, QString * errorSt
 	connect(ProjectExplorer::BuildManager::instance(), &ProjectExplorer::BuildManager::buildQueueFinished,
 			this, &SigbuildPlugin::OnBuildFinished);
 
-	// log start of session
-	mTimeSessionStart = QDateTime::currentMSecsSinceEpoch();
-
 	return true;
 }
 
