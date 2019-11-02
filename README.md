@@ -10,6 +10,13 @@ People who want to start to use SIGBUILD need to build it from scratch following
 Because of the current status of the project, it's guaranteed only that SIGBUILD will work with the latest version of Qt Creator.
 Previous versions are likely to work too, but they are not officially supported, so please do not create issues for them.
 
+### Current features
+- Systray notifications
+- Audio notifications
+- Latest build info
+- Session log
+- Full Qt Creator options
+
 ### Support this project
 You can support the development of this project becoming a [GitHub Sponsor](https://github.com/sponsors/vivaladav).
 
