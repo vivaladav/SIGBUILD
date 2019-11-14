@@ -1,7 +1,9 @@
-# SIGBUILD
-A Qt Creator plugin to get notified when your builds terminate and to track their stats.
+![SIGBUILD](https://raw.githubusercontent.com/vivaladav/SIGBUILD/master/doc/img/SIGBUILD_logo-white_bg-128.png)
+
 
 ## Project
+A Qt Creator plugin to get notified when your builds terminate and to track their stats.
+
 ### Project Status
 Currently the plugin is usable and the project is under active development, but not ready for a proper release yet, hence no binary builds are available.
 
