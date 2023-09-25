@@ -10,20 +10,20 @@ enum class BuildState;
 class BuildData
 {
 public:
-	BuildData(const QString & project, quint64 start, quint64 end, BuildState state);
+    BuildData(const QString & project, quint64 start, quint64 end, BuildState state);
 
-	const QString & GetProject() const;
-	quint64 GetTimeStart() const;
-	quint64 GetTimeEnd() const;
-	BuildState GetState() const;
+    const QString & GetProject() const;
+    quint64 GetTimeStart() const;
+    quint64 GetTimeEnd() const;
+    BuildState GetState() const;
 
 private:
-	QString mProject;
+    QString mProject;
 
-	quint64 mTimeStart;
-	quint64 mTimeEnd;
+    quint64 mTimeStart;
+    quint64 mTimeEnd;
 
-	BuildState mState;
+    BuildState mState;
 };
 
 

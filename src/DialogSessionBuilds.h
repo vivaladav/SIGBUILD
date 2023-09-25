@@ -14,10 +14,10 @@ namespace Sigbuild
 
 class Spacer : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 
 protected:
-	void paintEvent(QPaintEvent *) override {}
+    void paintEvent(QPaintEvent *) override {}
 };
 
 class BuildData;
@@ -25,33 +25,34 @@ class BuildData;
 class DialogSessionBuilds : public QDialog
 {
 public:
-	DialogSessionBuilds(const QVector<BuildData *> & data, const QVector<QPixmap> & icons, QWidget * parent = nullptr);
+    DialogSessionBuilds(const QVector<BuildData *> & data, const QVector<QPixmap> & icons,
+                        QWidget * parent = nullptr);
 
-	void UpdateSizes();
+    void UpdateSizes();
 
-	bool eventFilter(QObject * obj, QEvent * event) override;
+    bool eventFilter(QObject * obj, QEvent * event) override;
 
 protected:
-	void showEvent(QShowEvent * event) override;
+    void showEvent(QShowEvent * event) override;
 
 private:
-	enum TableColumns : int
-	{
-		COL_PROJECT = 0,
-		COL_START,
-		COL_END,
-		COL_TIME,
-		COL_RESULT,
+    enum TableColumns : int
+    {
+        COL_PROJECT = 0,
+        COL_START,
+        COL_END,
+        COL_TIME,
+        COL_RESULT,
 
-		NUM_TAB_COLUMNS
-	};
+        NUM_TAB_COLUMNS
+    };
 
 private:
-	QHBoxLayout * mLayoutHeader;
-	QVBoxLayout * mLayoutArea;
-	QScrollArea * mScrollArea;
-	Spacer * mSpacerHeader;
-	bool mScrollbarVisible;
+    QHBoxLayout * mLayoutHeader;
+    QVBoxLayout * mLayoutArea;
+    QScrollArea * mScrollArea;
+    Spacer * mSpacerHeader;
+    bool mScrollbarVisible;
 };
 
 } // namespace Sigbuild

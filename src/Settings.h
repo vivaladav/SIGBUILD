@@ -6,71 +6,71 @@ namespace Sigbuild
 class Settings
 {
 public:
-	Settings();
+    Settings();
 
-	void Load();
-	void Save();
+    void Load();
+    void Save();
 
-	// -- SYSTRAY --
-	bool IsSystrayEnabled() const;
-	void SetSystrayEnabled(bool val);
+    // -- SYSTRAY --
+    bool IsSystrayEnabled() const;
+    void SetSystrayEnabled(bool val);
 
-	bool IsSystrayNotificationEnabled() const;
-	void SetSystrayNotificationEnabled(bool val);
+    bool IsSystrayNotificationEnabled() const;
+    void SetSystrayNotificationEnabled(bool val);
 
-	bool ShowSystrayNotificationWhenActive() const;
-	void SetSystrayNotificationWhenActive(bool val);
+    bool ShowSystrayNotificationWhenActive() const;
+    void SetSystrayNotificationWhenActive(bool val);
 
-	int GetSystrayMinBuildTime() const;
-	void SetSystrayMinBuildTime(int val);
+    int GetSystrayMinBuildTime() const;
+    void SetSystrayMinBuildTime(int val);
 
-	int GetSystrayNotificationTime() const;
-	void SetSystrayNotificationTime(int val);
+    int GetSystrayNotificationTime() const;
+    void SetSystrayNotificationTime(int val);
 
-	// -- AUDIO --
-	bool IsAudioEnabled() const;
-	void SetAudioEnabled(bool val);
+    // -- AUDIO --
+    bool IsAudioEnabled() const;
+    void SetAudioEnabled(bool val);
 
-	bool PlayAudioNotificationWhenActive() const;
-	void SetAudioNotificationWhenActive(bool val);
+    bool PlayAudioNotificationWhenActive() const;
+    void SetAudioNotificationWhenActive(bool val);
 
-	int GetAudioVolume() const;
-	double GetAudioVolumeAsReal() const;
-	void SetAudioVolume(int val);
+    int GetAudioVolume() const;
+    double GetAudioVolumeAsReal() const;
+    void SetAudioVolume(int val);
 
-	int GetAudioMinBuildtime() const;
-	void SetAudioMinBuildTime(int val);
+    int GetAudioMinBuildtime() const;
+    void SetAudioMinBuildTime(int val);
 
-	// -- OPERATORS --
-	bool operator==(const Settings & other) const;
-	bool operator!=(const Settings & other) const;
+    // -- OPERATORS --
+    bool operator==(const Settings & other) const;
+    bool operator!=(const Settings & other) const;
 
 public:
-	static const int SYSTRAY_BUILD_TIME_MIN = 0;
-	static const int SYSTRAY_BUILD_TIME_MAX = 60;
+    static const int SYSTRAY_BUILD_TIME_MIN = 0;
+    static const int SYSTRAY_BUILD_TIME_MAX = 60;
 
-	static const int SYSTRAY_NOTIFICATION_TIME_MIN = 1;
-	static const int SYSTRAY_NOTIFICATION_TIME_MAX = 60;
+    static const int SYSTRAY_NOTIFICATION_TIME_MIN = 1;
+    static const int SYSTRAY_NOTIFICATION_TIME_MAX = 60;
 
-	static const int AUDIO_VOL_MIN = 0;
-	static const int AUDIO_VOL_MAX = 100;
+    static const int AUDIO_VOL_MIN = 0;
+    static const int AUDIO_VOL_MAX = 100;
 
-	static const int AUDIO_BUILD_TIME_MIN = 0;
-	static const int AUDIO_BUILD_TIME_MAX = 60;
+    static const int AUDIO_BUILD_TIME_MIN = 0;
+    static const int AUDIO_BUILD_TIME_MAX = 60;
 
 private:
-	// -- SYSTRAY --
-	bool mOptSystrayEnabled;
-	bool mOptSystrayNotifyEnabled;
-	bool mOptSystrayNotifyWhenActive;
-	int mOptSystrayMinBuildTime;
-	int mOptSystrayNotifyTime;
+    // -- SYSTRAY --
+    bool mOptSystrayEnabled;
+    bool mOptSystrayNotifyEnabled;
+    bool mOptSystrayNotifyWhenActive;
+    int mOptSystrayMinBuildTime;
+    int mOptSystrayNotifyTime;
 
-	// -- AUDIO --
-	bool mOptAudioEnabled;
-	bool mOptAudioNotifyWhenActive;
-	int mOptAudioVolume;
-	int mOptAudioMinBuildTime;
+    // -- AUDIO --
+    bool mOptAudioEnabled;
+    bool mOptAudioNotifyWhenActive;
+    int mOptAudioVolume;
+    int mOptAudioMinBuildTime;
 };
 
 // -- SYSTRAY --
@@ -97,7 +97,7 @@ inline void Settings::SetAudioNotificationWhenActive(bool val) { mOptAudioNotify
 inline int Settings::GetAudioVolume() const { return mOptAudioVolume; }
 inline double Settings::GetAudioVolumeAsReal() const
 {
-	return static_cast<double>(mOptAudioVolume) / static_cast<double>(AUDIO_VOL_MAX);
+    return static_cast<double>(mOptAudioVolume) / static_cast<double>(AUDIO_VOL_MAX);
 }
 
 inline int Settings::GetAudioMinBuildtime() const { return mOptAudioMinBuildTime; }
@@ -105,20 +105,20 @@ inline int Settings::GetAudioMinBuildtime() const { return mOptAudioMinBuildTime
 // -- OPERATORS --
 inline bool Settings::operator==(const Settings & other) const
 {
-	return	mOptSystrayEnabled == other.mOptSystrayEnabled &&
-			mOptSystrayNotifyEnabled == other.mOptSystrayNotifyEnabled &&
-			mOptSystrayNotifyWhenActive == other.mOptSystrayNotifyWhenActive &&
-			mOptSystrayMinBuildTime == other.mOptSystrayMinBuildTime &&
-			mOptSystrayNotifyTime == other.mOptSystrayNotifyTime &&
-			mOptAudioEnabled == other.mOptAudioEnabled &&
-			mOptAudioNotifyWhenActive == other.mOptAudioNotifyWhenActive &&
-			mOptAudioVolume == other.mOptAudioVolume &&
-			mOptAudioMinBuildTime == other.mOptAudioMinBuildTime;
+    return	mOptSystrayEnabled == other.mOptSystrayEnabled &&
+            mOptSystrayNotifyEnabled == other.mOptSystrayNotifyEnabled &&
+            mOptSystrayNotifyWhenActive == other.mOptSystrayNotifyWhenActive &&
+            mOptSystrayMinBuildTime == other.mOptSystrayMinBuildTime &&
+            mOptSystrayNotifyTime == other.mOptSystrayNotifyTime &&
+            mOptAudioEnabled == other.mOptAudioEnabled &&
+            mOptAudioNotifyWhenActive == other.mOptAudioNotifyWhenActive &&
+            mOptAudioVolume == other.mOptAudioVolume &&
+            mOptAudioMinBuildTime == other.mOptAudioMinBuildTime;
 }
 
 inline bool Settings::operator!=(const Settings & other) const
 {
-	return !(*this == other);
+    return !(*this == other);
 }
 
 } // namespace Sigbuild

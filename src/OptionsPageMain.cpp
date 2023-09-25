@@ -7,42 +7,42 @@ namespace Sigbuild
 {
 
 OptionsPageMain::OptionsPageMain(Settings * settings, QObject * parent)
-	: IOptionsPage(parent)
-	, mSettings(settings)
+    : IOptionsPage(parent)
+    , mSettings(settings)
 {
-	setId("SIGBUILDsettings");
-	setDisplayName("General");
-	setCategory("SIGBUILD");
-	setDisplayCategory("SIGBUILD");
-	setCategoryIcon(Utils::Icon(":/img/icon.png"));
+    setId("SIGBUILDsettings");
+    setDisplayName("General");
+    setCategory("SIGBUILD");
+    setDisplayCategory("SIGBUILD");
+    setCategoryIcon(Utils::Icon(":/img/icon.png"));
 }
 
 QWidget * OptionsPageMain::widget()
 {
-	if(nullptr == mWidget)
-		mWidget = new OptionsPageMainWidget(mSettings);
+    if(nullptr == mWidget)
+        mWidget = new OptionsPageMainWidget(mSettings);
 
-	return mWidget;
+    return mWidget;
 }
 
 void OptionsPageMain::apply()
 {
-	const Settings newSettings = mWidget->GenerateSettings();
+    const Settings newSettings = mWidget->GenerateSettings();
 
-	if(newSettings != *mSettings)
-	{
-		*mSettings = newSettings;
+    if(newSettings != *mSettings)
+    {
+        *mSettings = newSettings;
 
-		mSettings->Save();
+        mSettings->Save();
 
-		emit SettingsChanged();
-	}
+        emit SettingsChanged();
+    }
 }
 
 void OptionsPageMain::finish()
 {
-	delete mWidget;
-	mWidget = nullptr;
+    delete mWidget;
+    mWidget = nullptr;
 }
 
 } // namespace Sigbuild
