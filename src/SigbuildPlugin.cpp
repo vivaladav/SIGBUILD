@@ -20,7 +20,6 @@
 #include <QMainWindow>
 #include <QMenu>
 #include <QSoundEffect>
-#include <QSound>
 #include <QSystemTrayIcon>
 #include <QTimer>
 
@@ -32,74 +31,74 @@ namespace Sigbuild
 // ==== CONSTRUCTOR / DESTRUCTOR ====
 
 SigbuildPlugin::SigbuildPlugin()
-	: mSettings(new Settings)
+    : mSettings(new Settings)
 {
-	const int ICON_SIZE = 16;
+    const int ICON_SIZE = 16;
 
-	mIconDialogStates.reserve(NUM_BUILD_STATES);
+    mIconDialogStates.reserve(NUM_BUILD_STATES);
 
-	int ind = static_cast<int>(BuildState::BUILDING);
-	mIconStates[ind] = new QIcon(":/img/icon_building.png");
-	mIconDialogStates.push_back(mIconStates[ind]->pixmap(ICON_SIZE, ICON_SIZE));
+    int ind = static_cast<int>(BuildState::BUILDING);
+    mIconStates[ind] = new QIcon(":/img/icon_building.png");
+    mIconDialogStates.push_back(mIconStates[ind]->pixmap(ICON_SIZE, ICON_SIZE));
 
-	ind = static_cast<int>(BuildState::FAILED);
-	mIconStates[ind] = new QIcon(":/img/icon_fail.png");
-	mIconDialogStates.push_back(mIconStates[ind]->pixmap(ICON_SIZE, ICON_SIZE));
+    ind = static_cast<int>(BuildState::FAILED);
+    mIconStates[ind] = new QIcon(":/img/icon_fail.png");
+    mIconDialogStates.push_back(mIconStates[ind]->pixmap(ICON_SIZE, ICON_SIZE));
 
-	ind = static_cast<int>(BuildState::OK);
-	mIconStates[ind] = new QIcon(":/img/icon.png");
-	mIconDialogStates.push_back(mIconStates[ind]->pixmap(ICON_SIZE, ICON_SIZE));
+    ind = static_cast<int>(BuildState::OK);
+    mIconStates[ind] = new QIcon(":/img/icon.png");
+    mIconDialogStates.push_back(mIconStates[ind]->pixmap(ICON_SIZE, ICON_SIZE));
 }
 
 SigbuildPlugin::~SigbuildPlugin()
 {
-	DestroySystrayIcon();
+    DestroySystrayIcon();
 
-	for(int i = 0; i < NUM_BUILD_STATES; ++i)
-		delete mIconStates[i];
+    for(int i = 0; i < NUM_BUILD_STATES; ++i)
+        delete mIconStates[i];
 
-	DestroySounds();
+    DestroySounds();
 
-	const int NUM_DATA = mBuildsData.size();
+    const int NUM_DATA = mBuildsData.size();
 
-	for(int i = 0;  i < NUM_DATA; ++i)
-		delete mBuildsData[i];
+    for(int i = 0;  i < NUM_DATA; ++i)
+        delete mBuildsData[i];
 
-	delete mSettings;
+    delete mSettings;
 }
 
 // ==== PUBLIC FUNCTIONS ====
 
 bool SigbuildPlugin::initialize(const QStringList & arguments, QString * errorString)
 {
-	Q_UNUSED(arguments)
-	Q_UNUSED(errorString)
+    Q_UNUSED(arguments)
+    Q_UNUSED(errorString)
 
-	// -- OPTIONS PAGE --
-	mSettings->Load();
+    // -- OPTIONS PAGE --
+    mSettings->Load();
 
-	mOptionsPage = new OptionsPageMain(mSettings, this);
+    mOptionsPage = new OptionsPageMain(mSettings, this);
 
-	connect(mOptionsPage, &OptionsPageMain::SettingsChanged, this, &SigbuildPlugin::OnSettingsChanged);
+    connect(mOptionsPage, &OptionsPageMain::SettingsChanged, this, &SigbuildPlugin::OnSettingsChanged);
 
-	// -- CREATE ICON --
-	if(mSettings->IsSystrayEnabled())
-		CreateSystrayIcon();
+    // -- CREATE ICON --
+    if(mSettings->IsSystrayEnabled())
+        CreateSystrayIcon();
 
-	// -- CREATE SFXs --
-	if(mSettings->IsAudioEnabled())
-		CreateSounds();
+    // -- CREATE SFXs --
+    if(mSettings->IsAudioEnabled())
+        CreateSounds();
 
-	// -- SIGNALS HANDLING --
-	// build start
-	connect(ProjectExplorer::BuildManager::instance(), &ProjectExplorer::BuildManager::buildStateChanged,
-			this, &SigbuildPlugin::OnBuildStateChanged);
+    // -- SIGNALS HANDLING --
+    // build start
+    connect(ProjectExplorer::BuildManager::instance(), &ProjectExplorer::BuildManager::buildStateChanged,
+            this, &SigbuildPlugin::OnBuildStateChanged);
 
-	// build end
-	connect(ProjectExplorer::BuildManager::instance(), &ProjectExplorer::BuildManager::buildQueueFinished,
-			this, &SigbuildPlugin::OnBuildFinished);
+    // build end
+    connect(ProjectExplorer::BuildManager::instance(), &ProjectExplorer::BuildManager::buildQueueFinished,
+            this, &SigbuildPlugin::OnBuildFinished);
 
-	return true;
+    return true;
 }
 
 void SigbuildPlugin::extensionsInitialized()
@@ -109,330 +108,330 @@ void SigbuildPlugin::extensionsInitialized()
 
 ExtensionSystem::IPlugin::ShutdownFlag SigbuildPlugin::aboutToShutdown()
 {
-	return SynchronousShutdown;
+    return SynchronousShutdown;
 }
 
 // ==== PRIVATE SLOTS ====
 void SigbuildPlugin::OnBuildStateChanged(ProjectExplorer::Project * pro)
 {
-	SetBuildState(BuildState::BUILDING);
+    SetBuildState(BuildState::BUILDING);
 
-	// only log first state start time
-	if(0 == mTimeBuildStart)
-	{
-		mTimeBuildStart = QDateTime::currentMSecsSinceEpoch();
+    // only log first state start time
+    if(0 == mTimeBuildStart)
+    {
+        mTimeBuildStart = QDateTime::currentMSecsSinceEpoch();
 
-		ProjectExplorer::Node * node = ProjectExplorer::ProjectTree::currentNode();
+        ProjectExplorer::Node * node = ProjectExplorer::ProjectTree::currentNode();
 
-		if(node)
-		{
-			// if there's a project node we are in a sub-project
-			ProjectExplorer::ProjectNode * prjNode = node->parentProjectNode();
+        if(node)
+        {
+            // if there's a project node we are in a sub-project
+            ProjectExplorer::ProjectNode * prjNode = node->parentProjectNode();
 
-			if(prjNode)
-				mCurrentProject = QString("%1 (%2)").arg(node->displayName()).arg(prjNode->displayName());
-			else
-				mCurrentProject = pro->displayName();
-		}
-		else
-			mCurrentProject = QString("???");
+            if(prjNode)
+                mCurrentProject = QString("%1 (%2)").arg(node->displayName()).arg(prjNode->displayName());
+            else
+                mCurrentProject = pro->displayName();
+        }
+        else
+            mCurrentProject = QString("???");
 
-		// show build status with updates
-		if(mTrayIcon)
-			mTimerBuildUpdater->start();
-	}
+        // show build status with updates
+        if(mTrayIcon)
+            mTimerBuildUpdater->start();
+    }
 }
 
 void SigbuildPlugin::OnBuildFinished(bool res)
 {
-	QMainWindow * window = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
+    QMainWindow * window = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
 
-	mLastBuildProject = mCurrentProject;
+    mLastBuildProject = mCurrentProject;
 
-	// build time
-	mTimeLastBuildStart = mTimeBuildStart;
-	mTimeLastBuildEnd = QDateTime::currentMSecsSinceEpoch();
-	const int BUILD_TIME_SECS = GetBuildTimeSecs(mTimeLastBuildEnd);
-	const QString BUILD_TIME_STR = GetBuildTimeStr(BUILD_TIME_SECS);
+    // build time
+    mTimeLastBuildStart = mTimeBuildStart;
+    mTimeLastBuildEnd = QDateTime::currentMSecsSinceEpoch();
+    const int BUILD_TIME_SECS = GetBuildTimeSecs(mTimeLastBuildEnd);
+    const QString BUILD_TIME_STR = GetBuildTimeStr(BUILD_TIME_SECS);
 
-	// reset build time
-	mTimeBuildStart = 0;
+    // reset build time
+    mTimeBuildStart = 0;
 
-	// notification time in milliseconds
-	const int NOTIFY_TIME_MS =	mSettings->GetSystrayNotificationTime() * 1000;
+    // notification time in milliseconds
+    const int NOTIFY_TIME_MS =	mSettings->GetSystrayNotificationTime() * 1000;
 
-	const bool SHOW_MSG		=	mTrayIcon &&
-								mSettings->IsSystrayEnabled() &&
-								mSettings->IsSystrayNotificationEnabled() &&
-								(mSettings->ShowSystrayNotificationWhenActive() || !window->isActiveWindow()) &&
-								BUILD_TIME_SECS >= mSettings->GetSystrayMinBuildTime();
+    const bool SHOW_MSG		=	mTrayIcon &&
+                                mSettings->IsSystrayEnabled() &&
+                                mSettings->IsSystrayNotificationEnabled() &&
+                                (mSettings->ShowSystrayNotificationWhenActive() || !window->isActiveWindow()) &&
+                                BUILD_TIME_SECS >= mSettings->GetSystrayMinBuildTime();
 
-	const bool PLAY_AUDIO	=	mSettings->IsAudioEnabled() &&
-								(mSettings->PlayAudioNotificationWhenActive() || !window->isActiveWindow()) &&
-								BUILD_TIME_SECS >= mSettings->GetAudioMinBuildtime();
+    const bool PLAY_AUDIO	=	mSettings->IsAudioEnabled() &&
+                                (mSettings->PlayAudioNotificationWhenActive() || !window->isActiveWindow()) &&
+                                BUILD_TIME_SECS >= mSettings->GetAudioMinBuildtime();
 
-	if(res)
-	{
-		SetBuildState(BuildState::OK);
-		mLastBuildState = BuildState::OK;
+    if(res)
+    {
+        SetBuildState(BuildState::OK);
+        mLastBuildState = BuildState::OK;
 
-		if(SHOW_MSG)
-		{
-			mMsgNotification = QString("build succesful! \\o/\n\nBUILD TIME: %2").arg(BUILD_TIME_STR);
-			mTrayIcon->showMessage("SIGBUILD", mMsgNotification, QSystemTrayIcon::Information, NOTIFY_TIME_MS);
-		}
+        if(SHOW_MSG)
+        {
+            mMsgNotification = QString("build succesful! \\o/\n\nBUILD TIME: %2").arg(BUILD_TIME_STR);
+            mTrayIcon->showMessage("SIGBUILD", mMsgNotification, QSystemTrayIcon::Information, NOTIFY_TIME_MS);
+        }
 
-		if(mSoundSuccess && PLAY_AUDIO)
-		{
-			mSoundSuccess->setVolume(mSettings->GetAudioVolumeAsReal());
-			mSoundSuccess->play();
-		}
-	}
-	else
-	{
-		SetBuildState(BuildState::FAILED);
-		mLastBuildState = BuildState::FAILED;
+        if(mSoundSuccess && PLAY_AUDIO)
+        {
+            mSoundSuccess->setVolume(mSettings->GetAudioVolumeAsReal());
+            mSoundSuccess->play();
+        }
+    }
+    else
+    {
+        SetBuildState(BuildState::FAILED);
+        mLastBuildState = BuildState::FAILED;
 
-		if(SHOW_MSG)
-		{
-			mMsgNotification = QString("build failed! :-(\n\nBUILD TIME: %2").arg(BUILD_TIME_STR);
-			mTrayIcon->showMessage("SIGBUILD", mMsgNotification, QSystemTrayIcon::Critical, NOTIFY_TIME_MS);
-		}
+        if(SHOW_MSG)
+        {
+            mMsgNotification = QString("build failed! :-(\n\nBUILD TIME: %2").arg(BUILD_TIME_STR);
+            mTrayIcon->showMessage("SIGBUILD", mMsgNotification, QSystemTrayIcon::Critical, NOTIFY_TIME_MS);
+        }
 
-		if(mSoundFail && PLAY_AUDIO)
-		{
-			mSoundFail->setVolume(mSettings->GetAudioVolumeAsReal());
-			mSoundFail->play();
-		}
-	}
+        if(mSoundFail && PLAY_AUDIO)
+        {
+            mSoundFail->setVolume(mSettings->GetAudioVolumeAsReal());
+            mSoundFail->play();
+        }
+    }
 
-	// re-enable "last build" action after showing notification or immediately if not showing them
-	if(mTrayIcon)
-	{
-		// restore default tooltip
-		mTimerBuildUpdater->stop();
-		mTrayIcon->setToolTip("SIGBUILD");
+    // re-enable "last build" action after showing notification or immediately if not showing them
+    if(mTrayIcon)
+    {
+        // restore default tooltip
+        mTimerBuildUpdater->stop();
+        mTrayIcon->setToolTip("SIGBUILD");
 
-		// enable last build menu entry after the first finished build
-		if(!mActionShowLastBuild->isEnabled())
-		{
-			mActionShowLastBuild->setEnabled(true);
-			mActionShowSessionBuilds->setEnabled(true);
-		}
-	}
+        // enable last build menu entry after the first finished build
+        if(!mActionShowLastBuild->isEnabled())
+        {
+            mActionShowLastBuild->setEnabled(true);
+            mActionShowSessionBuilds->setEnabled(true);
+        }
+    }
 
-	mBuildsData.push_back(new BuildData(mLastBuildProject, mTimeLastBuildStart, mTimeLastBuildEnd, mLastBuildState));
+    mBuildsData.push_back(new BuildData(mLastBuildProject, mTimeLastBuildStart, mTimeLastBuildEnd, mLastBuildState));
 }
 
 void SigbuildPlugin::OnSettingsChanged()
 {
-	// -- SYSTRAY --
-	if(mSettings->IsSystrayEnabled())
-	{
-		if(!mTrayIcon)
-			CreateSystrayIcon();
+    // -- SYSTRAY --
+    if(mSettings->IsSystrayEnabled())
+    {
+        if(!mTrayIcon)
+            CreateSystrayIcon();
 
-		mActionToggleNotifySystray->setChecked(mSettings->IsSystrayNotificationEnabled());
-	}
-	else
-	{
-		if(mTrayIcon)
-			DestroySystrayIcon();
-	}
+        mActionToggleNotifySystray->setChecked(mSettings->IsSystrayNotificationEnabled());
+    }
+    else
+    {
+        if(mTrayIcon)
+            DestroySystrayIcon();
+    }
 
-	// -- AUDIO --
-	mActionToggleNotifyAudio->setChecked(mSettings->IsAudioEnabled());
+    // -- AUDIO --
+    mActionToggleNotifyAudio->setChecked(mSettings->IsAudioEnabled());
 
-	if(mSettings->IsAudioEnabled())
-	{
-		if(!mSoundFail && !mSoundSuccess)
-			CreateSounds();
-	}
-	else
-	{
-		if(mSoundFail && mSoundSuccess)
-			DestroySounds();
-	}
+    if(mSettings->IsAudioEnabled())
+    {
+        if(!mSoundFail && !mSoundSuccess)
+            CreateSounds();
+    }
+    else
+    {
+        if(mSoundFail && mSoundSuccess)
+            DestroySounds();
+    }
 }
 
 void SigbuildPlugin::OnActionShowLastBuild()
 {
-	QMainWindow * window = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
+    QMainWindow * window = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
 
-	DialogLastBuild * d = new DialogLastBuild(	mLastBuildProject,
-												QDateTime::fromMSecsSinceEpoch(mTimeLastBuildStart).toString("dd-MM-yyyy HH:mm:ss"),
-												QDateTime::fromMSecsSinceEpoch(mTimeLastBuildEnd).toString("dd-MM-yyyy HH:mm:ss"),
-												GetBuildTimeStr(GetBuildTimeSecs(mTimeLastBuildStart, mTimeLastBuildEnd)),
-												mIconDialogStates[static_cast<int>(mLastBuildState)],
-												window	);
+    DialogLastBuild * d = new DialogLastBuild(	mLastBuildProject,
+                                                QDateTime::fromMSecsSinceEpoch(mTimeLastBuildStart).toString("dd-MM-yyyy HH:mm:ss"),
+                                                QDateTime::fromMSecsSinceEpoch(mTimeLastBuildEnd).toString("dd-MM-yyyy HH:mm:ss"),
+                                                GetBuildTimeStr(GetBuildTimeSecs(mTimeLastBuildStart, mTimeLastBuildEnd)),
+                                                mIconDialogStates[static_cast<int>(mLastBuildState)],
+                                                window	);
 
-	d->show();
-	d->raise();
-	// this to not let the user resize the dialog
-	d->setFixedSize(d->size());
+    d->show();
+    d->raise();
+    // this to not let the user resize the dialog
+    d->setFixedSize(d->size());
 
-	// schedule self-destructionwhen closing
-	connect(d, &QDialog::finished, d, &QDialog::deleteLater);
+    // schedule self-destructionwhen closing
+    connect(d, &QDialog::finished, d, &QDialog::deleteLater);
 }
 
 void SigbuildPlugin::OnActionShowSessionBuilds()
 {
-	QMainWindow * window = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
+    QMainWindow * window = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
 
-	DialogSessionBuilds * dialog = new DialogSessionBuilds(mBuildsData, mIconDialogStates, window);
-	dialog->show();
-	dialog->raise();
+    DialogSessionBuilds * dialog = new DialogSessionBuilds(mBuildsData, mIconDialogStates, window);
+    dialog->show();
+    dialog->raise();
 
-	// schedule self-destructionwhen closing
-	connect(dialog, &QDialog::finished, dialog, &QDialog::deleteLater);
+    // schedule self-destructionwhen closing
+    connect(dialog, &QDialog::finished, dialog, &QDialog::deleteLater);
 }
 
 void SigbuildPlugin::OnActionToggleNotifySystray(bool checked)
 {
-	mSettings->SetSystrayNotificationEnabled(checked);
+    mSettings->SetSystrayNotificationEnabled(checked);
 
-	mSettings->Save();
+    mSettings->Save();
 
-	OnSettingsChanged();
+    OnSettingsChanged();
 }
 
 void SigbuildPlugin::OnActionToggleNotifyAudio(bool checked)
 {
-	mSettings->SetAudioEnabled(checked);
+    mSettings->SetAudioEnabled(checked);
 
-	mSettings->Save();
+    mSettings->Save();
 
-	OnSettingsChanged();
+    OnSettingsChanged();
 }
 
 void SigbuildPlugin::OnBuildUpdate()
 {
-	if(!mTrayIcon)
-		return ;
+    if(!mTrayIcon)
+        return ;
 
-	const int BUILD_TIME_SECS = GetBuildTimeSecs(QDateTime::currentMSecsSinceEpoch());
-	mTrayIcon->setToolTip(GetBuildTimeStr(BUILD_TIME_SECS));
+    const int BUILD_TIME_SECS = GetBuildTimeSecs(QDateTime::currentMSecsSinceEpoch());
+    mTrayIcon->setToolTip(GetBuildTimeStr(BUILD_TIME_SECS));
 }
 
 // ==== PRIVATE FUNCTIONS ====
 
 void SigbuildPlugin::CreateSystrayIcon()
 {
-	// -- CREATE SYSTRAY ICON --
-	mTrayIcon = new QSystemTrayIcon(*mIconStates[static_cast<int>(mBuildState)]);
-	mTrayIcon->setToolTip("SIGBUILD");
+    // -- CREATE SYSTRAY ICON --
+    mTrayIcon = new QSystemTrayIcon(*mIconStates[static_cast<int>(mBuildState)]);
+    mTrayIcon->setToolTip("SIGBUILD");
 
-	// -- CREATE CONTEXT MENU --
-	mTrayMenu = new QMenu();
-	mTrayIcon->setContextMenu(mTrayMenu);
+    // -- CREATE CONTEXT MENU --
+    mTrayMenu = new QMenu();
+    mTrayIcon->setContextMenu(mTrayMenu);
 
-	// SHOW LAST BUILD
-	mActionShowLastBuild = new QAction("Last build");
-	mActionShowLastBuild->setEnabled(false);
-	mTrayMenu->addAction(mActionShowLastBuild);
+    // SHOW LAST BUILD
+    mActionShowLastBuild = new QAction("Last build");
+    mActionShowLastBuild->setEnabled(false);
+    mTrayMenu->addAction(mActionShowLastBuild);
 
-	connect(mActionShowLastBuild, &QAction::triggered, this, &SigbuildPlugin::OnActionShowLastBuild);
+    connect(mActionShowLastBuild, &QAction::triggered, this, &SigbuildPlugin::OnActionShowLastBuild);
 
-	// SHOW SESSION BUILDS
-	mActionShowSessionBuilds = new QAction("Session builds");
-	mActionShowSessionBuilds->setEnabled(false);
-	mTrayMenu->addAction(mActionShowSessionBuilds);
+    // SHOW SESSION BUILDS
+    mActionShowSessionBuilds = new QAction("Session builds");
+    mActionShowSessionBuilds->setEnabled(false);
+    mTrayMenu->addAction(mActionShowSessionBuilds);
 
-	connect(mActionShowSessionBuilds, &QAction::triggered, this, &SigbuildPlugin::OnActionShowSessionBuilds);
+    connect(mActionShowSessionBuilds, &QAction::triggered, this, &SigbuildPlugin::OnActionShowSessionBuilds);
 
-	// -----
-	mTrayMenu->addSeparator();
+    // -----
+    mTrayMenu->addSeparator();
 
-	// TOGGLE SYSTAY NOTIFICATION
-	mActionToggleNotifySystray = new QAction("Systray notification");
-	mActionToggleNotifySystray->setCheckable(true);
-	mActionToggleNotifySystray->setChecked(mSettings->IsSystrayNotificationEnabled());
-	mTrayMenu->addAction(mActionToggleNotifySystray);
+    // TOGGLE SYSTAY NOTIFICATION
+    mActionToggleNotifySystray = new QAction("Systray notification");
+    mActionToggleNotifySystray->setCheckable(true);
+    mActionToggleNotifySystray->setChecked(mSettings->IsSystrayNotificationEnabled());
+    mTrayMenu->addAction(mActionToggleNotifySystray);
 
-	connect(mActionToggleNotifySystray, &QAction::toggled, this, &SigbuildPlugin::OnActionToggleNotifySystray);
+    connect(mActionToggleNotifySystray, &QAction::toggled, this, &SigbuildPlugin::OnActionToggleNotifySystray);
 
-	// TOGGLE AUDIO NOTIFICATION
-	mActionToggleNotifyAudio = new QAction("Audio notification");
-	mActionToggleNotifyAudio->setCheckable(true);
-	mActionToggleNotifyAudio->setChecked(mSettings->IsAudioEnabled());
-	mTrayMenu->addAction(mActionToggleNotifyAudio);
+    // TOGGLE AUDIO NOTIFICATION
+    mActionToggleNotifyAudio = new QAction("Audio notification");
+    mActionToggleNotifyAudio->setCheckable(true);
+    mActionToggleNotifyAudio->setChecked(mSettings->IsAudioEnabled());
+    mTrayMenu->addAction(mActionToggleNotifyAudio);
 
-	connect(mActionToggleNotifyAudio, &QAction::toggled, this, &SigbuildPlugin::OnActionToggleNotifyAudio);
+    connect(mActionToggleNotifyAudio, &QAction::toggled, this, &SigbuildPlugin::OnActionToggleNotifyAudio);
 
-	// -----
-	mTrayMenu->addSeparator();
+    // -----
+    mTrayMenu->addSeparator();
 
-	// EXIT
-	QAction * action = new QAction("Exit");
-	mTrayMenu->addAction(action);
+    // EXIT
+    QAction * action = new QAction("Exit");
+    mTrayMenu->addAction(action);
 
-	connect(action, &QAction::triggered, Core::ICore::mainWindow(), &QMainWindow::close);
+    connect(action, &QAction::triggered, Core::ICore::mainWindow(), &QMainWindow::close);
 
-	// SHOW ICON
-	mTrayIcon->show();
+    // SHOW ICON
+    mTrayIcon->show();
 
-	// -- create build update timer --
-	mTimerBuildUpdater = new QTimer;
-	mTimerBuildUpdater->setInterval(1000);
-	connect(mTimerBuildUpdater, &QTimer::timeout, this, &SigbuildPlugin::OnBuildUpdate);
+    // -- create build update timer --
+    mTimerBuildUpdater = new QTimer;
+    mTimerBuildUpdater->setInterval(1000);
+    connect(mTimerBuildUpdater, &QTimer::timeout, this, &SigbuildPlugin::OnBuildUpdate);
 }
 
 void SigbuildPlugin::DestroySystrayIcon()
 {
-	mTimerBuildUpdater->stop();
-	delete mTimerBuildUpdater;
-	mTimerBuildUpdater = nullptr;
+    mTimerBuildUpdater->stop();
+    delete mTimerBuildUpdater;
+    mTimerBuildUpdater = nullptr;
 
-	delete mTrayMenu;
-	mTrayMenu = nullptr;
+    delete mTrayMenu;
+    mTrayMenu = nullptr;
 
-	delete mTrayIcon;
-	mTrayIcon = nullptr;
+    delete mTrayIcon;
+    mTrayIcon = nullptr;
 }
 
 void SigbuildPlugin::CreateSounds()
 {
-	mSoundSuccess = new QSoundEffect();
-	mSoundSuccess->setVolume(mSettings->GetAudioVolumeAsReal());
-	mSoundSuccess->setSource(QUrl("qrc:/audio/success_short.wav"));
+    mSoundSuccess = new QSoundEffect();
+    mSoundSuccess->setVolume(mSettings->GetAudioVolumeAsReal());
+    mSoundSuccess->setSource(QUrl("qrc:/audio/success_short.wav"));
 
-	mSoundFail = new QSoundEffect();
-	mSoundFail->setVolume(mSettings->GetAudioVolumeAsReal());
-	mSoundFail->setSource(QUrl("qrc:/audio/fail_short.wav"));
+    mSoundFail = new QSoundEffect();
+    mSoundFail->setVolume(mSettings->GetAudioVolumeAsReal());
+    mSoundFail->setSource(QUrl("qrc:/audio/fail_short.wav"));
 }
 
 void SigbuildPlugin::DestroySounds()
 {
-	delete mSoundSuccess;
-	mSoundSuccess = nullptr;
+    delete mSoundSuccess;
+    mSoundSuccess = nullptr;
 
-	delete mSoundFail;
-	mSoundFail = nullptr;
+    delete mSoundFail;
+    mSoundFail = nullptr;
 }
 
 void SigbuildPlugin::SetBuildState(BuildState state)
 {
-	if(mTrayIcon && state != mBuildState)
-		mTrayIcon->setIcon(*mIconStates[static_cast<int>(state)]);
+    if(mTrayIcon && state != mBuildState)
+        mTrayIcon->setIcon(*mIconStates[static_cast<int>(state)]);
 
-	mBuildState = state;
+    mBuildState = state;
 }
 
 int SigbuildPlugin::GetBuildTimeSecs(qint64 nowMs) const
 {
-	return GetBuildTimeSecs(mTimeBuildStart, nowMs);
+    return GetBuildTimeSecs(mTimeBuildStart, nowMs);
 }
 
 int SigbuildPlugin::GetBuildTimeSecs(qint64 startMs, qint64 endMs) const
 {
-	return roundf((endMs - startMs) / 1000.0f);
+    return roundf((endMs - startMs) / 1000.0f);
 }
 
 QString SigbuildPlugin::GetBuildTimeStr(const int buildTimeSecs) const
 {
-	QTime buildTime(0, 0, 0, 0);
-	buildTime = buildTime.addSecs(buildTimeSecs);
-	return buildTime.toString("hh:mm:ss");
+    QTime buildTime(0, 0, 0, 0);
+    buildTime = buildTime.addSecs(buildTimeSecs);
+    return buildTime.toString("hh:mm:ss");
 }
 
 } // namespace Sigbuild
