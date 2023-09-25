@@ -1,10 +1,10 @@
 {
     \"Name\" : \"SIGBUILD\",
-    \"Version\" : \"0.4.1\",
-    \"CompatVersion\" : \"0.4.1\",
+    \"Version\" : \"0.4.2\",
+    \"CompatVersion\" : \"0.4.2\",
     \"Vendor\" : \"Davide Coppola\",
     \"Copyright\" : \"(C) Davide Coppola\",
-    \"License\" : \"Evaluation license. This plugin has not been publicly released yet and usage is allowed only to selected individuals and only until public release.\",
+    \"License\" : \"GPL v3.\",
     \"Category\" : \"Qt Creator\",
     \"Description\" : \"This plugin notifies you when a build ends.\",
     \"Url\" : \"http://sigbuild.com\",
