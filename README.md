@@ -40,7 +40,9 @@ In case you need to build SIGBUILD for an old version of Qt Creator (<= 6) check
 
 Note that when installing Qt you will need at least the following 2 modules:
 - Desktop binaries (ex.: Desktop gcc 64bit)
-- Qt Script
+- Qt Multimedia (additional libraries)
+Also when installing Qt Creator you will need to include the following package:
+- Qt Creator x.y.z Plugin Development
 
 ### How to build Qt Creator
 From inside the cloned qt-creator directory:
