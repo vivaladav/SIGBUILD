@@ -216,7 +216,7 @@ jobs:
           )
         endif()
 
-- name: Download Qt Creator
+    - name: Download Qt Creator
       id: qt_creator
       shell: cmake -P {0}
       run: |
