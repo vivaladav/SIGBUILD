@@ -274,15 +274,19 @@ jobs:
 
         set(ENV{NINJA_STATUS} "[%f/%t %o/sec] ")
 
-        set(build_plugin_py "scripts/build_plugin.py")
+        set(build_plugin_py "build_plugin.py")
+        message("[DBG] qtc_dir = ${{ steps.qt_creator.outputs.qtc_dir }}")
+        message("[DBG] build_plugin_py = ${build_plugin_py}")
+        
         foreach(dir "scripts" "share/qtcreator/scripts" "Contents/Resources/scripts")
+          message("[DBG] trying dir ${dir}")
           if(EXISTS "${{ steps.qt_creator.outputs.qtc_dir }}/${dir}/build_plugin.py")
             set(build_plugin_py "${dir}/build_plugin.py")
+            message("[DBG] build_plugin_py SET to ${build_plugin_py}")
             break()
           endif()
         endforeach()
-
-        message("[DBG] qtc_dir = ${{ steps.qt_creator.outputs.qtc_dir }}")
+        
         message("[DBG] build_plugin_py = ${build_plugin_py}")
 
         execute_process(
