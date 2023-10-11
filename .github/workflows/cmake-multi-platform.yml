@@ -274,10 +274,12 @@ jobs:
         set(build_plugin_py "scripts/build_plugin.py")
         foreach(dir "share/qtcreator/scripts" "Contents/Resources/scripts")
           if(EXISTS "${{ steps.qt_creator.outputs.qtc_dir }}/${dir}/build_plugin.py")
-            set(build_plugin_py "${dir}/build_plugin.py")
+            set(build_plugin_py "${{ steps.qt_creator.outputs.qtc_dir }}/${dir}/build_plugin.py")
             break()
           endif()
         endforeach()
+
+        message("build_plugin_py = $build_plugin_py")
 
         execute_process(
           COMMAND python
