@@ -159,7 +159,7 @@ jobs:
 
         # download Qt packages
         message("Downloading Qt packages")
-        foreach(package qtbase)
+        foreach(package qtbase qtdeclarative)
           print_var(qt_base_url)
           print_var(qt_version_major)
           print_var(qt_version_dotless)
