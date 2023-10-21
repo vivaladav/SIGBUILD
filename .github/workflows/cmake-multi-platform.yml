@@ -316,45 +316,14 @@ jobs:
       if: matrix.name == 'Linux x64'
       run: ls -lh
       
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       id: upload_artifact
       with:
         path: ./${{ env.PLUGIN_NAME }}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}.7z
         name: ${{ env.PLUGIN_NAME}}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}.7z
 
-    - name: List Files AFTER
-      if: matrix.name == 'Linux x64'
-      run: ls -lh
-
-  publish:
-    needs: build
-    name: ${{ matrix.name }}
-    runs-on: ${{ matrix.os }}
-    
-    strategy:
-      # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
-      fail-fast: false
-
-      # Set up a matrix to run the following 2 configurations:
-      # 1. <Windows, Release, latest MSVC compiler toolchain on the default runner image, default generator>
-      # 2. <Linux, Release, latest GCC compiler toolchain on the default runner image, default generator>
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        include:
-          - name: "Windows x64"
-            os: windows-latest
-            artifact: "win-x64"
-          - name: "Linux x64"
-            os: ubuntu-latest
-            artifact: "linux-x64"
-    
-    steps:
-    - name: List Files BEFORE
-      if: matrix.name == 'Linux x64'
-      run: ls -lh
-
     - name: Download artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v3
       with:
         name: ${{ env.PLUGIN_NAME }}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}
         path: ./
