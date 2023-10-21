@@ -29,11 +29,13 @@ jobs:
         build_type: [Release]
         c_compiler: [gcc, cl]
         include:
-          - os: windows-latest
+          - name: "Windows x64"
+            os: windows-latest
             c_compiler: cl
             cpp_compiler: cl            
             artifact: "win-x64"
-          - os: ubuntu-latest
+          - name: "Linux x64"
+            os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
             artifact: "linux-x64"
@@ -310,6 +312,28 @@ jobs:
           message(FATAL_ERROR "Build failed")
         endif()
 
+  publish:
+    needs: build
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    
+    strategy:
+      # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
+      fail-fast: false
+
+      # Set up a matrix to run the following 2 configurations:
+      # 1. <Windows, Release, latest MSVC compiler toolchain on the default runner image, default generator>
+      # 2. <Linux, Release, latest GCC compiler toolchain on the default runner image, default generator>
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - name: "Windows x64"
+            os: windows-latest
+            artifact: "win-x64"
+          - name: "Linux x64"
+            os: ubuntu-latest
+            artifact: "linux-x64"
+    
     steps:
     - name: Download artifact
       uses: actions/download-artifact@v3
