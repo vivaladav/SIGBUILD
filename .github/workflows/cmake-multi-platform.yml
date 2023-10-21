@@ -29,19 +29,19 @@ jobs:
         build_type: [Release]
         c_compiler: [gcc, cl]
         include:
-#          - name: "Windows x64"
-#            os: windows-latest
-#            c_compiler: cl
-#            cpp_compiler: cl            
-#            artifact: "win-x64"
+          - name: "Windows x64"
+            os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl            
+            artifact: "win-x64"
           - name: "Linux x64"
             os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
             artifact: "linux-x64"
         exclude:
-#          - os: windows-latest
-#            c_compiler: gcc
+          - os: windows-latest
+            c_compiler: gcc
           - os: ubuntu-latest
             c_compiler: cl
 
@@ -323,14 +323,8 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ env.PLUGIN_NAME}}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}.7z
+        name: ${{ env.PLUGIN_NAME}}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}
         path: ./${{ env.PLUGIN_NAME}}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}.7z
-
-    - name: Download artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: ${{ env.PLUGIN_NAME }}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}.7z
-        path: ./
 
     - name: List Files AFTER
       if: matrix.name == 'Linux x64'
@@ -351,9 +345,9 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         include:
-#          - name: "Windows x64"
-#            os: windows-latest
-#            artifact: "win-x64"
+          - name: "Windows x64"
+            os: windows-latest
+            artifact: "win-x64"
           - name: "Linux x64"
             os: ubuntu-latest
             artifact: "linux-x64"
@@ -362,3 +356,8 @@ jobs:
     - name: List Files BEFORE
       if: matrix.name == 'Linux x64'
       run: ls -lh
+
+    - name: Download artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ env.PLUGIN_NAME }}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}
