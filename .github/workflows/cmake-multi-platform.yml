@@ -26,7 +26,6 @@ jobs:
       # 2. <Linux, Release, latest GCC compiler toolchain on the default runner image, default generator>
       matrix:
         os: [ubuntu-latest, windows-latest]
-        build_type: [Release]
         c_compiler: [gcc, cl]
         include:
           - name: "Windows x64"
@@ -312,23 +311,11 @@ jobs:
           message(FATAL_ERROR "Build failed")
         endif()
     
-    - name: List Files BEFORE
-      if: matrix.name == 'Linux x64'
-      run: ls -lh
-
-    - name: Check artifact file BEFORE
-      if: matrix.name == 'Linux x64'
-      run: ls -lh ./${{ env.PLUGIN_NAME}}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}.7z
-      
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PLUGIN_NAME}}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}
         path: ./${{ env.PLUGIN_NAME}}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}.7z
-
-    - name: List Files AFTER
-      if: matrix.name == 'Linux x64'
-      run: ls -lh
 
   publish:
     needs: build
@@ -353,10 +340,6 @@ jobs:
             artifact: "linux-x64"
     
     steps:
-    - name: List Files BEFORE
-      if: matrix.name == 'Linux x64'
-      run: ls -lh
-
     - name: Download artifact
       uses: actions/download-artifact@v3
       with:
