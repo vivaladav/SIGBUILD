@@ -313,7 +313,7 @@ jobs:
         endif()
     
     - name: List Files BEFORE
-      if: matrix.name == "Linux x64"
+      if: matrix.name == 'Linux x64'
       run: ls -lh
       
     - uses: actions/upload-artifact@v3
@@ -323,7 +323,7 @@ jobs:
         name: ${{ env.PLUGIN_NAME}}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}.7z
 
     - name: List Files AFTER
-      if: matrix.name == "Linux x64"
+      if: matrix.name == 'Linux x64'
       run: ls -lh
 
   publish:
@@ -350,7 +350,7 @@ jobs:
     
     steps:
     - name: List Files BEFORE
-      if: matrix.name == "Linux x64"
+      if: matrix.name == 'Linux x64'
       run: ls -lh
 
     - name: Download artifact
@@ -360,5 +360,5 @@ jobs:
         path: ./
 
     - name: List Files AFTER
-      if: matrix.name == "Linux x64"
+      if: matrix.name == 'Linux x64'
       run: ls -lh
