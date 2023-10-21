@@ -312,6 +312,12 @@ jobs:
           message(FATAL_ERROR "Build failed")
         endif()
 
+    - uses: actions/upload-artifact@v3
+      id: upload_artifact
+      with:
+        path: ./${{ env.PLUGIN_NAME }}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}.7z
+        name: ${{ env.PLUGIN_NAME}}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}.7z
+
   publish:
     needs: build
     name: ${{ matrix.name }}
