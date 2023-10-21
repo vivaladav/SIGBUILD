@@ -14,7 +14,7 @@ env:
 
 jobs:
   build:
-    name: ${{ matrix.config.name }}
+    name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -259,8 +259,8 @@ jobs:
     - name: Configure & Build
       shell: cmake -P {0}
       run: |
-        set(ENV{CC} ${{ matrix.config.cc }})
-        set(ENV{CXX} ${{ matrix.config.cxx }})
+        set(ENV{CC} ${{ matrix.c_compiler }})
+        set(ENV{CXX} ${{ matrix.cpp_compiler }})
 
         # run environment script on Windows
         if ("${{ runner.os }}" STREQUAL "Windows")
@@ -297,7 +297,7 @@ jobs:
           COMMAND python
             -u
             "${{ steps.qt_creator.outputs.qtc_dir }}/${build_plugin_py}"
-            --name "$ENV{PLUGIN_NAME}-$ENV{QT_CREATOR_VERSION}-${{ matrix.config.artifact }}"
+            --name "$ENV{PLUGIN_NAME}-$ENV{QT_CREATOR_VERSION}-${{ matrix.artifact }}"
             --src .
             --build build
             --qt-path "${{ steps.qt.outputs.qt_dir }}"
@@ -314,8 +314,8 @@ jobs:
 
   publish:
     needs: build
-    name: ${{ matrix.config.name }}
-    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
     
     strategy:
       # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
@@ -338,5 +338,5 @@ jobs:
     - name: Download artifact
       uses: actions/download-artifact@v3
       with:
-        name: ${{ env.PLUGIN_NAME }}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.config.artifact }}
+        name: ${{ env.PLUGIN_NAME }}-${{ env.QT_CREATOR_VERSION }}-${{ artifact }}
         path: ./
