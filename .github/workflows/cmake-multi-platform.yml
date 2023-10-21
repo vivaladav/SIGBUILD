@@ -346,7 +346,7 @@ jobs:
         name: ${{ env.PLUGIN_NAME }}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}
 
     - name: Create release
-      if: ${{ github.ref_type }} == 'tag'
+      if: contains(github.ref, 'tags')
       id: create_release
       uses: actions/create-release@v1
       env: 
@@ -357,7 +357,7 @@ jobs:
         release_name: Release ${{ github.ref }}
 
     - name: Upload Release Asset
-      if: ${{ github.ref_type }} == 'tag'
+      if: contains(github.ref, 'tags')
       id: upload_release_asset 
       uses: actions/upload-release-asset@v1
       env:
