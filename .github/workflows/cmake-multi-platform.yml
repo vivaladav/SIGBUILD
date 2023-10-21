@@ -336,7 +336,7 @@ jobs:
       if: matrix.name == 'Linux x64'
       run: ls -lh
 
-publish:
+  publish:
     needs: build
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
