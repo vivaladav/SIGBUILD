@@ -311,12 +311,18 @@ jobs:
           message("::error::${error_message}")
           message(FATAL_ERROR "Build failed")
         endif()
-
+    
+    - name: List Files BEFORE
+      run: ls -lh
+      
     - uses: actions/upload-artifact@v3
       id: upload_artifact
       with:
         path: ./${{ env.PLUGIN_NAME }}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}.7z
         name: ${{ env.PLUGIN_NAME}}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}.7z
+
+    - name: List Files AFTER
+      run: ls -lh
 
   publish:
     needs: build
@@ -341,8 +347,14 @@ jobs:
             artifact: "linux-x64"
     
     steps:
+    - name: List Files BEFORE
+      run: ls -lh
+
     - name: Download artifact
       uses: actions/download-artifact@v3
       with:
         name: ${{ env.PLUGIN_NAME }}-${{ env.QT_CREATOR_VERSION }}-${{ matrix.artifact }}
         path: ./
+
+    - name: List Files AFTER
+      run: ls -lh
