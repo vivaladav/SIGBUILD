@@ -140,7 +140,7 @@ jobs:
 
         # Save the path for other steps
         file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}/qt/${qt_dir_prefix}" qt_dir)
-        execute_process(COMMAND echo "qt_dir=${qt_dir}" >> "$GITHUB_OUTPUT")
+        message("::set-output name=qt_dir::${qt_dir}")      
         message("[DBG] qt_dir=${qt_dir}")
 
         # download Qt
@@ -238,7 +238,7 @@ jobs:
 
         file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}/qtcreator" qtc_dir)
         # Save the path for other steps
-        execute_process(COMMAND echo "qtc_dir=${qtc_dir}" >> "$GITHUB_OUTPUT")
+        message("::set-output name=qtc_dir::${qtc_dir}")
         message("[DBG] qtc_dir=${qtc_dir}")
 
         file(MAKE_DIRECTORY qtcreator)
