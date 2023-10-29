@@ -19,7 +19,7 @@ Previous versions are likely to work too, but they are not officially supported,
 - Session log
 - Full Qt Creator options
 
-### Support this projec
+### Support this project
 You can support the development of this project becoming a [GitHub Sponsor](https://github.com/sponsors/vivaladav).
 
 That will allow me to spend more time on it and it will allow you to influence the development roadmap.
@@ -61,3 +61,13 @@ From inside the cloned SIGBUILD directory:
 ### How to run SIGBUILD
 Start an instance of Qt Creator with the following command line option:
 -pluginpath SIGBUILD_BUILD_DIRECTORY
+
+## Releases
+The latest release version is 0.4.2 (30 Oct 2023).
+
+### How to install a SIGBUILD release
+- Download a build from the [release page](https://github.com/vivaladav/SIGBUILD/releases)
+- Start Qt Creator
+- In Qt Creator go to: "_Help > About Plugins_"
+- Push the "_Install Plugin_" button
+- Select the build you downloaded and follow the installation wizard
