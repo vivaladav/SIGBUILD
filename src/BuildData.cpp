@@ -11,7 +11,6 @@ BuildData::BuildData(const QString & project, quint64 start, quint64 end, BuildS
     , mTimeEnd(end)
     , mState(state)
 {
-
 }
 
 } // namespace Sigbuild

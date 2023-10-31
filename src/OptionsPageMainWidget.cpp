@@ -88,11 +88,11 @@ OptionsPageMainWidget::OptionsPageMainWidget(const Settings * settings)
 
     layoutBox = new QVBoxLayout(box);
 
-    const bool AUDIO_STATUS = settings->IsAudioEnabled();
+    const bool audioEnabled = settings->IsAudioEnabled();
 
     // -- audio on/off --
     mAudioEnabled = new QCheckBox(tr("Enable audio notifications"), box);
-    mAudioEnabled->setChecked(AUDIO_STATUS);
+    mAudioEnabled->setChecked(audioEnabled);
     layoutBox->addWidget(mAudioEnabled);
 
     connect(mAudioEnabled, &QCheckBox::stateChanged, this, &OptionsPageMainWidget::OnAudioStateChanged);
@@ -100,7 +100,7 @@ OptionsPageMainWidget::OptionsPageMainWidget(const Settings * settings)
     // -- audio when open --
     mAudioNotifyWhenActive = new QCheckBox(tr("Play audio notifications when Qt Creator is active"), box);
     mAudioNotifyWhenActive->setChecked(settings->PlayAudioNotificationWhenActive());
-    mAudioNotifyWhenActive->setEnabled(AUDIO_STATUS);
+    mAudioNotifyWhenActive->setEnabled(audioEnabled);
     layoutBox->addWidget(mAudioNotifyWhenActive);
 
     // -- audio volume --
@@ -113,11 +113,11 @@ OptionsPageMainWidget::OptionsPageMainWidget(const Settings * settings)
     mAudioVolume->setValue(settings->GetAudioVolume());
     mAudioVolume->setSingleStep(10);
     mAudioVolume->setMaximumWidth(50);
-    mAudioVolume->setEnabled(AUDIO_STATUS);
+    mAudioVolume->setEnabled(audioEnabled);
     layoutRow->addWidget(mAudioVolume);
 
     mAudioVolumeLabel = new QLabel(tr("Notification volume"), box);
-    mAudioVolumeLabel->setEnabled(AUDIO_STATUS);
+    mAudioVolumeLabel->setEnabled(audioEnabled);
     layoutRow->addWidget(mAudioVolumeLabel);
 
     // -- systray notification min build time --
@@ -130,11 +130,11 @@ OptionsPageMainWidget::OptionsPageMainWidget(const Settings * settings)
     mAudioMinBuildTime->setValue(settings->GetAudioMinBuildtime());
     mAudioMinBuildTime->setSingleStep(1);
     mAudioMinBuildTime->setMaximumWidth(50);
-    mAudioMinBuildTime->setEnabled(AUDIO_STATUS);
+    mAudioMinBuildTime->setEnabled(audioEnabled);
     layoutRow->addWidget(mAudioMinBuildTime);
 
     mAudioMinBuildTimeLabel = new QLabel(tr("Minimum build time (in seconds) to play an audio notification"), box);
-    mAudioMinBuildTimeLabel->setEnabled(AUDIO_STATUS);
+    mAudioMinBuildTimeLabel->setEnabled(audioEnabled);
     layoutRow->addWidget(mAudioMinBuildTimeLabel);
 
     // == VERTICAL SPACER ==`
@@ -164,9 +164,9 @@ Settings OptionsPageMainWidget::GenerateSettings() const
 // ===== PRIVATE SIGNALS =====
 void OptionsPageMainWidget::OnSystrayStateChanged()
 {
-    const bool SYSTRAY_ENABLED			= mSystrayEnabled->isChecked();
-    const bool SYSTRAY_NOTIFY_ENABLED	= mSystrayNotifyEnabled->isChecked();
-    const bool SYSTRAY_OPT_STATUS		= SYSTRAY_ENABLED && SYSTRAY_NOTIFY_ENABLED;
+    const bool SYSTRAY_ENABLED          = mSystrayEnabled->isChecked();
+    const bool SYSTRAY_NOTIFY_ENABLED   = mSystrayNotifyEnabled->isChecked();
+    const bool SYSTRAY_OPT_STATUS       = SYSTRAY_ENABLED && SYSTRAY_NOTIFY_ENABLED;
 
     mSystrayNotifyEnabled->setEnabled(SYSTRAY_ENABLED);
     mSystrayNotifyWhenActive->setEnabled(SYSTRAY_OPT_STATUS);

@@ -22,7 +22,8 @@ namespace Sigbuild
 
 // ==== CONSTRUCTOR / DESTRUCTOR ====
 
-DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, const QVector<QPixmap> & icons, QWidget * parent)
+DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data,
+                                         const QVector<QPixmap> & icons, QWidget * parent)
     : QDialog(parent, Qt::Dialog | Qt::WindowTitleHint| Qt::WindowCloseButtonHint)
     , mLayoutHeader(nullptr)
     , mLayoutArea(nullptr)
@@ -127,7 +128,7 @@ DialogSessionBuilds::DialogSessionBuilds(const QVector<BuildData *> & data, cons
         layoutRow->addWidget(label, STRETCH[COL_END]);
 
         // TIME
-        qint64 diff = entry->GetTimeEnd() - entry->GetTimeStart();
+        const qint64 diff = entry->GetTimeEnd() - entry->GetTimeStart();
         QTime buildTime(0, 0, 0, 0);
         buildTime = buildTime.addMSecs(diff);
         label = new QLabel(buildTime.toString("hh:mm:ss"));
