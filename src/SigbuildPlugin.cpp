@@ -103,7 +103,6 @@ bool SigbuildPlugin::initialize(const QStringList & arguments, QString * errorSt
 
 void SigbuildPlugin::extensionsInitialized()
 {
-
 }
 
 ExtensionSystem::IPlugin::ShutdownFlag SigbuildPlugin::aboutToShutdown()
@@ -129,7 +128,7 @@ void SigbuildPlugin::OnBuildStateChanged(ProjectExplorer::Project * pro)
             ProjectExplorer::ProjectNode * prjNode = node->parentProjectNode();
 
             if(prjNode)
-                mCurrentProject = QString("%1 (%2)").arg(node->displayName()).arg(prjNode->displayName());
+                mCurrentProject = QString("%1").arg(prjNode->displayName());
             else
                 mCurrentProject = pro->displayName();
         }
