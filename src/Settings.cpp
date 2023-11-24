@@ -1,21 +1,22 @@
 #include "Settings.h"
 
 #include <coreplugin/icore.h>
+#include <utils/qtcsettings.h>
 
 namespace Sigbuild
 {
 
 // -- KEYS --
-const QString GROUP("SIGBUILD");
-const QString OPT_SYSTRAY_ENABLED("SYSTRAY_ENABLED");
-const QString OPT_SYSTRAY_NOTIFY_ENABLED("SYSTRAY_NOTIFY_ENABLED");
-const QString OPT_SYSTRAY_NOTIFY_WHEN_ACTIVE("SYSTRAY_NOTIFY_WHEN_ACTIVE");
-const QString OPT_SYSTRAY_MIN_BUILD_TIME("SYSTRAY_MIN_BUILD_TIME");
-const QString OPT_SYSTRAY_NOTIFY_TIME("SYSTRAY_NOTIFY_TIME");
-const QString OPT_AUDIO_ENABLED("AUDIO_ENABLED");
-const QString OPT_AUDIO_NOTIFY_WHEN_ACTIVE("AUDIO_NOTIFY_WHEN_ACTIVE");
-const QString OPT_AUDIO_VOLUME("AUDIO_VOLUME");
-const QString OPT_AUDIO_MIN_BUILD_TIME("AUDIO_MIN_BUILD_TIME");
+const QByteArray GROUP("SIGBUILD");
+const QByteArray OPT_SYSTRAY_ENABLED("SYSTRAY_ENABLED");
+const QByteArray OPT_SYSTRAY_NOTIFY_ENABLED("SYSTRAY_NOTIFY_ENABLED");
+const QByteArray OPT_SYSTRAY_NOTIFY_WHEN_ACTIVE("SYSTRAY_NOTIFY_WHEN_ACTIVE");
+const QByteArray OPT_SYSTRAY_MIN_BUILD_TIME("SYSTRAY_MIN_BUILD_TIME");
+const QByteArray OPT_SYSTRAY_NOTIFY_TIME("SYSTRAY_NOTIFY_TIME");
+const QByteArray OPT_AUDIO_ENABLED("AUDIO_ENABLED");
+const QByteArray OPT_AUDIO_NOTIFY_WHEN_ACTIVE("AUDIO_NOTIFY_WHEN_ACTIVE");
+const QByteArray OPT_AUDIO_VOLUME("AUDIO_VOLUME");
+const QByteArray OPT_AUDIO_MIN_BUILD_TIME("AUDIO_MIN_BUILD_TIME");
 
 // -- DEFAULTS --
 const bool DEF_SYSTRAY_ENABLED                      = true;
@@ -42,7 +43,7 @@ Settings::Settings()
 
 void Settings::Load()
 {
-    QSettings * globalSettings = Core::ICore::settings();
+    Utils::QtcSettings *globalSettings = Core::ICore::settings();
 
     globalSettings->beginGroup(GROUP);
 
@@ -66,7 +67,7 @@ void Settings::Load()
 
 void Settings::Save()
 {
-    QSettings * globalSettings = Core::ICore::settings();
+    Utils::QtcSettings *globalSettings = Core::ICore::settings();
 
     globalSettings->beginGroup(GROUP);
 
