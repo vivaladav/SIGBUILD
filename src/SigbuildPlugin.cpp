@@ -7,7 +7,6 @@
 #include "Settings.h"
 
 #include <coreplugin/icore.h>
-#include <coreplugin/mainwindow.h>
 #include <projectexplorer/buildmanager.h>
 #include <projectexplorer/project.h>
 #include <projectexplorer/projectnodes.h>

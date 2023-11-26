@@ -1,12 +1,12 @@
 {
-    \"Name\" : \"SIGBUILD\",
-    \"Version\" : \"0.4.3\",
-    \"CompatVersion\" : \"0.4.3\",
-    \"Vendor\" : \"Davide Coppola\",
-    \"Copyright\" : \"(C) Davide Coppola\",
-    \"License\" : \"GPL v3.\",
-    \"Category\" : \"Qt Creator\",
-    \"Description\" : \"This plugin notifies you when a build ends.\",
-    \"Url\" : \"http://sigbuild.com\",
-    $$dependencyList
+    "Name" : "SIGBUILD",
+    "Version" : "0.4.4",
+    "CompatVersion" : "0.4.4",
+    "Vendor" : "Davide Coppola",
+    "Copyright" : "(C) Davide Coppola",
+    "License" : "GPL v3.",
+    "Category" : "Qt Creator",
+    "Description" : "This plugin notifies you when a build ends.",
+    "Url" : "http://sigbuild.com",
+    ${IDE_PLUGIN_DEPENDENCIES}
 }

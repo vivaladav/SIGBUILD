@@ -6,8 +6,8 @@ on:
 
 env:
   PLUGIN_NAME: SIGBUILD
-  QT_VERSION: 6.4.3
-  QT_CREATOR_VERSION: 11.0.3
+  QT_VERSION: 6.6.0
+  QT_CREATOR_VERSION: 12.0.0
   QT_CREATOR_SNAPSHOT: NO
   CMAKE_VERSION: 3.24.2
   NINJA_VERSION: 1.10.2
@@ -125,7 +125,7 @@ jobs:
           if("${qt_version_major}" STREQUAL "5")
             set(qt_package_suffix "-Linux-RHEL_7_6-GCC-Linux-RHEL_7_6-X86_64")
           else()
-            set(qt_package_suffix "-Linux-RHEL_8_4-GCC-Linux-RHEL_8_4-X86_64")
+            set(qt_package_suffix "-Linux-RHEL_8_6-GCC-Linux-RHEL_8_6-X86_64")
           endif()
         endif()
 
