@@ -1,7 +1,7 @@
 {
     "Name" : "SIGBUILD",
-    "Version" : "0.4.5",
-    "CompatVersion" : "0.4.5",
+    "Version" : "0.4.6",
+    "CompatVersion" : "0.4.6",
     "Vendor" : "Davide Coppola",
     "Copyright" : "(C) Davide Coppola",
     "License" : "GPL v3.",
