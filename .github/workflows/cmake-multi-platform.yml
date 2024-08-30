@@ -6,8 +6,8 @@ on:
 
 env:
   PLUGIN_NAME: SIGBUILD
-  QT_VERSION: 6.6.0
-  QT_CREATOR_VERSION: 13.0.0
+  QT_VERSION: 6.7.2
+  QT_CREATOR_VERSION: 14.0.0
   QT_CREATOR_SNAPSHOT: NO
   CMAKE_VERSION: 3.24.2
   NINJA_VERSION: 1.10.2
@@ -120,12 +120,12 @@ jobs:
           set(qt_package_suffix "-Windows-Windows_10_22H2-MSVC2019-Windows-Windows_10_22H2-X86_64")
         elseif ("${{ runner.os }}" STREQUAL "Linux")
           set(url_os "linux_x64")
-          set(qt_package_arch_suffix "gcc_64")
+          set(qt_package_arch_suffix "linux_gcc_64")
           set(qt_dir_prefix "${qt_version}/gcc_64")
           if("${qt_version_major}" STREQUAL "5")
             set(qt_package_suffix "-Linux-RHEL_7_6-GCC-Linux-RHEL_7_6-X86_64")
           else()
-            set(qt_package_suffix "-Linux-RHEL_8_6-GCC-Linux-RHEL_8_6-X86_64")
+            set(qt_package_suffix "-Linux-RHEL_8_8-GCC-Linux-RHEL_8_8-X86_64")
           endif()
         endif()
 
@@ -140,7 +140,7 @@ jobs:
 
         # Save the path for other steps
         file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}/qt/${qt_dir_prefix}" qt_dir)
-        message("::set-output name=qt_dir::${qt_dir}")      
+        file(APPEND "$ENV{GITHUB_OUTPUT}" "qt_dir=${qt_dir}")
         message("[DBG] qt_dir=${qt_dir}")
 
         # download Qt
@@ -213,7 +213,7 @@ jobs:
         # uic depends on libicu56.so
         if ("${{ runner.os }}" STREQUAL "Linux")
           downloadAndExtract(
-            "${qt_base_url}/qt.qt${qt_version_major}.${qt_version_dotless}.${qt_package_arch_suffix}/${qt_package_version}icu-linux-Rhel7.2-x64.7z"
+            "${qt_base_url}/qt.qt${qt_version_major}.${qt_version_dotless}.${qt_package_arch_suffix}/${qt_package_version}icu-linux-Rhel8.6-x86_64.7z"
             icu.7z
           )
         endif()
@@ -236,9 +236,9 @@ jobs:
           set(qtc_platform "linux_x64")
         endif()
 
-        file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}/qtcreator" qtc_dir)
         # Save the path for other steps
-        message("::set-output name=qtc_dir::${qtc_dir}")
+        file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}/qtcreator" qtc_dir)
+        file(APPEND "$ENV{GITHUB_OUTPUT}" "qtc_dir=${qtc_dir}")
         message("[DBG] qtc_dir=${qtc_dir}")
 
         file(MAKE_DIRECTORY qtcreator)
