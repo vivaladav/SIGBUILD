@@ -34,6 +34,9 @@ public:
     bool PlayAudioNotificationWhenActive() const;
     void SetAudioNotificationWhenActive(bool val);
 
+    bool UseCustomSounds() const;
+    void SetUseCustomSounds(bool val);
+
     int GetAudioVolume() const;
     double GetAudioVolumeAsReal() const;
     void SetAudioVolume(int val);
@@ -69,6 +72,7 @@ private:
     // -- AUDIO --
     bool mOptAudioEnabled;
     bool mOptAudioNotifyWhenActive;
+    bool mOptAudioCustomSounds;
     int mOptAudioVolume;
     int mOptAudioMinBuildTime;
 };
@@ -93,6 +97,9 @@ inline void Settings::SetAudioEnabled(bool val) { mOptAudioEnabled = val; }
 
 inline bool Settings::PlayAudioNotificationWhenActive() const { return mOptAudioNotifyWhenActive; }
 inline void Settings::SetAudioNotificationWhenActive(bool val) { mOptAudioNotifyWhenActive = val; }
+
+inline bool Settings::UseCustomSounds() const { return mOptAudioCustomSounds; }
+inline void Settings::SetUseCustomSounds(bool val) { mOptAudioCustomSounds = val; }
 
 inline int Settings::GetAudioVolume() const { return mOptAudioVolume; }
 inline double Settings::GetAudioVolumeAsReal() const

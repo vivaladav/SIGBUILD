@@ -4,6 +4,7 @@
 
 class QCheckBox;
 class QLabel;
+class QLineEdit;
 class QSpinBox;
 
 namespace Sigbuild
@@ -23,6 +24,7 @@ public:
 private slots:
     void OnSystrayStateChanged();
     void OnAudioStateChanged();
+    void SetCustomAudioControlsVisible(bool visible);
 
 private:
     // -- SYSTRAY BOX --
@@ -37,6 +39,11 @@ private:
     // -- AUDIO BOX --
     QCheckBox * mAudioEnabled = nullptr;
     QCheckBox * mAudioNotifyWhenActive = nullptr;
+    QCheckBox * mAudioCustomSounds = nullptr;
+    QLabel * mCustomSoundSuccessLabel = nullptr;
+    QLineEdit * mCustomSoundSuccessLine = nullptr;
+    QLabel * mCustomSoundFailLabel = nullptr;
+    QLineEdit * mCustomSoundFailLine = nullptr;
     QSpinBox * mAudioVolume = nullptr;
     QLabel * mAudioVolumeLabel = nullptr;
     QSpinBox * mAudioMinBuildTime = nullptr;

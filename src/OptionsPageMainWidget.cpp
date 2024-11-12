@@ -3,9 +3,12 @@
 #include "Settings.h"
 
 #include <QCheckBox>
+#include <QFileDialog>
+#include <QGridLayout>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
 #include <QSpacerItem>
 #include <QSpinBox>
 #include <QVBoxLayout>
@@ -103,6 +106,38 @@ OptionsPageMainWidget::OptionsPageMainWidget(const Settings * settings)
     mAudioNotifyWhenActive->setEnabled(audioEnabled);
     layoutBox->addWidget(mAudioNotifyWhenActive);
 
+    // -- audio custom sounds --
+    mAudioCustomSounds = new QCheckBox(tr("Use custom sounds"), box);
+    mAudioCustomSounds->setChecked(settings->UseCustomSounds());
+    mAudioCustomSounds->setEnabled(audioEnabled);
+    layoutBox->addWidget(mAudioCustomSounds);
+
+    const int MIN_COL0_W = 200;
+    auto layoutGridRow = new QGridLayout;
+    layoutBox->addLayout(layoutGridRow);
+    layoutGridRow->setEnabled(false);
+
+    mCustomSoundSuccessLabel = new QLabel(tr("Success sound:"));
+    layoutGridRow->addWidget(mCustomSoundSuccessLabel, 0, 0);
+    mCustomSoundSuccessLine = new QLineEdit;
+    layoutGridRow->addWidget(mCustomSoundSuccessLine, 0, 1);
+    layoutGridRow->setColumnMinimumWidth(0, MIN_COL0_W);
+
+    layoutGridRow = new QGridLayout;
+    layoutBox->addLayout(layoutGridRow);
+    layoutGridRow->setEnabled(false);
+
+    mCustomSoundFailLabel = new QLabel(tr("Fail sound:"));
+    layoutGridRow->addWidget(mCustomSoundFailLabel, 0, 0);
+    mCustomSoundFailLine = new QLineEdit;
+    layoutGridRow->addWidget(mCustomSoundFailLine, 0, 1);
+    layoutGridRow->setColumnMinimumWidth(0, MIN_COL0_W);
+
+    SetCustomAudioControlsVisible(false);
+
+    connect(mAudioCustomSounds, &QCheckBox::stateChanged,
+            this, &OptionsPageMainWidget::SetCustomAudioControlsVisible);
+
     // -- audio volume --
     layoutRow = new QHBoxLayout;
     layoutBox->addLayout(layoutRow);
@@ -155,6 +190,7 @@ Settings OptionsPageMainWidget::GenerateSettings() const
     // -- AUDIO --
     settings.SetAudioEnabled(mAudioEnabled->isChecked());
     settings.SetAudioNotificationWhenActive(mAudioNotifyWhenActive->isChecked());
+    settings.SetUseCustomSounds(mAudioCustomSounds->isChecked());
     settings.SetAudioVolume(mAudioVolume->value());
     settings.SetAudioMinBuildTime(mAudioMinBuildTime->value());
 
@@ -181,10 +217,24 @@ void OptionsPageMainWidget::OnAudioStateChanged()
     const bool STATUS = mAudioEnabled->isChecked();
 
     mAudioNotifyWhenActive->setEnabled(STATUS);
+    mAudioCustomSounds->setEnabled(STATUS);
     mAudioVolume->setEnabled(STATUS);
     mAudioVolumeLabel->setEnabled(STATUS);
     mAudioMinBuildTime->setEnabled(STATUS);
     mAudioMinBuildTimeLabel->setEnabled(STATUS);
+
+    mCustomSoundSuccessLabel->setEnabled(STATUS);
+    mCustomSoundSuccessLine->setEnabled(STATUS);
+    mCustomSoundFailLabel->setEnabled(STATUS);
+    mCustomSoundFailLine->setEnabled(STATUS);
+}
+
+void OptionsPageMainWidget::SetCustomAudioControlsVisible(bool visible)
+{
+    mCustomSoundSuccessLabel->setVisible(visible);
+    mCustomSoundSuccessLine->setVisible(visible);
+    mCustomSoundFailLabel->setVisible(visible);
+    mCustomSoundFailLine->setVisible(visible);
 }
 
 } // namespace Sigbuild
