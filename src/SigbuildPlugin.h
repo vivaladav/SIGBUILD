@@ -9,6 +9,7 @@
 
 class QAction;
 class QIcon;
+class QMediaPlayer;
 class QMenu;
 class QPixmap;
 class QSoundEffect;
@@ -56,6 +57,7 @@ private:
     void DestroySystrayIcon();
 
     void CreateSounds();
+    void UpdateSounds();
     void DestroySounds();
 
     void SetBuildState(BuildState state);
