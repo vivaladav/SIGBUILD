@@ -9,6 +9,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QPushButton>
 #include <QSpacerItem>
 #include <QSpinBox>
 #include <QVBoxLayout>
@@ -112,31 +113,47 @@ OptionsPageMainWidget::OptionsPageMainWidget(const Settings * settings)
     mAudioCustomSounds->setEnabled(audioEnabled);
     layoutBox->addWidget(mAudioCustomSounds);
 
+    // success sound
     const int MIN_COL0_W = 200;
     auto layoutGridRow = new QGridLayout;
     layoutBox->addLayout(layoutGridRow);
     layoutGridRow->setEnabled(false);
+    layoutGridRow->setColumnMinimumWidth(0, MIN_COL0_W);
 
     mCustomSoundSuccessLabel = new QLabel(tr("Success sound:"));
     layoutGridRow->addWidget(mCustomSoundSuccessLabel, 0, 0);
     mCustomSoundSuccessLine = new QLineEdit;
+    mCustomSoundSuccessLine->setReadOnly(true);
     layoutGridRow->addWidget(mCustomSoundSuccessLine, 0, 1);
-    layoutGridRow->setColumnMinimumWidth(0, MIN_COL0_W);
+    mCustomSoundSuccessButton = new QPushButton(tr("Select"));
+    layoutGridRow->addWidget(mCustomSoundSuccessButton, 0, 2);
 
+    connect(mCustomSoundSuccessButton, &QPushButton::clicked, this, [this]
+    {
+        QString fileName = QFileDialog::getOpenFileName(this, tr("select a success sound"),
+                                                        QString(), tr("Audio (*.ogg *.mp3 *.wav)"));
+        mCustomSoundSuccessLine->setText(fileName);
+    });
+
+    // fail sound
     layoutGridRow = new QGridLayout;
     layoutBox->addLayout(layoutGridRow);
     layoutGridRow->setEnabled(false);
+    layoutGridRow->setColumnMinimumWidth(0, MIN_COL0_W);
 
     mCustomSoundFailLabel = new QLabel(tr("Fail sound:"));
     layoutGridRow->addWidget(mCustomSoundFailLabel, 0, 0);
     mCustomSoundFailLine = new QLineEdit;
+    mCustomSoundFailLine->setReadOnly(true);
     layoutGridRow->addWidget(mCustomSoundFailLine, 0, 1);
-    layoutGridRow->setColumnMinimumWidth(0, MIN_COL0_W);
+    mCustomSoundFailButton = new QPushButton(tr("Select"));
+    layoutGridRow->addWidget(mCustomSoundFailButton, 0, 2);
 
     SetCustomAudioControlsVisible(false);
 
     connect(mAudioCustomSounds, &QCheckBox::stateChanged,
             this, &OptionsPageMainWidget::SetCustomAudioControlsVisible);
+
 
     // -- audio volume --
     layoutRow = new QHBoxLayout;
@@ -233,8 +250,10 @@ void OptionsPageMainWidget::SetCustomAudioControlsVisible(bool visible)
 {
     mCustomSoundSuccessLabel->setVisible(visible);
     mCustomSoundSuccessLine->setVisible(visible);
+    mCustomSoundSuccessButton->setVisible(visible);
     mCustomSoundFailLabel->setVisible(visible);
     mCustomSoundFailLine->setVisible(visible);
+    mCustomSoundFailButton->setVisible(visible);
 }
 
 } // namespace Sigbuild

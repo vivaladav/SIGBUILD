@@ -5,6 +5,7 @@
 class QCheckBox;
 class QLabel;
 class QLineEdit;
+class QPushButton;
 class QSpinBox;
 
 namespace Sigbuild
@@ -42,8 +43,10 @@ private:
     QCheckBox * mAudioCustomSounds = nullptr;
     QLabel * mCustomSoundSuccessLabel = nullptr;
     QLineEdit * mCustomSoundSuccessLine = nullptr;
+    QPushButton * mCustomSoundSuccessButton = nullptr;
     QLabel * mCustomSoundFailLabel = nullptr;
     QLineEdit * mCustomSoundFailLine = nullptr;
+    QPushButton * mCustomSoundFailButton = nullptr;
     QSpinBox * mAudioVolume = nullptr;
     QLabel * mAudioVolumeLabel = nullptr;
     QSpinBox * mAudioMinBuildTime = nullptr;
