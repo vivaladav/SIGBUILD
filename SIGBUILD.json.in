@@ -1,5 +1,5 @@
 {
-    "Name" : "SIGBUILD-dev",
+    "Name" : "SIGBUILD",
     "Version" : "0.5.0",
     "CompatVersion" : "0.5.0",
     "Vendor" : "Davide Coppola",
@@ -7,6 +7,6 @@
     "License" : "GPL v3.",
     "Category" : "Qt Creator",
     "Description" : "This plugin notifies you when a build ends and tracks stats of your builds.",
-    "Url" : "http://sigbuild.com",
+    "Url" : "https://github.com/vivaladav/SIGBUILD",
     ${IDE_PLUGIN_DEPENDENCIES}
 }
