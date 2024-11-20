@@ -9,7 +9,6 @@
 
 class QAction;
 class QIcon;
-class QMediaPlayer;
 class QMenu;
 class QPixmap;
 class QSoundEffect;

@@ -13,14 +13,10 @@
 #include <projectexplorer/projecttree.h>
 
 #include <QAction>
-#include <QAudioDevice>
-#include <QAudioOutput>
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QIcon>
 #include <QMainWindow>
-#include <QMediaDevices>
-#include <QMediaPlayer>
 #include <QMenu>
 #include <QSoundEffect>
 #include <QSystemTrayIcon>
