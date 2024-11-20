@@ -247,15 +247,17 @@ void SigbuildPlugin::OnSettingsChanged()
 
     if(mSettings->IsAudioEnabled())
     {
-        if(!mSoundFail && !mSoundSuccess)
-            CreateSounds();
+        // this code should work, but for some reason QSoundEffect::setSource doesn't work
+        // in this plugin, so I have to destroy and recreate the sounds every time
+        // if(!mSoundFail && !mSoundSuccess)
+        //     CreateSounds();
+        //
+        // UpdateSounds();
 
-        UpdateSounds();
+        if(mSoundFail != nullptr || mSoundSuccess != nullptr)
+            DestroySounds();
 
-        // if(mSoundFail != nullptr && mSoundSuccess != nullptr)
-        //     DestroySounds();
-
-        // CreateSounds();
+        CreateSounds();
     }
     else
     {
