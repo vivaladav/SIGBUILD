@@ -15,6 +15,9 @@ const QByteArray OPT_SYSTRAY_MIN_BUILD_TIME("SYSTRAY_MIN_BUILD_TIME");
 const QByteArray OPT_SYSTRAY_NOTIFY_TIME("SYSTRAY_NOTIFY_TIME");
 const QByteArray OPT_AUDIO_ENABLED("AUDIO_ENABLED");
 const QByteArray OPT_AUDIO_NOTIFY_WHEN_ACTIVE("AUDIO_NOTIFY_WHEN_ACTIVE");
+const QByteArray OPT_AUDIO_CUSTOM_SOUNDS("AUDIO_CUSTOMS_SOUNDS");
+const QByteArray OPT_AUDIO_CUSTOM_SOUND_SUCCESS("AUDIO_CUSTOMS_SOUND_SUCCESS");
+const QByteArray OPT_AUDIO_CUSTOM_SOUND_FAIL("AUDIO_CUSTOMS_SOUND_FAIL");
 const QByteArray OPT_AUDIO_VOLUME("AUDIO_VOLUME");
 const QByteArray OPT_AUDIO_MIN_BUILD_TIME("AUDIO_MIN_BUILD_TIME");
 
@@ -26,6 +29,9 @@ const int DEF_SYSTRAY_MIN_BUILD_TIME                = 0;
 const int DEF_SYSTRAY_NOTIFY_TIME                   = 5;
 const bool DEF_AUDIO_ENABLED                        = true;
 const bool DEF_AUDIO_NOTIFY_WHEN_ACTIVE             = true;
+const bool DEF_AUDIO_CUSTOM_SOUNDS                  = false;
+const QString DEF_AUDIO_CUSTOM_SOUND_SUCCESS        = QString();
+const QString DEF_AUDIO_CUSTOM_SOUND_FAIL           = QString();
 const int DEF_AUDIO_VOLUME                          = Settings::AUDIO_VOL_MAX;
 const int DEF_AUDIO_MIN_BUILD_TIME                  = 0;
 
@@ -36,6 +42,9 @@ Settings::Settings()
     , mOptSystrayMinBuildTime(DEF_SYSTRAY_MIN_BUILD_TIME)
     , mOptAudioEnabled(DEF_AUDIO_ENABLED)
     , mOptAudioNotifyWhenActive(DEF_AUDIO_NOTIFY_WHEN_ACTIVE)
+    , mOptAudioCustomSounds(DEF_AUDIO_CUSTOM_SOUNDS)
+    , mOptAudioCustomSuccessSound(DEF_AUDIO_CUSTOM_SOUND_SUCCESS)
+    , mOptAudioCustomFailSound(DEF_AUDIO_CUSTOM_SOUND_FAIL)
     , mOptAudioVolume(DEF_AUDIO_VOLUME)
     , mOptAudioMinBuildTime(DEF_AUDIO_MIN_BUILD_TIME)
 {
@@ -57,17 +66,24 @@ void Settings::Load()
 
     // -- AUDIO --
     mOptAudioEnabled = globalSettings->value(OPT_AUDIO_ENABLED, DEF_AUDIO_ENABLED).toBool();
-    mOptAudioNotifyWhenActive = globalSettings->value(	OPT_AUDIO_NOTIFY_WHEN_ACTIVE,
-                                                        DEF_AUDIO_NOTIFY_WHEN_ACTIVE).toBool();
+    mOptAudioNotifyWhenActive = globalSettings->value(OPT_AUDIO_NOTIFY_WHEN_ACTIVE,
+                                                      DEF_AUDIO_NOTIFY_WHEN_ACTIVE).toBool();
+    mOptAudioCustomSounds = globalSettings->value(OPT_AUDIO_CUSTOM_SOUNDS,
+                                                  DEF_AUDIO_CUSTOM_SOUNDS).toBool();
+    mOptAudioCustomSuccessSound = globalSettings->value(OPT_AUDIO_CUSTOM_SOUND_SUCCESS,
+                                                        DEF_AUDIO_CUSTOM_SOUND_SUCCESS).toString();
+    mOptAudioCustomFailSound = globalSettings->value(OPT_AUDIO_CUSTOM_SOUND_FAIL,
+                                                     DEF_AUDIO_CUSTOM_SOUND_FAIL).toString();
     mOptAudioVolume = globalSettings->value(OPT_AUDIO_VOLUME, DEF_AUDIO_VOLUME).toInt();
-    mOptAudioMinBuildTime = globalSettings->value(OPT_AUDIO_MIN_BUILD_TIME, DEF_AUDIO_MIN_BUILD_TIME).toInt();
+    mOptAudioMinBuildTime = globalSettings->value(OPT_AUDIO_MIN_BUILD_TIME,
+                                                  DEF_AUDIO_MIN_BUILD_TIME).toInt();
 
     globalSettings->endGroup();
 }
 
 void Settings::Save()
 {
-    Utils::QtcSettings *globalSettings = Core::ICore::settings();
+    Utils::QtcSettings * globalSettings = Core::ICore::settings();
 
     globalSettings->beginGroup(GROUP);
 
@@ -81,6 +97,9 @@ void Settings::Save()
     // -- AUDIO --
     globalSettings->setValue(OPT_AUDIO_ENABLED, mOptAudioEnabled);
     globalSettings->setValue(OPT_AUDIO_NOTIFY_WHEN_ACTIVE, mOptAudioNotifyWhenActive);
+    globalSettings->setValue(OPT_AUDIO_CUSTOM_SOUNDS, mOptAudioCustomSounds);
+    globalSettings->setValue(OPT_AUDIO_CUSTOM_SOUND_SUCCESS, mOptAudioCustomSuccessSound);
+    globalSettings->setValue(OPT_AUDIO_CUSTOM_SOUND_FAIL, mOptAudioCustomFailSound);
     globalSettings->setValue(OPT_AUDIO_VOLUME, mOptAudioVolume);
     globalSettings->setValue(OPT_AUDIO_MIN_BUILD_TIME, mOptAudioMinBuildTime);
 

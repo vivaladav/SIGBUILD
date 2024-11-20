@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QString>
+
 namespace Sigbuild
 {
 
@@ -33,6 +35,13 @@ public:
 
     bool PlayAudioNotificationWhenActive() const;
     void SetAudioNotificationWhenActive(bool val);
+
+    bool UseCustomSounds() const;
+    void SetUseCustomSounds(bool val);
+    QString GetCustomSuccessSound() const;
+    void SetCustomSuccessSound(QString filename);
+    QString GetCustomFailSound() const;
+    void SetCustomFailSound(QString filename);
 
     int GetAudioVolume() const;
     double GetAudioVolumeAsReal() const;
@@ -69,6 +78,9 @@ private:
     // -- AUDIO --
     bool mOptAudioEnabled;
     bool mOptAudioNotifyWhenActive;
+    bool mOptAudioCustomSounds;
+    QString mOptAudioCustomSuccessSound;
+    QString mOptAudioCustomFailSound;
     int mOptAudioVolume;
     int mOptAudioMinBuildTime;
 };
@@ -94,6 +106,13 @@ inline void Settings::SetAudioEnabled(bool val) { mOptAudioEnabled = val; }
 inline bool Settings::PlayAudioNotificationWhenActive() const { return mOptAudioNotifyWhenActive; }
 inline void Settings::SetAudioNotificationWhenActive(bool val) { mOptAudioNotifyWhenActive = val; }
 
+inline bool Settings::UseCustomSounds() const { return mOptAudioCustomSounds; }
+inline void Settings::SetUseCustomSounds(bool val) { mOptAudioCustomSounds = val; }
+inline QString Settings::GetCustomSuccessSound() const { return mOptAudioCustomSuccessSound; }
+inline void Settings::SetCustomSuccessSound(QString filename) { mOptAudioCustomSuccessSound = filename; }
+inline QString Settings::GetCustomFailSound() const { return mOptAudioCustomFailSound; }
+inline void Settings::SetCustomFailSound(QString filename) { mOptAudioCustomFailSound = filename; }
+
 inline int Settings::GetAudioVolume() const { return mOptAudioVolume; }
 inline double Settings::GetAudioVolumeAsReal() const
 {
@@ -105,7 +124,7 @@ inline int Settings::GetAudioMinBuildtime() const { return mOptAudioMinBuildTime
 // -- OPERATORS --
 inline bool Settings::operator==(const Settings & other) const
 {
-    return	mOptSystrayEnabled == other.mOptSystrayEnabled &&
+    return  mOptSystrayEnabled == other.mOptSystrayEnabled &&
             mOptSystrayNotifyEnabled == other.mOptSystrayNotifyEnabled &&
             mOptSystrayNotifyWhenActive == other.mOptSystrayNotifyWhenActive &&
             mOptSystrayMinBuildTime == other.mOptSystrayMinBuildTime &&
@@ -113,7 +132,10 @@ inline bool Settings::operator==(const Settings & other) const
             mOptAudioEnabled == other.mOptAudioEnabled &&
             mOptAudioNotifyWhenActive == other.mOptAudioNotifyWhenActive &&
             mOptAudioVolume == other.mOptAudioVolume &&
-            mOptAudioMinBuildTime == other.mOptAudioMinBuildTime;
+            mOptAudioMinBuildTime == other.mOptAudioMinBuildTime &&
+            mOptAudioCustomSounds == other.mOptAudioCustomSounds &&
+            mOptAudioCustomSuccessSound == other.mOptAudioCustomSuccessSound &&
+            mOptAudioCustomFailSound == other.mOptAudioCustomFailSound;
 }
 
 inline bool Settings::operator!=(const Settings & other) const

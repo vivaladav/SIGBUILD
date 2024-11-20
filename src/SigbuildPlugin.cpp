@@ -223,6 +223,7 @@ void SigbuildPlugin::OnBuildFinished(bool res)
 
 void SigbuildPlugin::OnSettingsChanged()
 {
+
     // -- SYSTRAY --
     if(mSettings->IsSystrayEnabled())
     {
@@ -242,8 +243,17 @@ void SigbuildPlugin::OnSettingsChanged()
 
     if(mSettings->IsAudioEnabled())
     {
-        if(!mSoundFail && !mSoundSuccess)
-            CreateSounds();
+        // this code should work, but for some reason QSoundEffect::setSource doesn't work
+        // in this plugin, so I have to destroy and recreate the sounds every time
+        // if(!mSoundFail && !mSoundSuccess)
+        //     CreateSounds();
+        //
+        // UpdateSounds();
+
+        if(mSoundFail != nullptr || mSoundSuccess != nullptr)
+            DestroySounds();
+
+        CreateSounds();
     }
     else
     {
@@ -389,13 +399,41 @@ void SigbuildPlugin::DestroySystrayIcon()
 
 void SigbuildPlugin::CreateSounds()
 {
-    mSoundSuccess = new QSoundEffect();
+    mSoundSuccess = new QSoundEffect;
     mSoundSuccess->setVolume(mSettings->GetAudioVolumeAsReal());
-    mSoundSuccess->setSource(QUrl("qrc:/audio/success_short.wav"));
 
-    mSoundFail = new QSoundEffect();
+    mSoundFail = new QSoundEffect;
     mSoundFail->setVolume(mSettings->GetAudioVolumeAsReal());
-    mSoundFail->setSource(QUrl("qrc:/audio/fail_short.wav"));
+
+    UpdateSounds();
+}
+
+void SigbuildPlugin::UpdateSounds()
+{
+    const QUrl DEF_SOUND_SUCCESS("qrc:/audio/success_short.wav");
+    const QUrl DEF_SOUND_FAIL("qrc:/audio/fail_short.wav");
+
+    if(mSettings->UseCustomSounds())
+    {
+        const QString successSound = mSettings->GetCustomSuccessSound();
+
+        if(!successSound.isEmpty())
+            mSoundSuccess->setSource(QUrl::fromLocalFile(successSound));
+        else
+            mSoundSuccess->setSource(DEF_SOUND_SUCCESS);
+
+        const QString failSound = mSettings->GetCustomFailSound();
+
+        if(!failSound.isEmpty())
+            mSoundFail->setSource(QUrl::fromLocalFile(failSound));
+        else
+            mSoundFail->setSource(DEF_SOUND_FAIL);
+    }
+    else
+    {
+        mSoundSuccess->setSource(DEF_SOUND_SUCCESS);
+        mSoundFail->setSource(DEF_SOUND_FAIL);
+    }
 }
 
 void SigbuildPlugin::DestroySounds()

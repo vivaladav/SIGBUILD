@@ -56,6 +56,7 @@ private:
     void DestroySystrayIcon();
 
     void CreateSounds();
+    void UpdateSounds();
     void DestroySounds();
 
     void SetBuildState(BuildState state);
