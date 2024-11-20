@@ -406,38 +406,14 @@ void SigbuildPlugin::CreateSounds()
     mSoundSuccess = new QSoundEffect;
     mSoundSuccess->setVolume(mSettings->GetAudioVolumeAsReal());
 
-    connect(mSoundSuccess, &QSoundEffect::sourceChanged, this, [this]
-    {
-        qDebug() << "SigbuildPlugin::CreateSounds - SUCCESS SOURCE CHANGED: " << mSoundSuccess->source();
-    });
-
-    connect(mSoundSuccess, &QSoundEffect::statusChanged, this, [this]
-    {
-        qDebug() << "SigbuildPlugin::CreateSounds - SUCCESS SOUND STATUS CHANGED: " << mSoundSuccess->status();
-        qDebug() << "SigbuildPlugin::CreateSounds - SUCCESS SOURCE: " << mSoundSuccess->source();
-    });
-
     mSoundFail = new QSoundEffect;
     mSoundFail->setVolume(mSettings->GetAudioVolumeAsReal());
-
-    connect(mSoundFail, &QSoundEffect::sourceChanged, this, [this]
-    {
-        qDebug() << "SigbuildPlugin::CreateSounds - FAIL SOURCE CHANGED: " << mSoundFail->source();
-    });
-
-    connect(mSoundFail, &QSoundEffect::statusChanged, this, [this]
-    {
-        qDebug() << "SigbuildPlugin::CreateSounds - FAIL SOUND STATUS CHANGED: " << mSoundFail->status();
-        qDebug() << "SigbuildPlugin::CreateSounds - FAIL SOURCE: " << mSoundFail->source();
-    });
 
     UpdateSounds();
 }
 
 void SigbuildPlugin::UpdateSounds()
 {
-    qDebug() << "----- SigbuildPlugin::UpdateSounds() - START -----";
-
     const QUrl DEF_SOUND_SUCCESS("qrc:/audio/success_short.wav");
     const QUrl DEF_SOUND_FAIL("qrc:/audio/fail_short.wav");
 
@@ -456,27 +432,16 @@ void SigbuildPlugin::UpdateSounds()
             mSoundFail->setSource(QUrl::fromLocalFile(failSound));
         else
             mSoundFail->setSource(DEF_SOUND_FAIL);
-
-        qDebug() << "SigbuildPlugin::UpdateSounds() - CUSTOM";
     }
     else
     {
         mSoundSuccess->setSource(DEF_SOUND_SUCCESS);
         mSoundFail->setSource(DEF_SOUND_FAIL);
-
-        qDebug() << "SigbuildPlugin::UpdateSounds() - DEFAULT";
     }
-
-    qDebug() << "SigbuildPlugin::UpdateSounds() - SUCCESS:" << mSoundSuccess->source();
-    qDebug() << "SigbuildPlugin::UpdateSounds() - FAIL:" << mSoundFail->source();
-
-    qDebug() << "----- SigbuildPlugin::UpdateSounds() - END -----";
 }
 
 void SigbuildPlugin::DestroySounds()
 {
-    qDebug() << "SigbuildPlugin::DestroySounds";
-
     delete mSoundSuccess;
     mSoundSuccess = nullptr;
 
