@@ -19,17 +19,17 @@ namespace Sigbuild
 
 OptionsPageMainWidget::OptionsPageMainWidget(const Settings * settings)
 {
-    QVBoxLayout * layout = new QVBoxLayout(this);
+    auto layout = new QVBoxLayout(this);
 
     // == SYSTRAY BOX ==
     QGroupBox * box = new QGroupBox(tr("Systray"), this);
     layout->addWidget(box);
 
-    QVBoxLayout * layoutBox = new QVBoxLayout(box);
+    auto layoutBox = new QVBoxLayout(box);
 
-    const bool SYSTRAY_ENABLED			= settings->IsSystrayEnabled();
-    const bool SYSTRAY_NOTIFY_ENABLED	= settings->IsSystrayNotificationEnabled();
-    const bool SYSTRAY_OPT_STATUS		= SYSTRAY_ENABLED && SYSTRAY_NOTIFY_ENABLED;
+    const bool SYSTRAY_ENABLED          = settings->IsSystrayEnabled();
+    const bool SYSTRAY_NOTIFY_ENABLED   = settings->IsSystrayNotificationEnabled();
+    const bool SYSTRAY_OPT_STATUS       = SYSTRAY_ENABLED && SYSTRAY_NOTIFY_ENABLED;
 
     // -- systray on/off --
     mSystrayEnabled = new QCheckBox(tr("Enable systray icon"), box);
@@ -133,7 +133,8 @@ OptionsPageMainWidget::OptionsPageMainWidget(const Settings * settings)
         QString fileName = QFileDialog::getOpenFileName(this, tr("select a success sound"),
                                                         QString(), tr("Audio (*.ogg *.mp3 *.wav)"));
 
-        mCustomSoundSuccessLine->setText(fileName);
+        if(!fileName.isEmpty())
+            mCustomSoundSuccessLine->setText(fileName);
     });
 
     // fail sound
@@ -155,7 +156,8 @@ OptionsPageMainWidget::OptionsPageMainWidget(const Settings * settings)
         QString fileName = QFileDialog::getOpenFileName(this, tr("select a failure sound"),
                                                         QString(), tr("Audio (*.ogg *.mp3 *.wav)"));
 
-        mCustomSoundFailLine->setText(fileName);
+        if(!fileName.isEmpty())
+            mCustomSoundFailLine->setText(fileName);
     });
 
     connect(mAudioCustomSounds, &QCheckBox::stateChanged,
