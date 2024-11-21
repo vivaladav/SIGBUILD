@@ -94,7 +94,7 @@ jobs:
             COMMAND sudo apt update
           )
           execute_process(
-            COMMAND sudo apt install libgl1-mesa-dev cups
+            COMMAND sudo apt install libgl1-mesa-dev cups libcups2
             RESULT_VARIABLE result
           )
           if (NOT result EQUAL 0)
