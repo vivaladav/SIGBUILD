@@ -173,28 +173,10 @@ jobs:
           ${package}.7z
           )
         endforeach()
-
-        # download Qt 6 packages        
-        if("${qt_version_major}" STREQUAL "6")
-          message("Downloading Qt 6 packages")
-          foreach(package qt5compat qtshadertools)
-            print_var(qt_base_url)
-            print_var(qt_version_dotless)
-            print_var(package)
-            print_var(qt_package_arch_suffix)
-            print_var(qt_package_version)
-            print_var(package)
-            print_var(qt_package_suffix)
-
-            downloadAndExtract(
-              "${qt_base_url}/qt.qt6.${qt_version_dotless}.${package}.${qt_package_arch_suffix}/${qt_package_version}${package}${qt_package_suffix}.7z"
-              ${package}.7z
-            )
-          endforeach()
-
+        
           # download Qt 6 addons
           message("Downloading Qt 6 addons")
-          foreach(addon qtmultimedia)
+          foreach(addon qt5compat qtmultimedia qtshadertools)
             print_var(qt_base_url)
             print_var(qt_version_dotless)
             print_var(addon)
