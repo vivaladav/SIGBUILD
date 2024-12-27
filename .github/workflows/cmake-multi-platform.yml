@@ -173,6 +173,9 @@ jobs:
           ${package}.7z
           )
         endforeach()
+
+        # download Qt 6 packages        
+        if("${qt_version_major}" STREQUAL "6")
         
           # download Qt 6 addons
           message("Downloading Qt 6 addons")
