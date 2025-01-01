@@ -203,6 +203,10 @@ jobs:
           )
         endif()
 
+    - name: List Files after Qt Download
+      if: matrix.name == 'Linux x64'
+        run: ls -lh
+
     - name: Download Qt Creator
       id: qt_creator
       shell: cmake -P {0}
@@ -239,6 +243,10 @@ jobs:
             ${CMAKE_COMMAND} -E tar xvf ../${package}.7z WORKING_DIRECTORY qtcreator)
         endforeach()
 
+    - name: List Files after QtC download
+      if: matrix.name == 'Linux x64'
+        run: ls -lh
+        
     - name: Configure & Build
       shell: cmake -P {0}
       run: |
