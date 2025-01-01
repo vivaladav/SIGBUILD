@@ -205,7 +205,7 @@ jobs:
 
     - name: List Files after Qt Download
       if: matrix.name == 'Linux x64'
-        run: ls -lh
+      run: ls -lh
 
     - name: Download Qt Creator
       id: qt_creator
@@ -245,7 +245,7 @@ jobs:
 
     - name: List Files after QtC download
       if: matrix.name == 'Linux x64'
-        run: ls -lh
+      run: ls -lh
         
     - name: Configure & Build
       shell: cmake -P {0}
