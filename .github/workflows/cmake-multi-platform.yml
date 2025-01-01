@@ -207,6 +207,10 @@ jobs:
       if: matrix.name == 'Linux x64'
       run: ls -lh
 
+    - name: List Qt Files
+      if: matrix.name == 'Linux x64'
+      run: ls -lh qt/${qt_dir_prefix}
+
     - name: Download Qt Creator
       id: qt_creator
       shell: cmake -P {0}
