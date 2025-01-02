@@ -227,6 +227,10 @@ jobs:
       if: matrix.name == 'Linux x64'
       run: find -name "Qt6Config.cmake"
 
+    - name: Find libicui18n
+      if: matrix.name == 'Linux x64'
+      run: find -name "libicui18n*"
+
     - name: Download Qt Creator
       id: qt_creator
       shell: cmake -P {0}
