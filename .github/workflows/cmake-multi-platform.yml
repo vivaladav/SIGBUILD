@@ -146,7 +146,7 @@ jobs:
 
         # download Qt
         message("Downloading Qt to ${qt_dir}")
-        function(downloadAndExtract url archive wdir targetdir)
+        function(downloadAndExtract url archive)
           message("=======================================")
           message("Downloading ${url}")
           file(DOWNLOAD "${url}" ./${archive} SHOW_PROGRESS LOG DOWN_LOG STATUS DOWN_STATUS)
@@ -154,7 +154,7 @@ jobs:
           list(GET DOWN_STATUS 1 ERROR_TEXT)
           print_var(ERROR_NO)
           print_var(ERROR_TEXT)
-          execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ../${archive} -C targetdir WORKING_DIRECTORY ${wdir})
+          execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ../${archive} WORKING_DIRECTORY qt)
           message("---------------------------------------")
         endfunction()
 
@@ -172,8 +172,6 @@ jobs:
           downloadAndExtract(
           "${qt_base_url}/qt.qt${qt_version_major}.${qt_version_dotless}.${qt_package_arch_suffix}/${qt_package_version}${package}${qt_package_suffix}.7z"
           ${package}.7z
-          qt
-          .
           )
         endforeach()
 
@@ -194,8 +192,6 @@ jobs:
             downloadAndExtract(
               "${qt_base_url}/qt.qt${qt_version_major}.${qt_version_dotless}.addons.${addon}.${qt_package_arch_suffix}/${qt_package_version}${addon}${qt_package_suffix}.7z"
               ${addon}.7z
-              qt
-              .
             )
           endforeach()
         endif()
@@ -205,8 +201,6 @@ jobs:
           downloadAndExtract(
             "${qt_base_url}/qt.qt${qt_version_major}.${qt_version_dotless}.${qt_package_arch_suffix}/${qt_package_version}icu-linux-Rhel8.6-x86_64.7z"
             icu.7z
-            qt
-            lib
           )
         endif()
 
@@ -226,6 +220,11 @@ jobs:
     #  if: matrix.name == 'Linux x64'
     #  run: ls -lh qt/6.8.1/gcc_64
 
+    - name: move libicui18n
+      run: |
+        cd qt
+        mv libicui18n* lib
+        
     - name: Find Qt6 config
       if: matrix.name == 'Linux x64'
       run: find -name "Qt6Config.cmake"
