@@ -220,10 +220,10 @@ jobs:
     #  if: matrix.name == 'Linux x64'
     #  run: ls -lh qt/6.8.1/gcc_64
 
-    - name: move libicui18n
+    - name: move libicu libs
       run: |
         cd qt
-        mv libicui18n* lib
+        mv libicu* lib
         
     - name: Find Qt6 config
       if: matrix.name == 'Linux x64'
