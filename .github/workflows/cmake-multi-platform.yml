@@ -207,9 +207,17 @@ jobs:
       if: matrix.name == 'Linux x64'
       run: ls -lh
 
-    - name: List Qt Files
+    - name: List Qt Files 
+      if: matrix.name == 'Linux x64'
+      run: ls -lh qt
+
+    - name: List Qt Files + dir prefix
       if: matrix.name == 'Linux x64'
       run: ls -lh qt/${qt_dir_prefix}
+
+    - name: List Qt Files action path
+      if: matrix.name == 'Linux x64'
+      run: ls -lh qt/6.8.1/gcc_64
 
     - name: Find Qt6 config
       if: matrix.name == 'Linux x64'
